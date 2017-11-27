@@ -10,11 +10,12 @@ case class User(
   firstName: String,
   lastName: String,
   email: String,
+  summonerName: String,
   userType: UserTypes.Value
 ) extends Identity
 
 object UserTypes extends Enumeration {
   val Admin = Value("Admin")
-  val Captain = Value("Captain")
-  val Player = Value("Admin")
+  val Organizer = Value("Organizer")
+  val Player = Value("Player")
 }

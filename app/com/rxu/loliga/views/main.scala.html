@@ -1,10 +1,9 @@
-@import play.api.i18n.Messages
 @import play.api.mvc.RequestHeader
 @import play.twirl.api.Html
 @import org.webjars.play.WebJarsUtil
 @import controllers.AssetsFinder
 
-@(title: String, user: Option[com.rxu.loliga.models.User] = None)(content: Html)(implicit request: RequestHeader, messages: Messages, assets: AssetsFinder, webJarsUtil: WebJarsUtil)
+@(title: String, user: Option[com.rxu.loliga.models.User] = None)(content: Html)(implicit request: RequestHeader, assets: AssetsFinder, webJarsUtil: WebJarsUtil)
 
 <!DOCTYPE html>
 
@@ -14,7 +13,10 @@
         @Html(webJarsUtil.css("bootstrap.min.css"))
         @Html(webJarsUtil.css("bootstrap-theme.min.css"))
         @Html(webJarsUtil.script("jquery.js"))
-        @Html(webJarsUtil.css("bootstrap.min.js"))
+        @Html(webJarsUtil.script("bootstrap.min.js"))
+        @Html(webJarsUtil.script("vue.js"))
+        @Html(webJarsUtil.script("vee-validate.js"))
+        <link rel="stylesheet" href="@assets.path("stylesheets/main.css")">
     </head>
     <body>
         <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -26,11 +28,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Echo360 Elastic Search</a>
+                    <a class="navbar-brand">LoLiga</a>
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a>Search</a></li>
+                        <li><a>Players</a></li>
+                        <li><a>Teams</a></li>
+                        <li><a>Divisions</a></li>
+                        <li><a>Info</a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>

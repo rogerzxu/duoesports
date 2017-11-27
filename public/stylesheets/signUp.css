@@ -1,0 +1,42 @@
+h1 {
+    padding-bottom: 30px;
+}
+
+.signUpButton {
+    background-color: #00b16a;
+    border-radius: 2px;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    padding: 15px 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    width: 180px;
+    height: 60px;
+}
+
+input {
+    border: 1px solid silver;
+    border-radius: 4px;
+    background: white;
+    padding: 5px 10px;
+}
+
+.error {
+    border-color: red;
+    background: #FDD;
+}
+
+.error:focus {
+    outline-color: #F99;
+}
+
+.valid {
+    border-color: #5A5;
+    background: #EFE;
+}
+
+.valid:focus {
+    outline-color: #8E8;
+}

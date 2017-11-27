@@ -6,7 +6,6 @@ import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.Silhouette
 import com.rxu.loliga.security.DefaultEnv
 import org.webjars.play.WebJarsUtil
-import play.api.i18n.I18nSupport
 import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Request}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -18,10 +17,14 @@ class SignUpController @Inject()(
   implicit webJarsUtil: WebJarsUtil,
   assets: AssetsFinder,
   ec: ExecutionContext
-) extends AbstractController(components) with I18nSupport {
+) extends AbstractController(components) {
 
   def view = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
     Future.successful(Ok(com.rxu.loliga.views.html.signUp()))
+  }
+
+  def signUp = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
+    Future.successful(Ok("asdf"))
   }
 
 }

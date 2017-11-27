@@ -1,0 +1,23 @@
+body {
+  padding-top: 50px;
+}
+
+.row {
+  padding-top: 15px;
+}
+
+.bordered-row {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  border-top: 1px solid darkgray;
+}
+
+.content {
+  width: 80%;
+  margin: 0 auto;
+  padding: 40px 15px;
+}
+
+textarea {
+  resize: none;
+}
