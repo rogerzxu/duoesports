@@ -3,11 +3,15 @@
 @import controllers.AssetsFinder
 @import helper._
 
-@()(implicit request: RequestHeader, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+@(message: Option[String] = None)(implicit request: RequestHeader, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@main("Sign-Up") {
+@com.rxu.loliga.views.html.main("Sign-Up") {
     <link rel="stylesheet" href="@assets.path("stylesheets/signUp.css")">
-    <h1>Sign-Up</h1>
+    @if(message.nonEmpty) {
+        <h1>@message.get</h1>
+    } else {
+        <h1>Sign-Up</h1>
+    }
     <form id="signUpForm" novalidate action="/signUp" method="POST">
         @CSRF.formField
         <div class="form-group">

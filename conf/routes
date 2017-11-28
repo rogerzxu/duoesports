@@ -2,5 +2,9 @@
 GET         /assets/*file        controllers.Assets.versioned(file)
 ->          /webjars             webjars.Routes
 
-GET         /                    @com.rxu.loliga.controller.SignUpController.view
+GET         /                    @com.rxu.loliga.controller.HomeController.view
+
+GET         /signUp              @com.rxu.loliga.controller.SignUpController.view
+GET         /signUp/success      @com.rxu.loliga.controller.SignUpController.signUpSuccess
+GET         /signUp/failure      @com.rxu.loliga.controller.SignUpController.signUpFailure
 POST        /signUp              @com.rxu.loliga.controller.SignUpController.signUp
