@@ -6,6 +6,7 @@ import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.Silhouette
 import com.rxu.loliga.dto.SignUpForm
 import com.rxu.loliga.security.DefaultEnv
+import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Request}
 
@@ -18,18 +19,22 @@ class SignUpController @Inject()(
   implicit webJarsUtil: WebJarsUtil,
   assets: AssetsFinder,
   ec: ExecutionContext
-) extends AbstractController(components) {
+) extends AbstractController(components) with LazyLogging {
 
   def view = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
     Ok(com.rxu.loliga.views.html.signUp())
   }
 
   def signUp = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
-    val form = request.body.asFormUrlEncoded
-    println(form)
     SignUpForm.form.bindFromRequest.fold(
-      form => Future.successful(BadRequest(form.toString)),
-      signUpData => Future.successful(Ok(signUpData.toString))
+      form => {
+        logger.debug(form.toString)
+        Future.successful(BadRequest(form.toString))
+      },
+      signUpData => {
+        logger.debug(signUpData.toString)
+        Future.successful(Ok(signUpData.toString))
+      }
     )
   }
 

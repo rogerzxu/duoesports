@@ -18,7 +18,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "jquery" % "3.2.1",
   "org.webjars" % "vue" % "2.5.3",
   "org.webjars.npm" % "vuelidate" % "0.5.0",
-  "com.iheart" %% "ficus" % "1.4.1"
+  "com.iheart" %% "ficus" % "1.4.1",
+  "com.typesafe.scala-logging" % "scala-logging_2.12" % "3.7.2"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
