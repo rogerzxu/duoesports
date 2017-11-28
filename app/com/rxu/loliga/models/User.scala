@@ -11,6 +11,7 @@ case class User(
   lastName: String,
   email: String,
   summonerName: String,
+  region: Region.Value,
   userType: UserTypes.Value
 ) extends Identity
 

@@ -17,7 +17,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "bootstrap" % "3.3.7",
   "org.webjars" % "jquery" % "3.2.1",
   "org.webjars" % "vue" % "2.5.3",
-  "org.webjars.npm" % "vee-validate" % "2.0.0-rc.23",
+  "org.webjars.npm" % "vuelidate" % "0.5.0",
   "com.iheart" %% "ficus" % "1.4.1"
 )
 
