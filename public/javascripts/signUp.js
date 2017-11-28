@@ -10,7 +10,8 @@ new Vue({
     summonerName: '',
     password: '',
     confirmPassword: '',
-    regionSelected: false
+    regionSelected: false,
+    region: ''
   },
   validations: {
     firstName: {
@@ -33,6 +34,9 @@ new Vue({
     confirmPassword: {
       required,
       sameAsPassword: sameAs('password')
+    },
+    region: {
+      required
     }
   }
 });

@@ -1,13 +1,15 @@
 @import play.api.mvc.RequestHeader
 @import org.webjars.play.WebJarsUtil
 @import controllers.AssetsFinder
+@import helper._
 
 @()(implicit request: RequestHeader, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @main("Sign-Up") {
     <link rel="stylesheet" href="@assets.path("stylesheets/signUp.css")">
     <h1>Sign-Up</h1>
-    <form id="signUpForm" novalidate v-on:submit="$v.$touch()">
+    <form id="signUpForm" novalidate action="/signUp" method="POST">
+        @CSRF.formField
         <div class="form-group">
             <div class="row bordered-row">
                 <div class="col-md-4">
@@ -15,7 +17,7 @@
                 </div>
                 <div class="col-md-8">
                     <input v-model="email" v-on:input="$v.email.$touch" v-bind:class="{error: $v.email.$error, valid: $v.email.$dirty && !$v.email.$invalid}"
-                    type="email" class="form-control" id="email" rows="1" placeholder="Email" required="required">
+                    type="email" class="form-control" name="email" id="email" rows="1" placeholder="Email" required="required">
                     <span class="errorMsg" v-if="!$v.email.email">Invalid email format.</span>
                 </div>
             </div>
@@ -25,11 +27,11 @@
                 </div>
                 <div class="col-md-4">
                     <input v-model="firstName" v-on:input="$v.firstName.$touch" v-bind:class="{error: $v.firstName.$error, valid: $v.firstName.$dirty && !$v.firstName.$invalid}"
-                    class="form-control" id="firstName" rows="1" placeholder="First Name">
+                    class="form-control" name="firstName" id="firstName" rows="1" placeholder="First Name">
                 </div>
                 <div class="col-md-4">
                     <input v-model="lastName" v-on:input="$v.lastName.$touch" v-bind:class="{error: $v.lastName.$error, valid: $v.lastName.$dirty && !$v.lastName.$invalid}"
-                    class="form-control" id="lastName" rows="1" placeholder="Last Name">
+                    class="form-control" name="lastName" id="lastName" rows="1" placeholder="Last Name">
                 </div>
             </div>
             <div class="row bordered-row">
@@ -38,10 +40,11 @@
                 </div>
                 <div class="col-md-6">
                     <input v-model="summonerName" v-on:input="$v.summonerName.$touch" v-bind:class="{error: $v.summonerName.$error, valid: $v.summonerName.$dirty && !$v.summonerName.$invalid}"
-                    class="form-control" id="summonerName" rows="1" placeholder="Summoner Name">
+                    class="form-control" name="summonerName" id="summonerName" rows="1" placeholder="Summoner Name">
                 </div>
                 <div class="col-md-2">
-                    <select class="regionSelect" v-on:input="regionSelected = true" :class="{valid: regionSelected}">
+                    <select v-model="region" v-on:input="regionSelected = true" :class="{valid: regionSelected}"
+                    name="region" class="regionSelect">
                         <option value="" disabled selected>Region</option>
                         <option>NA</option>
                     </select>
@@ -54,7 +57,7 @@
                 <div class="col-md-4">
                     <section>
                         <input v-model="password" v-on:input="$v.password.$touch" v-bind:class="{error: $v.password.$error, valid: $v.password.$dirty && !$v.password.$invalid}"
-                        type="password" class="form-control" id="password" rows="1" placeholder="Password">
+                        type="password" class="form-control" name="password" id="password" rows="1" placeholder="Password">
                         <span class="errorMsg" v-if="!$v.password.minLength">Password must be at least 8 characters.</span>
                     </section>
                 </div>
@@ -66,7 +69,7 @@
             </div>
             <div class="row bordered-row">
                 <div class="col-md-12 text-center">
-                    <button type="submit" class="btn btn-lg signUpButton" id="sign-up-submit-button">Submit</button>
+                    <button :disabled="$v.$invalid" type="submit" class="btn btn-lg signUpButton" id="sign-up-submit-button">Submit</button>
                 </div>
             </div>
         </div>
