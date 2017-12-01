@@ -7,6 +7,7 @@ import com.mohiva.play.silhouette.api.{LoginInfo, SignUpEvent, Silhouette}
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
+import com.rxu.loliga.config.AppConfig
 import com.rxu.loliga.dto.SignUpForm
 import com.rxu.loliga.models.{Region, Roles, User}
 import com.rxu.loliga.security.DefaultEnv
