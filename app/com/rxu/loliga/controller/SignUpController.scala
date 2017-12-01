@@ -13,6 +13,7 @@ import com.rxu.loliga.security.DefaultEnv
 import com.rxu.loliga.service.UserService
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Request}
 
 import java.util.UUID
@@ -28,7 +29,9 @@ class SignUpController @Inject()(
   implicit webJarsUtil: WebJarsUtil,
   assets: AssetsFinder,
   ec: ExecutionContext
-) extends AbstractController(components) with LazyLogging {
+) extends AbstractController(components)
+  with LazyLogging
+  with I18nSupport {
 
   def view = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
     Ok(com.rxu.loliga.views.html.signUp.signUp())
@@ -46,7 +49,7 @@ class SignUpController @Inject()(
     SignUpForm.form.bindFromRequest.fold(
       form => {
         logger.debug(s"Received invalid sign-up form: ${form.toString}")
-        Future.successful(Ok(com.rxu.loliga.views.html.signUp.signUp(Some("Internal Server Error"))))
+        Future.successful(Ok(com.rxu.loliga.views.html.signUp.signUp(Some(Messages("signup.failure")))))
       },
       signUpData => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, signUpData.email)

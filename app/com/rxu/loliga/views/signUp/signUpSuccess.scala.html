@@ -1,8 +1,9 @@
+@import play.api.i18n.Messages
 @import org.webjars.play.WebJarsUtil
 
-@()(implicit request: RequestHeader, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+@()(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@com.rxu.loliga.views.html.main("Sign-Up") {
+@com.rxu.loliga.views.html.main(messages("signup.title")) {
     <link rel="stylesheet" href="@assets.path("stylesheets/signUp.css")">
     <h1>You have successfully signed up! You should receive a confirmation email shortly.</h1>
 }

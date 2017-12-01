@@ -1,16 +1,17 @@
+@import play.api.i18n.Messages
 @import play.api.mvc.RequestHeader
 @import org.webjars.play.WebJarsUtil
 @import controllers.AssetsFinder
 @import helper._
 
-@(message: Option[String] = None)(implicit request: RequestHeader, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+@(message: Option[String] = None)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@com.rxu.loliga.views.html.main("Sign-Up") {
+@com.rxu.loliga.views.html.main(messages("signup.title")) {
     <link rel="stylesheet" href="@assets.path("stylesheets/signUp.css")">
     @if(message.nonEmpty) {
         <h1>@message.get</h1>
     }
-    <h1>Registration</h1>
+    <h1>@messages("signup.header")</h1>
     <form id="signUpForm" novalidate action="/signUp" method="POST">
         @CSRF.formField
         <div class="form-group">
@@ -21,7 +22,7 @@
                 <div class="col-md-8">
                     <input v-model="email" v-on:input="$v.email.$touch" v-bind:class="{error: $v.email.$error, valid: $v.email.$dirty && !$v.email.$invalid}"
                     type="email" class="form-control" name="email" id="email" placeholder="Email">
-                    <span class="errorMsg" v-if="!$v.email.email">Invalid email format.</span>
+                    <span class="errorMsg" v-if="!$v.email.email">@messages("signup.invalid.email.message")</span>
                 </div>
             </div>
             <div class="row bordered-row signUpRow">
@@ -61,13 +62,13 @@
                     <section>
                         <input v-model="password" v-on:input="$v.password.$touch" v-bind:class="{error: $v.password.$error, valid: $v.password.$dirty && !$v.password.$invalid}"
                         type="password" class="form-control" name="password" id="password" placeholder="Password">
-                        <span class="errorMsg" v-if="!$v.password.minLength">Password must be at least 8 characters.</span>
+                        <span class="errorMsg" v-if="!$v.password.minLength">@messages("signup.password.minLength.message")</span>
                     </section>
                 </div>
                 <div class="col-md-4">
                     <input v-model="confirmPassword" v-on:input="$v.confirmPassword.$touch" v-bind:class="{error: $v.confirmPassword.$error, valid: $v.confirmPassword.$dirty && !$v.confirmPassword.$invalid}"
                     type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
-                    <span class="errorMsg" v-if="!$v.confirmPassword.sameAsPassword">Passwords must match.</span>
+                    <span class="errorMsg" v-if="!$v.confirmPassword.sameAsPassword">@messages("signup.password.mismatch.message")</span>
                 </div>
             </div>
             <div class="row bordered-row signUpRow">

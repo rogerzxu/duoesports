@@ -1,0 +1,8 @@
+home.title = LoLiga Home
+
+signup.title = Sign-Up
+signup.failure = An error occurred while signing up. Please try again.
+signup.header = Registration
+signup.invalid.email.message = Invalid email format
+signup.password.minLength.message = Password must be at least 8 characters
+signup.password.mismatch.message = Passwords must match

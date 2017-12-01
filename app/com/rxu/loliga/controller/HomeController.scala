@@ -7,6 +7,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import com.rxu.loliga.security.DefaultEnv
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
+import play.api.i18n.I18nSupport
 import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Request}
 
 import scala.concurrent.ExecutionContext
@@ -18,7 +19,9 @@ class HomeController @Inject()(
   implicit webJarsUtil: WebJarsUtil,
   assets: AssetsFinder,
   ec: ExecutionContext
-) extends AbstractController(components) with LazyLogging {
+) extends AbstractController(components)
+  with LazyLogging
+  with I18nSupport {
 
   def view = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
     Ok(com.rxu.loliga.views.html.home())
