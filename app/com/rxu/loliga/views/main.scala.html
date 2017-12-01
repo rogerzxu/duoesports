@@ -38,11 +38,44 @@
                         <li><a>Divisions</a></li>
                         <li><a>Info</a></li>
                     </ul>
-                </div><!--/.nav-collapse -->
+                    <ul class="nav navbar-nav navbar-right">
+                    @if(user.isEmpty) {
+                        <li>
+                            <a href="#" v-on:click="showSignIn" v-on:click.self.prevent>Sign In</a>
+                            <div id="sign-in-menu" class="panel panel-default" :class="{hidden: isHidden}">
+                                <div class="panel-body">
+                                    <form id="signInForm">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <input type="email" class="form-control" name="signInEmail" id="signInEmail" placeholder="Email">
+                                            </div>
+                                            <div class="row">
+                                                <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <button type="submit" class="btn btn-sm signInButton" id="sign-in">
+                                                Sign-In</button>
+                                        </div>
+                                        <div class="col-md-6 btn-group">
+                                            <a href="/signUp" class="btn btn-sm signInButton">Register</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                    </ul>
+                </div>
             </div>
         </nav>
         <div class="container">
             <div class="content">@content</div>
         </div>
+        <script src="@assets.path("javascripts/main.js")"></script>
     </body>
 </html>

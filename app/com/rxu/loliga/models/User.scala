@@ -12,10 +12,11 @@ case class User(
   email: String,
   summonerName: String,
   region: Region.Value,
-  userType: UserTypes.Value
+  role: Roles.Value,
+  activated: Boolean
 ) extends Identity
 
-object UserTypes extends Enumeration {
+object Roles extends Enumeration {
   val Admin = Value("Admin")
   val Organizer = Value("Organizer")
   val Player = Value("Player")

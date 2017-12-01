@@ -3,12 +3,11 @@ body {
 }
 
 .row {
-  padding-top: 15px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 .bordered-row {
-  padding-top: 40px;
-  padding-bottom: 40px;
   border-top: 1px solid darkgray;
 }
 
@@ -20,4 +19,36 @@ body {
 
 textarea {
   resize: none;
+}
+
+.navbar {
+  height: 50px;
+}
+
+.hidden {
+  display: none;
+}
+
+#sign-in-menu {
+  position: absolute;
+  right: 0px;
+  width: 300px;
+  padding: 10px;
+}
+
+.signInButton {
+  background-color: #00b16a;
+  border-radius: 2px;
+  color: white;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  padding: 10px 15px;
+  text-decoration: none;
+  text-transform: uppercase;
+  width: 105px;
+}
+
+.panel-footer {
+  background-color: white;
 }
