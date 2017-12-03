@@ -5,6 +5,7 @@ GET         /assets/*file          controllers.Assets.versioned(file)
 GET         /                      @com.rxu.loliga.controller.HomeController.view
 
 POST        /signIn                @com.rxu.loliga.controller.SignInController.signIn
+GET         /signOut               @com.rxu.loliga.controller.SignInController.signOut
 
 GET         /signUp                @com.rxu.loliga.controller.SignUpController.view
 GET         /signUp/success        @com.rxu.loliga.controller.SignUpController.signUpSuccess

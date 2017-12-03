@@ -11,7 +11,7 @@
         <h1>@message.get</h1>
     }
     <h1>@messages("signup.header")</h1>
-    <form id="signUpForm" novalidate action="/signUp" method="POST">
+    <form id="signUpForm" novalidate action="@com.rxu.loliga.controller.routes.SignUpController.signUp" method="POST">
         @helper.CSRF.formField
         <div class="form-group">
             <div class="row bordered-row signUpRow">

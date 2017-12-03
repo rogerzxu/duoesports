@@ -43,7 +43,7 @@
                         <li>
                             <a href="#" v-on:click="showSignIn" v-on:click.self.prevent>Sign In</a>
                             <div id="sign-in-menu" class="panel panel-default" :class="{hidden: isHidden}">
-                                <form id="signInForm" action="/signIn" method="POST">
+                                <form id="signInForm" action="@com.rxu.loliga.controller.routes.SignInController.signIn" method="POST">
                                     @helper.CSRF.formField
                                     <div class="panel-body">
 
@@ -70,7 +70,7 @@
                                                     Sign-In</button>
                                             </div>
                                             <div class="col-md-6 btn-group">
-                                                <a href="/signUp" class="btn btn-sm signInButton">Register</a>
+                                                <a href="@com.rxu.loliga.controller.routes.SignUpController.view" class="btn btn-sm signInButton">Register</a>
                                             </div>
                                         </div>
                                     </div>
