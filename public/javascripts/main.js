@@ -6,6 +6,9 @@ new Vue({
   methods: {
     showSignIn: function (event) {
       this.isHidden = !this.isHidden
+    },
+    showProfileMenu: function (event) {
+      this.isHidden = !this.isHidden
     }
   }
 });

@@ -75,6 +75,7 @@ class SignUpController @Inject()(
             } yield {
               silhouette.env.eventBus.publish(SignUpEvent(user, request))
               Redirect(routes.SignUpController.signUpSuccess())
+              //TODO: send confirmation email
             }
         }
       }

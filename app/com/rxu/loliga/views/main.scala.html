@@ -46,8 +46,6 @@
                                 <form id="signInForm" action="@com.rxu.loliga.controller.routes.SignInController.signIn" method="POST">
                                     @helper.CSRF.formField
                                     <div class="panel-body">
-
-
                                         <div class="form-group">
                                             <div class="row">
                                                 <input type="email" class="form-control" name="signInEmail" id="signInEmail" placeholder="Email">
@@ -70,7 +68,8 @@
                                                     Sign-In</button>
                                             </div>
                                             <div class="col-md-6 btn-group">
-                                                <a href="@com.rxu.loliga.controller.routes.SignUpController.view" class="btn btn-sm signInButton">Register</a>
+                                                <a href="@com.rxu.loliga.controller.routes.SignUpController.view" class="btn btn-sm signInButton">
+                                                    Register</a>
                                             </div>
                                         </div>
                                     </div>
@@ -78,7 +77,17 @@
                             </div>
                         </li>
                     } else {
-                        <li><a>@user.get.firstName</a></li>
+                        <li>
+                            <a href="#" v-on:click="showProfileMenu" v-on:click.self.prevent>@user.get.summonerName</a>
+                            <div id="profile-menu" class="panel panel-default" :class="{hidden: isHidden}">
+                                <div class="panel-body">
+
+                                </div>
+                                <div class="panel-footer">
+                                    <a href="@com.rxu.loliga.controller.routes.SignInController.signOut">Sign-Out</a>
+                                </div>
+                            </div>
+                        </li>
                     }
                     </ul>
                 </div>

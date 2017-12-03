@@ -31,8 +31,14 @@ textarea {
 
 #sign-in-menu {
     position: absolute;
-    right: 0px;
+    right: 0;
     width: 300px;
+    padding: 10px;
+}
+
+#profile-menu {
+    position: absolute;
+    right: 0;
     padding: 10px;
 }
 
