@@ -1,8 +1,9 @@
 @import play.api.i18n.Messages
 @import org.webjars.play.WebJarsUtil
+@import com.rxu.loliga.models.User
 
-@()(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+@(user: Option[User])(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@com.rxu.loliga.views.html.main(messages("home.title")) {
+@com.rxu.loliga.views.html.main(messages("home.title"), user) {
     <h1>Home</h1>
 }

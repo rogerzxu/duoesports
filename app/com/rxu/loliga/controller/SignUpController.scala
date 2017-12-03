@@ -49,7 +49,7 @@ class SignUpController @Inject()(
   def signUp = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
     SignUpForm.form.bindFromRequest.fold(
       form => {
-        logger.debug(s"Received invalid sign-up form: ${form.toString}")
+        logger.warn(s"Received invalid sign-up form: ${form.toString}")
         Future.successful(Ok(com.rxu.loliga.views.html.signUp.signUp(Some(Messages("signup.failure")))))
       },
       signUpData => {

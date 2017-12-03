@@ -43,31 +43,42 @@
                         <li>
                             <a href="#" v-on:click="showSignIn" v-on:click.self.prevent>Sign In</a>
                             <div id="sign-in-menu" class="panel panel-default" :class="{hidden: isHidden}">
-                                <div class="panel-body">
-                                    <form id="signInForm">
+                                <form id="signInForm" action="/signIn" method="POST">
+                                    @helper.CSRF.formField
+                                    <div class="panel-body">
+
+
                                         <div class="form-group">
                                             <div class="row">
                                                 <input type="email" class="form-control" name="signInEmail" id="signInEmail" placeholder="Email">
                                             </div>
                                             <div class="row">
-                                                <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                                                <input type="password" class="form-control" name="signInPassword" id="signInPassword" placeholder="Password">
+                                            </div>
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" name="rememberMe" id="rememberMe">
+                                                    Remember Me
+                                                </label>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                                <div class="panel-footer">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <button type="submit" class="btn btn-sm signInButton" id="sign-in">
-                                                Sign-In</button>
-                                        </div>
-                                        <div class="col-md-6 btn-group">
-                                            <a href="/signUp" class="btn btn-sm signInButton">Register</a>
+                                    </div>
+                                    <div class="panel-footer">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <button type="submit" class="btn btn-sm signInButton" id="sign-in">
+                                                    Sign-In</button>
+                                            </div>
+                                            <div class="col-md-6 btn-group">
+                                                <a href="/signUp" class="btn btn-sm signInButton">Register</a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </li>
+                    } else {
+                        <li><a>@user.get.firstName</a></li>
                     }
                     </ul>
                 </div>

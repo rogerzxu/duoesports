@@ -52,3 +52,7 @@ textarea {
 .panel-footer {
     background-color: white;
 }
+
+#rememberMe {
+    margin: 15px 10px 0 -5px;
+}

@@ -1,5 +1,9 @@
 home.title = LoLiga Home
 
+signin.not.activated = Account has not been activated. Please check the email you provided during registration for instructions.
+signin.invalid.credentials = Invalid Credentials!
+signin.invalid.form = An unexpected error occurred while signing in
+
 signup.title = Sign-Up
 signup.failure = An error occurred while signing up. Please try again.
 signup.header = Registration

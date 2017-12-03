@@ -4,11 +4,12 @@ import controllers.AssetsFinder
 
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.actions.UserAwareRequest
 import com.rxu.loliga.security.DefaultEnv
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Request}
+import play.api.mvc.{AbstractController, AnyContent, ControllerComponents}
 
 import scala.concurrent.ExecutionContext
 
@@ -23,8 +24,8 @@ class HomeController @Inject()(
   with LazyLogging
   with I18nSupport {
 
-  def view = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
-    Ok(com.rxu.loliga.views.html.home())
+  def view = silhouette.UserAwareAction { implicit request: UserAwareRequest[DefaultEnv, AnyContent] =>
+    Ok(com.rxu.loliga.views.html.home(request.identity))
   }
 
 }
