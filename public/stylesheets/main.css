@@ -40,6 +40,7 @@ textarea {
     position: absolute;
     right: 0;
     padding: 10px;
+    width: 120px;
 }
 
 .signInButton {
@@ -57,6 +58,7 @@ textarea {
 
 .panel-footer {
     background-color: white;
+    text-align: center;
 }
 
 #rememberMe {

@@ -3,13 +3,12 @@ package com.rxu.duoesports.controller
 import controllers.AssetsFinder
 
 import com.google.inject.Inject
-import com.mohiva.play.silhouette.api.{LoginInfo, SignUpEvent, Silhouette}
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
+import com.mohiva.play.silhouette.api.{LoginInfo, SignUpEvent, Silhouette}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
-import com.rxu.duoesports.config.AppConfig
 import com.rxu.duoesports.dto.SignUpForm
-import com.rxu.duoesports.models.{Region, Roles, User}
+import com.rxu.duoesports.models.{Roles, User}
 import com.rxu.duoesports.security.DefaultEnv
 import com.rxu.duoesports.service.UserService
 import com.typesafe.scalalogging.LazyLogging
@@ -64,10 +63,8 @@ class SignUpController @Inject()(
               firstName = signUpData.firstName,
               lastName = signUpData.lastName,
               email = signUpData.email,
-              summonerName = signUpData.summonerName,
-              region = Region.withName(signUpData.region),
               role = Roles.Player,
-              activated = true
+              activated = true //TODO change once confirmation email is implemented
             )
             for {
               _ <- userService.save(user)

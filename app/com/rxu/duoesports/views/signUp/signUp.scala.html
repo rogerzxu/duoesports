@@ -39,22 +39,6 @@
             </div>
             <div class="row bordered-row signUpRow">
                 <div class="col-md-4">
-                    <label>Summoner Name</label>
-                </div>
-                <div class="col-md-6">
-                    <input v-model="summonerName" v-on:input="$v.summonerName.$touch" v-bind:class="{error: $v.summonerName.$error, valid: $v.summonerName.$dirty && !$v.summonerName.$invalid}"
-                    class="form-control" name="summonerName" id="summonerName" placeholder="Summoner Name">
-                </div>
-                <div class="col-md-2">
-                    <select v-model="region" v-on:input="regionSelected = true" :class="{valid: regionSelected}"
-                    name="region" class="regionSelect">
-                        <option value="" disabled selected>Region</option>
-                        <option>NA</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row bordered-row signUpRow">
-                <div class="col-md-4">
                     <label>Password</label>
                 </div>
                 <div class="col-md-4">

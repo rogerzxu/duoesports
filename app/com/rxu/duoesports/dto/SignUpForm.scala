@@ -7,8 +7,6 @@ case class SignUpData(
   email: String,
   firstName: String,
   lastName: String,
-  summonerName: String,
-  region: String,
   password: String
 )
 
@@ -19,8 +17,6 @@ object SignUpForm {
       "email" -> email,
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText,
-      "summonerName" -> nonEmptyText,
-      "region" -> nonEmptyText,
       "password" -> nonEmptyText
     )(SignUpData.apply)(SignUpData.unapply)
   )

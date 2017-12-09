@@ -10,10 +10,11 @@ case class User(
   firstName: String,
   lastName: String,
   email: String,
-  summonerName: String,
-  region: Region.Value,
   role: Roles.Value,
-  activated: Boolean
+  summonerName: Option[String] = None,
+  region: Option[Region.Value] = None,
+  activated: Boolean = false,
+  eligible: Boolean = false
 ) extends Identity
 
 object Roles extends Enumeration {

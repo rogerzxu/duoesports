@@ -7,11 +7,8 @@ new Vue({
     email: '',
     firstName: '',
     lastName: '',
-    summonerName: '',
     password: '',
-    confirmPassword: '',
-    regionSelected: false,
-    region: ''
+    confirmPassword: ''
   },
   validations: {
     firstName: {
@@ -24,9 +21,6 @@ new Vue({
       required,
       email
     },
-    summonerName: {
-      required
-    },
     password: {
       required,
       minLength: minLength(8)
@@ -34,9 +28,6 @@ new Vue({
     confirmPassword: {
       required,
       sameAsPassword: sameAs('password')
-    },
-    region: {
-      required
     }
   }
 });
