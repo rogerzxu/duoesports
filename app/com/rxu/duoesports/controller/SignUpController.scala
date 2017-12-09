@@ -1,4 +1,4 @@
-package com.rxu.loliga.controller
+package com.rxu.duoesports.controller
 
 import controllers.AssetsFinder
 
@@ -7,11 +7,11 @@ import com.mohiva.play.silhouette.api.{LoginInfo, SignUpEvent, Silhouette}
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
-import com.rxu.loliga.config.AppConfig
-import com.rxu.loliga.dto.SignUpForm
-import com.rxu.loliga.models.{Region, Roles, User}
-import com.rxu.loliga.security.DefaultEnv
-import com.rxu.loliga.service.UserService
+import com.rxu.duoesports.config.AppConfig
+import com.rxu.duoesports.dto.SignUpForm
+import com.rxu.duoesports.models.{Region, Roles, User}
+import com.rxu.duoesports.security.DefaultEnv
+import com.rxu.duoesports.service.UserService
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.{I18nSupport, Messages}
@@ -35,22 +35,22 @@ class SignUpController @Inject()(
   with I18nSupport {
 
   def view = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
-    Ok(com.rxu.loliga.views.html.signUp.signUp())
+    Ok(com.rxu.duoesports.views.html.signUp.signUp())
   }
 
   def signUpSuccess = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
-    Ok(com.rxu.loliga.views.html.signUp.signUpSuccess())
+    Ok(com.rxu.duoesports.views.html.signUp.signUpSuccess())
   }
 
   def signUpFailure = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
-    Ok(com.rxu.loliga.views.html.signUp.signUpFailure())
+    Ok(com.rxu.duoesports.views.html.signUp.signUpFailure())
   }
 
   def signUp = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
     SignUpForm.form.bindFromRequest.fold(
       form => {
         logger.warn(s"Received invalid sign-up form: ${form.toString}")
-        Future.successful(Ok(com.rxu.loliga.views.html.signUp.signUp(Some(Messages("signup.failure")))))
+        Future.successful(Ok(com.rxu.duoesports.views.html.signUp.signUp(Some(Messages("signup.failure")))))
       },
       signUpData => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, signUpData.email)

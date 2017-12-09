@@ -1,4 +1,4 @@
-package com.rxu.loliga.security
+package com.rxu.duoesports.security
 
 import com.mohiva.play.silhouette.api.actions.SecuredErrorHandler
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -8,7 +8,7 @@ import play.api.mvc.Results._
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class LoligaSecuredHandler @Inject() (val messagesApi: MessagesApi) extends SecuredErrorHandler with I18nSupport {
+class DuoesportsSecuredHandler @Inject() (val messagesApi: MessagesApi) extends SecuredErrorHandler with I18nSupport {
 
   /**
     * Called when a user is not authenticated.
@@ -19,7 +19,7 @@ class LoligaSecuredHandler @Inject() (val messagesApi: MessagesApi) extends Secu
     * @return The result to send to the client.
     */
   override def onNotAuthenticated(implicit request: RequestHeader) = {
-    Future.successful(Redirect(com.rxu.loliga.controller.routes.HomeController.view()))
+    Future.successful(Redirect(com.rxu.duoesports.controller.routes.HomeController.view()))
   }
 
   /**
@@ -31,6 +31,6 @@ class LoligaSecuredHandler @Inject() (val messagesApi: MessagesApi) extends Secu
     * @return The result to send to the client.
     */
   override def onNotAuthorized(implicit request: RequestHeader) = {
-    Future.successful(Redirect(com.rxu.loliga.controller.routes.HomeController.view()))
+    Future.successful(Redirect(com.rxu.duoesports.controller.routes.HomeController.view()))
   }
 }

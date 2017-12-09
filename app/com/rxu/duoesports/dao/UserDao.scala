@@ -1,8 +1,8 @@
-package com.rxu.loliga.dao
+package com.rxu.duoesports.dao
 
 import com.google.inject.Singleton
 import com.mohiva.play.silhouette.api.LoginInfo
-import com.rxu.loliga.models.User
+import com.rxu.duoesports.models.User
 
 import java.util.UUID
 import scala.collection.mutable

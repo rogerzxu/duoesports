@@ -1,11 +1,11 @@
-package com.rxu.loliga.controller
+package com.rxu.duoesports.controller
 
 import controllers.AssetsFinder
 
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.api.actions.UserAwareRequest
-import com.rxu.loliga.security.DefaultEnv
+import com.rxu.duoesports.security.DefaultEnv
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.I18nSupport
@@ -25,7 +25,7 @@ class HomeController @Inject()(
   with I18nSupport {
 
   def view = silhouette.UserAwareAction { implicit request: UserAwareRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.loliga.views.html.home(request.identity))
+    Ok(com.rxu.duoesports.views.html.home(request.identity))
   }
 
 }

@@ -1,4 +1,4 @@
-package com.rxu.loliga.dto
+package com.rxu.duoesports.dto
 
 import play.api.data.Form
 import play.api.data.Forms._

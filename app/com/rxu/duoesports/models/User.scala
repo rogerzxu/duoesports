@@ -1,4 +1,4 @@
-package com.rxu.loliga.models
+package com.rxu.duoesports.models
 
 import com.mohiva.play.silhouette.api.{Identity, LoginInfo}
 

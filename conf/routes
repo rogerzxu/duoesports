@@ -2,12 +2,12 @@
 GET         /assets/*file          controllers.Assets.versioned(file)
 ->          /webjars               webjars.Routes
 
-GET         /                      @com.rxu.loliga.controller.HomeController.view
+GET         /                      @com.rxu.duoesports.controller.HomeController.view
 
-POST        /signIn                @com.rxu.loliga.controller.SignInController.signIn
-GET         /signOut               @com.rxu.loliga.controller.SignInController.signOut
+POST        /signIn                @com.rxu.duoesports.controller.SignInController.signIn
+GET         /signOut               @com.rxu.duoesports.controller.SignInController.signOut
 
-GET         /signUp                @com.rxu.loliga.controller.SignUpController.view
-GET         /signUp/success        @com.rxu.loliga.controller.SignUpController.signUpSuccess
-GET         /signUp/failure        @com.rxu.loliga.controller.SignUpController.signUpFailure
-POST        /signUp                @com.rxu.loliga.controller.SignUpController.signUp
+GET         /signUp                @com.rxu.duoesports.controller.SignUpController.view
+GET         /signUp/success        @com.rxu.duoesports.controller.SignUpController.signUpSuccess
+GET         /signUp/failure        @com.rxu.duoesports.controller.SignUpController.signUpFailure
+POST        /signUp                @com.rxu.duoesports.controller.SignUpController.signUp

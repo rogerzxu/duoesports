@@ -1,10 +1,10 @@
-package com.rxu.loliga.service
+package com.rxu.duoesports.service
 
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.services.IdentityService
-import com.rxu.loliga.dao.UserDao
-import com.rxu.loliga.models.User
+import com.rxu.duoesports.dao.UserDao
+import com.rxu.duoesports.models.User
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.{ExecutionContext, Future}

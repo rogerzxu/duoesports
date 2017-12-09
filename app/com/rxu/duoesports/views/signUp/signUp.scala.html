@@ -5,13 +5,13 @@
 
 @(message: Option[String] = None)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@com.rxu.loliga.views.html.main(messages("signup.title")) {
+@com.rxu.duoesports.views.html.main(messages("signup.title")) {
     <link rel="stylesheet" href="@assets.path("stylesheets/signUp.css")">
     @if(message.nonEmpty) {
         <h1>@message.get</h1>
     }
     <h1>@messages("signup.header")</h1>
-    <form id="signUpForm" novalidate action="@com.rxu.loliga.controller.routes.SignUpController.signUp" method="POST">
+    <form id="signUpForm" novalidate action="@com.rxu.duoesports.controller.routes.SignUpController.signUp" method="POST">
         @helper.CSRF.formField
         <div class="form-group">
             <div class="row bordered-row signUpRow">

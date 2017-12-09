@@ -1,4 +1,4 @@
-package com.rxu.loliga.module
+package com.rxu.duoesports.module
 
 import com.google.inject.name.Named
 import com.google.inject.{AbstractModule, Provides}
@@ -15,8 +15,8 @@ import com.mohiva.play.silhouette.impl.util.{DefaultFingerprintGenerator, Secure
 import com.mohiva.play.silhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
 import com.mohiva.play.silhouette.persistence.daos.{DelegableAuthInfoDAO, InMemoryAuthInfoDAO}
 import com.mohiva.play.silhouette.persistence.repositories.DelegableAuthInfoRepository
-import com.rxu.loliga.security.{DefaultEnv, LoligaSecuredHandler, LoligaUnsecuredHandler}
-import com.rxu.loliga.service.UserService
+import com.rxu.duoesports.security.{DefaultEnv, DuoesportsSecuredHandler, DuoesportsUnsecuredHandler}
+import com.rxu.duoesports.service.UserService
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
 import net.codingwell.scalaguice.ScalaModule
@@ -29,8 +29,8 @@ class SecurityModule extends AbstractModule with ScalaModule {
 
   override def configure(): Unit = {
     bind[Silhouette[DefaultEnv]].to[SilhouetteProvider[DefaultEnv]]
-    bind[UnsecuredErrorHandler].to[LoligaUnsecuredHandler]
-    bind[SecuredErrorHandler].to[LoligaSecuredHandler]
+    bind[UnsecuredErrorHandler].to[DuoesportsUnsecuredHandler]
+    bind[SecuredErrorHandler].to[DuoesportsSecuredHandler]
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
     bind[EventBus].toInstance(EventBus())

@@ -1,4 +1,4 @@
-package com.rxu.loliga.security
+package com.rxu.duoesports.security
 
 import com.mohiva.play.silhouette.api.actions.UnsecuredErrorHandler
 import play.api.mvc.RequestHeader
@@ -6,7 +6,7 @@ import play.api.mvc.Results._
 
 import scala.concurrent.Future
 
-class LoligaUnsecuredHandler extends UnsecuredErrorHandler {
+class DuoesportsUnsecuredHandler extends UnsecuredErrorHandler {
 
   /**
     * Called when a user is authenticated but not authorized.
@@ -17,6 +17,6 @@ class LoligaUnsecuredHandler extends UnsecuredErrorHandler {
     * @return The result to send to the client.
     */
   override def onNotAuthorized(implicit request: RequestHeader) = {
-    Future.successful(Redirect(com.rxu.loliga.controller.routes.HomeController.view()))
+    Future.successful(Redirect(com.rxu.duoesports.controller.routes.HomeController.view()))
   }
 }

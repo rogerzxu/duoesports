@@ -1,4 +1,4 @@
-package com.rxu.loliga.config
+package com.rxu.duoesports.config
 
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging

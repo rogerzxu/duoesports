@@ -3,7 +3,7 @@
 @import org.webjars.play.WebJarsUtil
 @import controllers.AssetsFinder
 
-@(title: String, user: Option[com.rxu.loliga.models.User] = None)(content: Html)(implicit request: RequestHeader, assets: AssetsFinder, webJarsUtil: WebJarsUtil)
+@(title: String, user: Option[com.rxu.duoesports.models.User] = None)(content: Html)(implicit request: RequestHeader, assets: AssetsFinder, webJarsUtil: WebJarsUtil)
 
 <!DOCTYPE html>
 
@@ -29,7 +29,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/">LoLiga</a>
+                    <a class="navbar-brand" href="/">Duo E-Sports</a>
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
@@ -43,7 +43,7 @@
                         <li>
                             <a href="#" v-on:click="showSignIn" v-on:click.self.prevent>Sign In</a>
                             <div id="sign-in-menu" class="panel panel-default" :class="{hidden: isHidden}">
-                                <form id="signInForm" action="@com.rxu.loliga.controller.routes.SignInController.signIn" method="POST">
+                                <form id="signInForm" action="@com.rxu.duoesports.controller.routes.SignInController.signIn" method="POST">
                                     @helper.CSRF.formField
                                     <div class="panel-body">
                                         <div class="form-group">
@@ -68,7 +68,7 @@
                                                     Sign-In</button>
                                             </div>
                                             <div class="col-md-6 btn-group">
-                                                <a href="@com.rxu.loliga.controller.routes.SignUpController.view" class="btn btn-sm signInButton">
+                                                <a href="@com.rxu.duoesports.controller.routes.SignUpController.view" class="btn btn-sm signInButton">
                                                     Register</a>
                                             </div>
                                         </div>
@@ -84,7 +84,7 @@
 
                                 </div>
                                 <div class="panel-footer">
-                                    <a href="@com.rxu.loliga.controller.routes.SignInController.signOut">Sign-Out</a>
+                                    <a href="@com.rxu.duoesports.controller.routes.SignInController.signOut">Sign-Out</a>
                                 </div>
                             </div>
                         </li>

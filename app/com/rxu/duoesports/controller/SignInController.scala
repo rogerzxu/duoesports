@@ -1,4 +1,4 @@
-package com.rxu.loliga.controller
+package com.rxu.duoesports.controller
 
 import controllers.{AssetsFinder, routes}
 
@@ -10,11 +10,11 @@ import com.mohiva.play.silhouette.api.util.{Clock, Credentials}
 import com.mohiva.play.silhouette.api.{LoginEvent, LogoutEvent, Silhouette}
 import com.mohiva.play.silhouette.impl.exceptions.{AccessDeniedException, IdentityNotFoundException}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
-import com.rxu.loliga.config.AppConfig
-import com.rxu.loliga.dto.SignInForm
-import com.rxu.loliga.models.User
-import com.rxu.loliga.security.DefaultEnv
-import com.rxu.loliga.service.UserService
+import com.rxu.duoesports.config.AppConfig
+import com.rxu.duoesports.dto.SignInForm
+import com.rxu.duoesports.models.User
+import com.rxu.duoesports.security.DefaultEnv
+import com.rxu.duoesports.service.UserService
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.{I18nSupport, Messages}
