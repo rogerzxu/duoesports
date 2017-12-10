@@ -7,6 +7,9 @@ scalaVersion := "2.12.4"
 resolvers += Resolver.jcenterRepo
 
 libraryDependencies ++= Seq(
+  jdbc,
+  /*evolutions,*/
+  "org.mariadb.jdbc" % "mariadb-java-client" % "2.2.0",
   "net.codingwell" %% "scala-guice" % "4.1.0",
   guice,
   "com.mohiva" %% "play-silhouette" % "5.0.0",

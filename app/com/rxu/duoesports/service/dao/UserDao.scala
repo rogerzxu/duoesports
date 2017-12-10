@@ -1,4 +1,4 @@
-package com.rxu.duoesports.dao
+package com.rxu.duoesports.service.dao
 
 import com.google.inject.Singleton
 import com.mohiva.play.silhouette.api.LoginInfo
@@ -19,7 +19,7 @@ class UserDao {
     * @return The found user or None if no user for the given login info could be found.
     */
   def find(loginInfo: LoginInfo) = Future.successful(
-    users.find { case (_, user) => user.loginInfo == loginInfo }.map(_._2)
+    users.find { case (_, user) => user.email == loginInfo.providerKey }.map(_._2)
   )
 
   /**

@@ -13,11 +13,16 @@ class AppConfig extends LazyLogging {
   val authIdleTimeout = c.getAs[FiniteDuration]("silhouette.authenticator.rememberMe.authenticatorIdleTimeout")
   val authCookieMaxAge = c.getAs[FiniteDuration]("silhouette.authenticator.rememberMe.cookieMaxAge")
 
+  val jdbcMaxThreads = c.getInt("jdbc.maxThreads")
+  val mariaDbUrl = c.getString("db.default.url")
+
   logConfig()
 
   def logConfig() = {
     logger.info(s"Authentication TTL: $authTtl")
     logger.info(s"Authentication Idle Timeout: $authIdleTimeout")
     logger.info(s"Authentication Cookie Max Age: $authCookieMaxAge")
+    logger.info(s"JDBC Max Threads: $jdbcMaxThreads")
+    logger.info(s"MariaDB URL: $mariaDbUrl")
   }
 }
