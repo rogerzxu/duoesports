@@ -1,6 +1,6 @@
 package com.rxu.duoesports.controller
 
-import controllers.{AssetsFinder, routes}
+import controllers.AssetsFinder
 
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.Authenticator.Implicits._

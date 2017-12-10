@@ -36,7 +36,6 @@ class SecurityModule extends AbstractModule with ScalaModule {
     bind[EventBus].toInstance(EventBus())
     bind[Clock].toInstance(Clock())
 
-    //TODO: Replace with MySQL
     bind[DelegableAuthInfoDAO[PasswordInfo]].toInstance(new PasswordDao())
   }
 

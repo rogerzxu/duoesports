@@ -1,4 +1,4 @@
-name := "loliga"
+name := "duoesports"
 
 version := "1.0"
 
@@ -8,7 +8,7 @@ resolvers += Resolver.jcenterRepo
 
 libraryDependencies ++= Seq(
   jdbc,
-  /*evolutions,*/
+  evolutions,
   "org.mariadb.jdbc" % "mariadb-java-client" % "2.2.0",
   "net.codingwell" %% "scala-guice" % "4.1.0",
   guice,

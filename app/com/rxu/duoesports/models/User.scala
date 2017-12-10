@@ -2,18 +2,16 @@ package com.rxu.duoesports.models
 
 import com.mohiva.play.silhouette.api.Identity
 
-import java.util.UUID
-
 case class User(
-  userId: UUID,
-  firstName: String,
-  lastName: String,
+  id: Option[Long],
   email: String,
   password: String,
+  firstName: String,
+  lastName: String,
   role: Roles.Value,
   summonerName: Option[String] = None,
   region: Option[Region.Value] = None,
-  teamId: Option[UUID] = None,
+  team_id: Option[Long] = None,
   activated: Boolean = false,
   eligible: Boolean = false
 ) extends Identity

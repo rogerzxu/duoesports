@@ -16,7 +16,6 @@ import org.webjars.play.WebJarsUtil
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Request}
 
-import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class SignUpController @Inject()(
@@ -58,11 +57,11 @@ class SignUpController @Inject()(
           case None =>
             val authInfo = passwordHasherRegistry.current.hash(signUpData.password)
             val user = User(
-              userId = UUID.randomUUID(),
-              firstName = signUpData.firstName,
-              lastName = signUpData.lastName,
+              id = None,
               email = signUpData.email,
               password = authInfo.password,
+              firstName = signUpData.firstName,
+              lastName = signUpData.lastName,
               role = Roles.Player,
               activated = true //TODO change once confirmation email is implemented
             )
