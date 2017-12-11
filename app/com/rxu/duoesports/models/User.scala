@@ -19,7 +19,7 @@ case class User(
 
 object Roles extends Enumeration {
   val Admin = Value("Admin")
-  val Organizer = Value("Organizer")
+  val Staff = Value("Staff")
   val Player = Value("Player")
 }
 
@@ -28,7 +28,7 @@ object User {
     val MetaDataItem(qualified, nullable, clazz) = meta
     value match {
       case "Admin" => Right(Roles.Admin)
-      case "Organizer" => Right(Roles.Organizer)
+      case "Staff" => Right(Roles.Staff)
       case "Player" => Right(Roles.Player)
       case _ => Left(TypeDoesNotMatch(s"Unknown Role $value"))
     }
