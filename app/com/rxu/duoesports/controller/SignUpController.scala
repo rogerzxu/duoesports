@@ -58,7 +58,7 @@ class SignUpController @Inject()(
             val authInfo = passwordHasherRegistry.current.hash(signUpData.password)
             val user = User(
               id = None,
-              email = signUpData.email,
+              email = signUpData.email.toLowerCase,
               password = authInfo.password,
               firstName = signUpData.firstName.capitalize,
               lastName = signUpData.lastName.capitalize,
