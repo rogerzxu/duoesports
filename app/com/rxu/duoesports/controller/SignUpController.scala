@@ -60,8 +60,8 @@ class SignUpController @Inject()(
               id = None,
               email = signUpData.email,
               password = authInfo.password,
-              firstName = signUpData.firstName,
-              lastName = signUpData.lastName,
+              firstName = signUpData.firstName.capitalize,
+              lastName = signUpData.lastName.capitalize,
               role = Roles.Player,
               activated = true //TODO change once confirmation email is implemented
             )
