@@ -8,6 +8,7 @@ import com.mohiva.play.silhouette.api.util.PasswordInfo
 import com.mohiva.play.silhouette.password.BCryptSha256PasswordHasher
 import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
 import com.rxu.duoesports.util.SavePasswordException
+import com.typesafe.scalalogging.LazyLogging
 import play.api.db.Database
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -16,7 +17,7 @@ class PasswordDao @Inject()(
   db: Database
 )(
   @Named("jdbcEC") implicit val executionContext: ExecutionContext
-) extends DelegableAuthInfoDAO[PasswordInfo] {
+) extends DelegableAuthInfoDAO[PasswordInfo] with LazyLogging {
 
   override def find(loginInfo: LoginInfo): Future[Option[PasswordInfo]] = Future {
     db.withConnection { implicit c =>
@@ -63,7 +64,7 @@ class PasswordDao @Inject()(
   }
 
   override def remove(loginInfo: LoginInfo): Future[Unit] = {
-    //TODO: implement
+    logger.warn(s"Cannot delete password for ${loginInfo.providerKey} without deleting account")
     Future.successful(())
   }
 }
