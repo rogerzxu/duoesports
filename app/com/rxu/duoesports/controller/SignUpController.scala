@@ -58,13 +58,13 @@ class SignUpController @Inject()(
             val authInfo = passwordHasherRegistry.current.hash(signUpData.password)
             val user = User(
               id = None,
-              email = signUpData.email.toLowerCase,
+              email = signUpData.email,
               password = authInfo.password,
-              firstName = signUpData.firstName.capitalize,
-              lastName = signUpData.lastName.capitalize,
+              firstName = signUpData.firstName,
+              lastName = signUpData.lastName,
               role = Roles.Player,
               activated = true //TODO change once confirmation email is implemented
-            )
+            ).normalize
             for {
               _ <- userService.save(user)
               _ <- authInfoRepository.add(loginInfo, authInfo)

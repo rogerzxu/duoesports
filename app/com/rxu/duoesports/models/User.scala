@@ -15,7 +15,14 @@ case class User(
   team_id: Option[Long] = None,
   activated: Boolean = false,
   eligible: Boolean = false
-) extends Identity
+) extends Identity {
+
+  def normalize: User = this.copy(
+    email = email.trim.toLowerCase,
+    firstName = firstName.trim.capitalize,
+    lastName = lastName.trim.capitalize
+  )
+}
 
 object Roles extends Enumeration {
   val Admin = Value("Admin")
