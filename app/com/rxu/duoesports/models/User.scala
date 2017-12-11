@@ -1,5 +1,6 @@
 package com.rxu.duoesports.models
 
+import anorm.{Column, Macro, MetaDataItem, RowParser, TypeDoesNotMatch}
 import com.mohiva.play.silhouette.api.Identity
 
 case class User(
@@ -20,4 +21,25 @@ object Roles extends Enumeration {
   val Admin = Value("Admin")
   val Organizer = Value("Organizer")
   val Player = Value("Player")
+}
+
+object User {
+  implicit val roleColumn: Column[Roles.Value] = Column.nonNull { (value, meta) =>
+    val MetaDataItem(qualified, nullable, clazz) = meta
+    value match {
+      case "Admin" => Right(Roles.Admin)
+      case "Organizer" => Right(Roles.Organizer)
+      case "Player" => Right(Roles.Player)
+      case _ => Left(TypeDoesNotMatch(s"Unknown Role $value"))
+    }
+  }
+  implicit val regionColumn: Column[Region.Value] = Column.nonNull { (value, meta) =>
+    val MetaDataItem(qualified, nullable, clazz) = meta
+    value match {
+      case "NA" => Right(Region.NA)
+      case _ => Left(TypeDoesNotMatch(s"Unknown Region $value"))
+    }
+  }
+  implicit val regionOptColumn = Column.columnToOption[Region.Value]
+  val parser: RowParser[User] = Macro.namedParser[User]
 }

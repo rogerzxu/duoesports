@@ -16,25 +16,13 @@ class UserService @Inject()(
 ) extends IdentityService[User]
   with LazyLogging {
 
-  /**
-    * Retrieves a user that matches the specified login info.
-    *
-    * @param loginInfo The login info to retrieve a user.
-    * @return The retrieved user or None if no user could be retrieved for the given login info.
-    */
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
     logger.debug(s"Retrieving user: $loginInfo")
-    userDao.find(loginInfo)
+    userDao.find(email = loginInfo.providerKey)
   }
 
-  /**
-    * Saves a user.
-    *
-    * @param user The user to save.
-    * @return The saved user.
-    */
-  def save(user: User) = {
-    logger.info(s"Creating user: $user")
+  def save(user: User): Future[Unit] = {
+    logger.debug(s"Saving user: $user")
     userDao.save(user)
   }
 

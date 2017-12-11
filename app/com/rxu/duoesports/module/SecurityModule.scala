@@ -12,7 +12,6 @@ import com.mohiva.play.silhouette.crypto.{JcaCrypter, JcaCrypterSettings, JcaSig
 import com.mohiva.play.silhouette.impl.authenticators.{CookieAuthenticator, CookieAuthenticatorService, CookieAuthenticatorSettings}
 import com.mohiva.play.silhouette.impl.util.{DefaultFingerprintGenerator, SecureRandomIDGenerator}
 import com.mohiva.play.silhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
-import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.persistence.repositories.DelegableAuthInfoRepository
 import com.rxu.duoesports.security.{DefaultEnv, DuoesportsSecuredHandler, DuoesportsUnsecuredHandler}
 import com.rxu.duoesports.service.UserService
@@ -35,8 +34,6 @@ class SecurityModule extends AbstractModule with ScalaModule {
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
     bind[EventBus].toInstance(EventBus())
     bind[Clock].toInstance(Clock())
-
-    bind[DelegableAuthInfoDAO[PasswordInfo]].toInstance(new PasswordDao())
   }
 
   @Provides
@@ -90,7 +87,7 @@ class SecurityModule extends AbstractModule with ScalaModule {
 
   @Provides
   def provideAuthInfoRepository(
-    passwordInfoDAO: DelegableAuthInfoDAO[PasswordInfo]): AuthInfoRepository = {
+    passwordInfoDAO: PasswordDao): AuthInfoRepository = {
 
     new DelegableAuthInfoRepository(passwordInfoDAO)
   }
