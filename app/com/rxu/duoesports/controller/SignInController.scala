@@ -58,7 +58,7 @@ class SignInController @Inject()(
             )
           } else auth
           authValue <- silhouette.env.authenticatorService.init(authenticator)
-          result <- silhouette.env.authenticatorService.embed(authValue, Redirect(routes.HomeController.view()))
+          result <- silhouette.env.authenticatorService.embed(authValue, Ok(Messages("signin.success")))
         } yield {
           silhouette.env.eventBus.publish(LoginEvent(user, request))
           logger.info(s"User ${user.email} successfully logged in")
@@ -68,7 +68,7 @@ class SignInController @Inject()(
             logger.info(s"User ${signInData.email} failed to login", ex)
             Unauthorized(Messages("signin.not.activated"))
           case ex: ProviderException =>
-            logger.info(s"User ${signInData.email} failed to login", ex)
+            logger.info(s"User ${signInData.email} failed to login: ${ex.getMessage}")
             Unauthorized(Messages("signin.invalid.credentials"))
         }
       }

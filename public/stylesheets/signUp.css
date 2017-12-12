@@ -40,12 +40,6 @@ h1 {
     outline-color: #8E8;
 }
 
-.errorMsg {
-    font-family: Lato,Helvetica,sans-serif;
-    font-size: 12px;
-    color: #F99;
-}
-
 .regionSelect {
     width: 100px;
     height: 32px;

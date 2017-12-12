@@ -29,6 +29,12 @@ textarea {
     display: none;
 }
 
+.errorMsg {
+    font-family: Lato, Helvetica, sans-serif;
+    font-size: 12px;
+    color: #F99;
+}
+
 #sign-in-menu {
     position: absolute;
     right: 0;

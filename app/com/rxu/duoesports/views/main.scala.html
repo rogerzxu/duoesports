@@ -1,9 +1,10 @@
+@import play.api.i18n.Messages
 @import play.api.mvc.RequestHeader
 @import play.twirl.api.Html
 @import org.webjars.play.WebJarsUtil
 @import controllers.AssetsFinder
 
-@(title: String, user: Option[com.rxu.duoesports.models.User] = None)(content: Html)(implicit request: RequestHeader, assets: AssetsFinder, webJarsUtil: WebJarsUtil)
+@(title: String, user: Option[com.rxu.duoesports.models.User] = None)(content: Html)(implicit request: RequestHeader, messages: Messages, assets: AssetsFinder, webJarsUtil: WebJarsUtil)
 
 <!DOCTYPE html>
 
@@ -15,6 +16,7 @@
         @Html(webJarsUtil.script("jquery.js"))
         @Html(webJarsUtil.script("bootstrap.min.js"))
         @Html(webJarsUtil.script("vue.js"))
+        @Html(webJarsUtil.script("vue-resource.js"))
         @Html(webJarsUtil.script("vuelidate.min.js"))
         @Html(webJarsUtil.script("validators.min.js"))
         <link rel="stylesheet" href="@assets.path("stylesheets/main.css")">
@@ -43,16 +45,19 @@
                         <li>
                             <a href="#" v-on:click="showSignIn" v-on:click.self.prevent>Sign In</a>
                             <div id="sign-in-menu" class="panel panel-default" :class="{hidden: isHidden}">
-                                <form id="signInForm" action="@com.rxu.duoesports.controller.routes.SignInController.signIn" method="POST">
+                                <form id="signInForm" v-on:submit="signIn" novalidate action="@com.rxu.duoesports.controller.routes.SignInController.signIn" method="POST">
                                     @helper.CSRF.formField
                                     <div class="panel-body">
                                         <div class="form-group">
                                             <div class="row">
-                                                <input type="email" class="form-control" name="signInEmail" id="signInEmail" placeholder="Email">
+                                                <input v-model="signInEmail" v-on:input="$v.signInEmail.$touch" v-bind:class="{error: $v.signInEmail.$error, valid: $v.signInEmail.$dirty && !$v.signInEmail.$invalid}"
+                                                type="email" autocomplete="username email" class="form-control" name="signInEmail" id="signInEmail" placeholder="Email">
                                             </div>
                                             <div class="row">
-                                                <input type="password" class="form-control" name="signInPassword" id="signInPassword" placeholder="Password">
+                                                <input v-model="signInPassword" v-on:input="$v.signInPassword.$touch" v-bind:class="{error: $v.signInPassword.$error, valid: $v.signInPassword.$dirty && !$v.signInPassword.$invalid}"
+                                                type="password" autocomplete="current-password" class="form-control" name="signInPassword" id="signInPassword" placeholder="Password">
                                             </div>
+                                            <span class="errorMsg" :class="{hidden: signInSuccess}">@messages("signin.error")</span>
                                             <div class="form-check">
                                                 <label class="form-check-label">
                                                     <input type="checkbox" class="form-check-input" name="rememberMe" id="rememberMe">
@@ -64,8 +69,7 @@
                                     <div class="panel-footer">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <button type="submit" class="btn btn-sm signInButton" id="sign-in">
-                                                    Sign-In</button>
+                                                <button :disabled="$v.$invalid" type="submit" class="btn btn-sm signInButton" id="sign-in">Sign-In</button>
                                             </div>
                                             <div class="col-md-6 btn-group">
                                                 <a href="@com.rxu.duoesports.controller.routes.SignUpController.view" class="btn btn-sm signInButton">

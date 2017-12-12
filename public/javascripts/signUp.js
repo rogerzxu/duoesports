@@ -1,5 +1,5 @@
 Vue.use(window.vuelidate.default);
-const { required, email, sameAs, minLength, or } = window.validators;
+var { required, email, sameAs, minLength } = window.validators;
 
 new Vue({
   el: "#signUpForm",
