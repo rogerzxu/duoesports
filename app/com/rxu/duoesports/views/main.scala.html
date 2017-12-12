@@ -57,7 +57,7 @@
                                                 <input v-model="signInPassword" v-on:input="$v.signInPassword.$touch" v-bind:class="{error: $v.signInPassword.$error, valid: $v.signInPassword.$dirty && !$v.signInPassword.$invalid}"
                                                 type="password" autocomplete="current-password" class="form-control" name="signInPassword" id="signInPassword" placeholder="Password">
                                             </div>
-                                            <span class="errorMsg" :class="{hidden: signInSuccess}">@messages("signin.error")</span>
+                                            <span class="errorMsg" :class="{hidden: signInSuccess}">{{ signInErrorMsg }}</span>
                                             <div class="form-check">
                                                 <label class="form-check-label">
                                                     <input type="checkbox" class="form-check-input" name="rememberMe" id="rememberMe">

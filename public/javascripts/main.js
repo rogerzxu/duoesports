@@ -7,6 +7,7 @@ new Vue({
   data: {
     isHidden: true,
     signInSuccess: true,
+    signInErrorMsg: '',
     signInEmail: '',
     signInPassword: ''
   },
@@ -33,7 +34,7 @@ new Vue({
     },
 
     errorCallBack: function (response) {
-      console.log(this.signInError);
+      this.signInErrorMsg = response.data;
       this.signInSuccess = false;
     }
   },

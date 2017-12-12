@@ -1,10 +1,9 @@
 home.title = Duo E-Sports Home
 
-signin.error = Invalid Credentials!
 signin.not.activated = Account has not been activated. Please check the email you provided during registration for instructions.
 signin.invalid.credentials = Invalid Credentials!
 signin.invalid.form = An unexpected error occurred while signing in
-sighin.success = Successfully signed in!
+signin.success = Successfully signed in!
 
 signup.title = Sign-Up
 signup.failure = An error occurred while signing up. Please try again.
