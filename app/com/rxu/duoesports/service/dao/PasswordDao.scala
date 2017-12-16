@@ -55,7 +55,11 @@ class PasswordDao @Inject()(
       ).on('email -> loginInfo.providerKey).as(SqlParser.str("password").singleOpt)
       maybePass match {
         case Some(_) =>
-          SQL(s"UPDATE User SET password = {password}").on('password -> authInfo.password).executeUpdate()
+          SQL(s"UPDATE User SET password = {password} WHERE email ={email}")
+            .on(
+              'password -> authInfo.password,
+              'email -> loginInfo.providerKey
+            ).executeUpdate()
           authInfo
         case None =>
           throw SavePasswordException("Cannot save password for non-existing User")
