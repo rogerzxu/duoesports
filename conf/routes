@@ -10,5 +10,3 @@ GET         /signOut                                @com.rxu.duoesports.controll
 GET         /signUp                                 @com.rxu.duoesports.controller.SignUpController.view
 POST        /signUp                                 @com.rxu.duoesports.controller.SignUpController.signUp
 GET         /signUp/success                         @com.rxu.duoesports.controller.SignUpController.signUpSuccess
-
-GET         /api/v1/users/checkUnique/:email        @com.rxu.duoesports.controller.UserController.isUnique(email: String)

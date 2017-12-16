@@ -8,7 +8,7 @@ import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
 import com.mohiva.play.silhouette.api.{LoginInfo, SignUpEvent, Silhouette}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.rxu.duoesports.dto.SignUpForm
-import com.rxu.duoesports.models.{Roles, User}
+import com.rxu.duoesports.models.{UserRole, User}
 import com.rxu.duoesports.security.DefaultEnv
 import com.rxu.duoesports.service.UserService
 import com.typesafe.scalalogging.LazyLogging
@@ -58,7 +58,7 @@ class SignUpController @Inject()(
               password = authInfo.password,
               firstName = signUpData.firstName,
               lastName = signUpData.lastName,
-              role = Roles.Player,
+              user_role = UserRole.Player,
               activated = true //TODO change once confirmation email is implemented
             ).normalize
             for {

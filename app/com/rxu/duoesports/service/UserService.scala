@@ -7,6 +7,7 @@ import com.rxu.duoesports.service.dao.UserDao
 import com.rxu.duoesports.models.User
 import com.typesafe.scalalogging.LazyLogging
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserService @Inject()(
@@ -15,6 +16,11 @@ class UserService @Inject()(
   implicit ec: ExecutionContext
 ) extends IdentityService[User]
   with LazyLogging {
+
+  def getVerificationCode(email: String): Future[String] = {
+    val verificationCode = UUID.randomUUID.toString
+    userDao.addVerificationCode(email, verificationCode) map (_ => verificationCode)
+  }
 
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
     logger.debug(s"Retrieving user: $loginInfo")

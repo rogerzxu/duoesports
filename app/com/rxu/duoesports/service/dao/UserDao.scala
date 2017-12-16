@@ -16,6 +16,19 @@ class UserDao @Inject()(
   @Named("jdbcEC") implicit val executionContext: ExecutionContext
 ) extends LazyLogging {
 
+  def addVerificationCode(email: String, code: String): Future[Unit] = Future {
+    db.withConnection { implicit c =>
+      val result = SQL(
+        s"""
+           UPDATE User SET verification_code = {verification_code} where email = {email}
+         """
+      ).on(
+        'verification_code -> code,
+        'email -> email
+      ).executeUpdate()
+    }
+  }
+
   def find(email: String): Future[Option[User]] = Future {
     db.withConnection { implicit c =>
       SQL(
@@ -31,14 +44,14 @@ class UserDao @Inject()(
     db.withTransaction { implicit c =>
       val result = SQL(
         s"""
-           INSERT INTO User (email, password, firstName, lastName, role, summonerName, region, team_id, activated, eligible)
-           VALUES({email}, {password}, {firstName}, {lastName}, {role}, {summonerName}, {region}, {team_id}, {activated}, {eligible})
+           INSERT INTO User (email, password, firstName, lastName, user_role, summonerName, region, team_id, activated, eligible)
+           VALUES({email}, {password}, {firstName}, {lastName}, {user_role}, {summonerName}, {region}, {team_id}, {activated}, {eligible})
            ON DUPLICATE KEY UPDATE
              email = {email},
              password = {password},
              firstName = {firstName},
              lastName = {lastName},
-             role = {role},
+             user_role = {user_role},
              summonerName = {summonerName},
              region = {region},
              team_id = {team_id},
@@ -50,7 +63,7 @@ class UserDao @Inject()(
         'password -> user.password,
         'firstName -> user.firstName,
         'lastName -> user.lastName,
-        'role -> user.role.toString,
+        'user_role -> user.user_role.toString,
         'summonerName -> user.summonerName.orNull,
         'region -> user.region.map(_.toString).orNull,
         'team_id -> user.team_id.map(_.toString).orNull,
