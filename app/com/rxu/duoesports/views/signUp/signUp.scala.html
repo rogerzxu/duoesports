@@ -7,12 +7,10 @@
 
 @com.rxu.duoesports.views.html.main(messages("signup.title")) {
     <link rel="stylesheet" href="@assets.path("stylesheets/signUp.css")">
-    @if(message.nonEmpty) {
-        <h1>@message.get</h1>
-    }
     <h1>@messages("signup.header")</h1>
-    <form id="signUpForm" novalidate action="@com.rxu.duoesports.controller.routes.SignUpController.signUp" method="POST">
+    <form id="signUpForm" v-on:submit="checkEmailUnique" novalidate action="@com.rxu.duoesports.controller.routes.SignUpController.signUp" method="POST">
         @helper.CSRF.formField
+        <h2 class="errorMsg" :class="{hidden: signUpSuccess}">{{ signUpErrorMsg }}</h2>
         <div class="form-group">
             <div class="row bordered-row signUpRow">
                 <div class="col-md-4">

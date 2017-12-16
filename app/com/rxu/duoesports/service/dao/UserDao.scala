@@ -57,7 +57,6 @@ class UserDao @Inject()(
         'activated -> user.activated,
         'eligible -> user.eligible
       ).execute()
-      logger.info(result.toString)
     }
   }
 }

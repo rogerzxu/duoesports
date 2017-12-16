@@ -8,7 +8,25 @@ new Vue({
     firstName: '',
     lastName: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    signUpSuccess: true,
+    signUpErrorMsg: ''
+  },
+  methods: {
+    checkEmailUnique: function (event) {
+      event.preventDefault();
+      var $form = $('#signUpForm');
+
+      this.$http.headers.common['X-CSRF-TOKEN'] = document.querySelector('[name="csrfToken"]').getAttribute('value');
+      this.$http.post($form.attr('action'), $form.serialize(), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+        .then(function(success) {
+          window.location.href = "/signUp/success";
+        }, function(failure) {
+          console.log(failure.data);
+          this.signUpSuccess = false;
+          this.signUpErrorMsg = failure.data;
+        });
+    }
   },
   validations: {
     firstName: {

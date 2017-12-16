@@ -40,20 +40,16 @@ class SignUpController @Inject()(
     Ok(com.rxu.duoesports.views.html.signUp.signUpSuccess())
   }
 
-  def signUpFailure = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.signUp.signUpFailure())
-  }
-
   def signUp = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
     SignUpForm.form.bindFromRequest.fold(
       form => {
         logger.warn(s"Received invalid sign-up form: ${form.toString}")
-        Future.successful(Ok(com.rxu.duoesports.views.html.signUp.signUp(Some(Messages("signup.failure")))))
+        Future.successful(BadRequest(Messages("signup.failure")))
       },
       signUpData => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, signUpData.email)
         userService.retrieve(loginInfo) flatMap {
-          case Some(_) => Future.successful(Redirect(routes.SignUpController.signUpFailure()))
+          case Some(_) => Future.successful(Conflict(Messages("signup.duplicate.email")))
           case None =>
             val authInfo = passwordHasherRegistry.current.hash(signUpData.password)
             val user = User(
@@ -70,7 +66,7 @@ class SignUpController @Inject()(
               _ <- authInfoRepository.add(loginInfo, authInfo)
             } yield {
               silhouette.env.eventBus.publish(SignUpEvent(user, request))
-              Redirect(routes.SignUpController.signUpSuccess())
+              Ok(Messages("signup.success"))
               //TODO: send confirmation email
             }
         }
