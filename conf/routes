@@ -10,3 +10,5 @@ GET         /signOut                                @com.rxu.duoesports.controll
 GET         /signUp                                 @com.rxu.duoesports.controller.SignUpController.view
 POST        /signUp                                 @com.rxu.duoesports.controller.SignUpController.signUp
 GET         /signUp/success                         @com.rxu.duoesports.controller.SignUpController.signUpSuccess
+
+GET         /user/verification_code                 @com.rxu.duoesports.controller.UserController.getVerificationCode
