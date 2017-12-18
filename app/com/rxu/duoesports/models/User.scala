@@ -11,10 +11,11 @@ case class User(
   lastName: String,
   user_role: UserRole.Value,
   summonerName: Option[String] = None,
+  summoner_id: Option[Long] = None,
   region: Option[Region.Value] = None,
   verification_code: Option[String] = None,
   team_id: Option[Long] = None,
-  roles: List[Role.Value] = List.empty,
+  roles: Seq[Role.Value] = Seq.empty,
   activated: Boolean = false,
   eligible: Boolean = false
 ) extends Identity {
@@ -51,23 +52,20 @@ object Role extends Enumeration {
   val Coach = Value("Coach")
   val Analyst = Value("Analyst")
 
-  implicit val roleColumn: Column[Role.Value] = Column.nonNull { (value, meta) =>
+  implicit val roleSeqColumn: Column[Seq[Role.Value]] = Column.nonNull { (value, meta) =>
     val MetaDataItem(qualified, nullable, clazz) = meta
     value match {
-      case "Top" => Right(Role.Top)
-      case "Jungle" => Right(Role.Jungle)
-      case "Middle" => Right(Role.Middle)
-      case "Bottom" => Right(Role.Bottom)
-      case "Support" => Right(Role.Support)
-      case "Coach" => Right(Role.Coach)
-      case "Analyst" => Right(Role.Analyst)
+      case roles: String => Right {
+        roles.split(",").map { role =>
+          Role.withName(role)
+        }.toSeq
+      }
       case _ => Left(TypeDoesNotMatch(s"Unknown Role $value"))
     }
   }
 }
 
 object User {
-  implicit val roleSeqColumn = Column.columnToList[Role.Value]
   implicit val regionOptColumn = Column.columnToOption[Region.Value]
   val parser: RowParser[User] = Macro.namedParser[User]
 }

@@ -10,7 +10,7 @@ import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, AnyContent, ControllerComponents}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class UserController @Inject()(
   components: ControllerComponents,
@@ -27,5 +27,4 @@ with I18nSupport {
       Ok(Json.obj("verification_code" -> code))
     }
   }
-
 }

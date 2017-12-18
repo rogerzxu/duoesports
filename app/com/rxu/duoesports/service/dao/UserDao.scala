@@ -44,8 +44,8 @@ class UserDao @Inject()(
     db.withTransaction { implicit c =>
       val result = SQL(
         s"""
-           INSERT INTO User (email, password, firstName, lastName, user_role, summonerName, region, team_id, activated, eligible)
-           VALUES({email}, {password}, {firstName}, {lastName}, {user_role}, {summonerName}, {region}, {team_id}, {activated}, {eligible})
+           INSERT INTO User (email, password, firstName, lastName, user_role, summonerName, summoner_id, region, team_id, activated, eligible, verification_code, roles)
+           VALUES({email}, {password}, {firstName}, {lastName}, {user_role}, {summonerName}, {summoner_id}, {region}, {team_id}, {activated}, {eligible}, {verification_code}, {roles})
            ON DUPLICATE KEY UPDATE
              email = {email},
              password = {password},
@@ -53,10 +53,13 @@ class UserDao @Inject()(
              lastName = {lastName},
              user_role = {user_role},
              summonerName = {summonerName},
+             summoner_id = {summoner_id},
              region = {region},
              team_id = {team_id},
              activated = {activated},
-             eligible = {eligible}
+             eligible = {eligible},
+             verification_code = {verification_code},
+             roles = {roles}
         """
       ).on(
         'email -> user.email,
@@ -65,10 +68,13 @@ class UserDao @Inject()(
         'lastName -> user.lastName,
         'user_role -> user.user_role.toString,
         'summonerName -> user.summonerName.orNull,
+        'summoner_id -> user.summoner_id.orNull,
         'region -> user.region.map(_.toString).orNull,
         'team_id -> user.team_id.map(_.toString).orNull,
         'activated -> user.activated,
-        'eligible -> user.eligible
+        'eligible -> user.eligible,
+        'verification_code -> user.verification_code.orNull,
+        'roles -> user.roles.mkString(",")
       ).execute()
     }
   }

@@ -1,0 +1,24 @@
+<configuration scan="true">
+
+    <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${CONSOLE_LOG_LEVEL:-ALL}</level>
+        </filter>
+        <encoder>
+            <pattern>%coloredLevel - %logger - %message%n%xException</pattern>
+        </encoder>
+    </appender>
+
+    <root level="${LOG_LEVEL:-WARN}">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <logger name="play" level="${PLAY_LOG_LEVEL:-DEBUG}"/>
+    <logger name="application" level="${APPLICATION_LOG_LEVEL:-DEBUG}"/>
+    <logger name="com.rxu" level="${ECHO_LOG_LEVEL:-DEBUG}"/>
+    <logger name="org.jdbcdslog.ConnectionLogger" level="OFF"  />
+    <logger name="org.jdbcdslog.StatementLogger"  level="INFO" />
+    <logger name="org.jdbcdslog.ResultSetLogger"  level="OFF"  />
+</configuration>

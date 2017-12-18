@@ -24,7 +24,11 @@ libraryDependencies ++= Seq(
   "org.webjars.npm" % "vue-resource" % "1.3.4",
   "org.webjars.npm" % "vuelidate" % "0.5.0",
   "com.iheart" %% "ficus" % "1.4.1",
-  "com.typesafe.scala-logging" % "scala-logging_2.12" % "3.7.2"
+  "com.typesafe.scala-logging" % "scala-logging_2.12" % "3.7.2",
+
+  "com.mohiva" %% "play-silhouette-testkit" % "5.0.0" % "test",
+  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
+
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
