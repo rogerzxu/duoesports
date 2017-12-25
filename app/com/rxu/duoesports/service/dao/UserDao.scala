@@ -68,7 +68,7 @@ class UserDao @Inject()(
         'lastName -> user.lastName,
         'user_role -> user.user_role.toString,
         'summonerName -> user.summonerName.orNull,
-        'summoner_id -> user.summoner_id.orNull,
+        'summoner_id -> user.summoner_id.map(_.toString).orNull,
         'region -> user.region.map(_.toString).orNull,
         'team_id -> user.team_id.map(_.toString).orNull,
         'activated -> user.activated,

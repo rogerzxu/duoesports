@@ -3,7 +3,7 @@
 ALTER TABLE User
   ADD COLUMN verification_code VARCHAR(50) DEFAULT NULL,
   ADD COLUMN roles SET ('Middle', 'Jungle', 'Top', 'Bottom', 'Support', 'Coach', 'Analyst') DEFAULT NULL,
-  ADD COLUMN summoner_id BIGINT(20) after summoner_name,
+  ADD COLUMN summoner_id BIGINT(20) after summonerName,
   CHANGE role user_role VARCHAR(20) NOT NULL;
 
 # --- !Downs

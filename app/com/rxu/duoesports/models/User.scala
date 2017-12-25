@@ -56,7 +56,7 @@ object Role extends Enumeration {
     val MetaDataItem(qualified, nullable, clazz) = meta
     value match {
       case roles: String => Right {
-        roles.split(",").map { role =>
+        roles.split(",").filter(_.nonEmpty).map { role =>
           Role.withName(role)
         }.toSeq
       }
