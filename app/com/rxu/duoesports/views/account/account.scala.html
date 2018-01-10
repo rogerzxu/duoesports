@@ -5,11 +5,5 @@
 @(user: User)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @com.rxu.duoesports.views.html.main(messages("home.title"), Some(user)) {
-    <nav class="navbar navbar-left">
-        <div class="container">
-            <div class="navbar-header">
-                @user.firstName
-            </div>
-        </div>
-    </nav>
+    <h1>Account Settings</h1>
 }

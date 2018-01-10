@@ -11,5 +11,7 @@ GET         /signUp                                 @com.rxu.duoesports.controll
 POST        /signUp                                 @com.rxu.duoesports.controller.SignUpController.signUp
 GET         /signUp/success                         @com.rxu.duoesports.controller.SignUpController.signUpSuccess
 
-GET         /user/verification_code                 @com.rxu.duoesports.controller.UserController.getVerificationCode
-GET         /profile                                @com.rxu.duoesports.controller.UserController.profile
+GET         /account                                @com.rxu.duoesports.controller.AccountController.account
+GET         /account/verification_code              @com.rxu.duoesports.controller.AccountController.getVerificationCode
+
+GET         /profile/:userId                        @com.rxu.duoesports.controller.UserController.profile(userId: Long)

@@ -32,4 +32,9 @@ class UserService @Inject()(
     userDao.save(user)
   }
 
+  def findById(id: Long): Future[Option[User]] = {
+    logger.debug(s"Finding user by id $id")
+    userDao.find(id)
+  }
+
 }

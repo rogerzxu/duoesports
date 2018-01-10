@@ -29,6 +29,17 @@ class UserDao @Inject()(
     }
   }
 
+  def find(id: Long): Future[Option[User]] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           SELECT * FROM User
+           WHERE id = {id}
+         """
+      ).on('id -> id).as(User.parser.singleOpt)
+    }
+  }
+
   def find(email: String): Future[Option[User]] = Future {
     db.withConnection { implicit c =>
       SQL(
