@@ -50,7 +50,7 @@ class SignInController @Inject()(
           maybeUser <- userService.retrieve(loginInfo)
           user <- verifyUser(maybeUser)
           auth <- silhouette.env.authenticatorService.create(loginInfo)
-          authenticator = if (signInData.rememberMe) {
+          authenticator = if (signInData.remember) {
             auth.copy(
               expirationDateTime = clock.now + appConfig.authTtl,
               idleTimeout = appConfig.authIdleTimeout,
