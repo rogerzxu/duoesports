@@ -5,6 +5,7 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.services.IdentityService
 import com.rxu.duoesports.service.dao.UserDao
 import com.rxu.duoesports.models.User
+import com.rxu.duoesports.util.CreateUserException
 import com.typesafe.scalalogging.LazyLogging
 
 import java.util.UUID
@@ -18,23 +19,32 @@ class UserService @Inject()(
   with LazyLogging {
 
   def getVerificationCode(email: String): Future[String] = {
+    logger.debug(s"Creating RIOT verification code for $email")
     val verificationCode = UUID.randomUUID.toString
     userDao.addVerificationCode(email, verificationCode) map (_ => verificationCode)
   }
 
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
     logger.debug(s"Retrieving user: $loginInfo")
-    userDao.find(email = loginInfo.providerKey)
+    userDao.findByEmail(email = loginInfo.providerKey)
   }
 
-  def save(user: User): Future[Unit] = {
-    logger.debug(s"Saving user: $user")
-    userDao.save(user)
+  def create(user: User): Future[Long] = {
+    logger.debug(s"Creating user: $user")
+    userDao.create(user) map {
+      case Some(userId) => userId
+      case None => throw CreateUserException(s"Failed to create user $user")
+    }
   }
 
   def findById(id: Long): Future[Option[User]] = {
     logger.debug(s"Finding user by id $id")
-    userDao.find(id)
+    userDao.findById(id)
+  }
+
+  def activate(id: Long): Future[Unit] = {
+    logger.debug(s"Activating user by id $id")
+    userDao.activate(id)
   }
 
 }

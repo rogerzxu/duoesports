@@ -8,9 +8,9 @@ import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
 import com.mohiva.play.silhouette.api.{LoginInfo, SignUpEvent, Silhouette}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.rxu.duoesports.dto.SignUpForm
-import com.rxu.duoesports.models.{UserRole, User}
+import com.rxu.duoesports.models.{User, UserRole}
 import com.rxu.duoesports.security.DefaultEnv
-import com.rxu.duoesports.service.UserService
+import com.rxu.duoesports.service.{AuthTokenService, MailerService, UserService}
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.{I18nSupport, Messages}
@@ -23,7 +23,9 @@ class SignUpController @Inject()(
   silhouette: Silhouette[DefaultEnv],
   authInfoRepository: AuthInfoRepository,
   passwordHasherRegistry: PasswordHasherRegistry,
-  userService: UserService
+  userService: UserService,
+  authTokenService: AuthTokenService,
+  mailerService: MailerService
 )(
   implicit webJarsUtil: WebJarsUtil,
   assets: AssetsFinder,
@@ -58,16 +60,16 @@ class SignUpController @Inject()(
               password = authInfo.password,
               firstName = signUpData.firstName,
               lastName = signUpData.lastName,
-              user_role = UserRole.Player,
-              activated = true //TODO change once confirmation email is implemented
+              user_role = UserRole.Player
             ).normalize
             for {
-              _ <- userService.save(user)
+              userId <- userService.create(user)
               _ <- authInfoRepository.add(loginInfo, authInfo)
+              authToken <- authTokenService.create(userId)
             } yield {
               silhouette.env.eventBus.publish(SignUpEvent(user, request))
+              mailerService.sendActivationEmail(user.email, routes.AccountController.activate(authToken.id).absoluteURL())
               Ok(Messages("signup.success"))
-              //TODO: send confirmation email
             }
         }
       }

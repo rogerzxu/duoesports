@@ -16,6 +16,38 @@ class UserDao @Inject()(
   @Named("jdbcEC") implicit val executionContext: ExecutionContext
 ) extends LazyLogging {
 
+  def findById(id: Long): Future[Option[User]] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           SELECT * FROM User
+           WHERE id = {id}
+         """
+      ).on('id -> id).as(User.parser.singleOpt)
+    }
+  }
+
+  def findByEmail(email: String): Future[Option[User]] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+          SELECT * FROM User
+          WHERE email = {email}
+        """
+      ).on('email -> email).as(User.parser.singleOpt)
+    }
+  }
+
+  def activate(id: Long): Future[Unit] = Future {
+    db.withConnection { implicit c =>
+      val result = SQL(
+        s"""
+           UPDATE User SET activated = true where id = {id}
+         """
+      ).on('id -> id).executeUpdate()
+    }
+  }
+
   def addVerificationCode(email: String, code: String): Future[Unit] = Future {
     db.withConnection { implicit c =>
       val result = SQL(
@@ -29,48 +61,38 @@ class UserDao @Inject()(
     }
   }
 
-  def find(id: Long): Future[Option[User]] = Future {
-    db.withConnection { implicit c =>
-      SQL(
-        s"""
-           SELECT * FROM User
-           WHERE id = {id}
-         """
-      ).on('id -> id).as(User.parser.singleOpt)
-    }
-  }
-
-  def find(email: String): Future[Option[User]] = Future {
-    db.withConnection { implicit c =>
-      SQL(
-        s"""
-          SELECT * FROM User
-          WHERE email = {email}
-        """
-      ).on('email -> email).as(User.parser.singleOpt)
-    }
-  }
-
-  def save(user: User): Future[Unit] = Future {
+  def create(user: User): Future[Option[Long]] = Future {
     db.withTransaction { implicit c =>
-      val result = SQL(
+      SQL(
         s"""
-           INSERT INTO User (email, password, firstName, lastName, user_role, summonerName, summoner_id, region, team_id, activated, eligible, verification_code, roles)
-           VALUES({email}, {password}, {firstName}, {lastName}, {user_role}, {summonerName}, {summoner_id}, {region}, {team_id}, {activated}, {eligible}, {verification_code}, {roles})
-           ON DUPLICATE KEY UPDATE
-             email = {email},
-             password = {password},
-             firstName = {firstName},
-             lastName = {lastName},
-             user_role = {user_role},
-             summonerName = {summonerName},
-             summoner_id = {summoner_id},
-             region = {region},
-             team_id = {team_id},
-             activated = {activated},
-             eligible = {eligible},
-             verification_code = {verification_code},
-             roles = {roles}
+           INSERT INTO User
+             (email,
+             password,
+             firstName,
+             lastName,
+             user_role,
+             summonerName,
+             summoner_id,
+             region,
+             verification_code,
+             team_id,
+             roles,
+             activated,
+             eligible)
+           VALUES(
+             {email},
+             {password},
+             {firstName},
+             {lastName},
+             {user_role},
+             {summonerName},
+             {summoner_id},
+             {region},
+             {verification_code},
+             {team_id},
+             {roles},
+             {activated},
+             {eligible})
         """
       ).on(
         'email -> user.email,
@@ -81,12 +103,12 @@ class UserDao @Inject()(
         'summonerName -> user.summonerName.orNull,
         'summoner_id -> user.summoner_id.map(_.toString).orNull,
         'region -> user.region.map(_.toString).orNull,
-        'team_id -> user.team_id.map(_.toString).orNull,
-        'activated -> user.activated,
-        'eligible -> user.eligible,
         'verification_code -> user.verification_code.orNull,
-        'roles -> user.roles.mkString(",")
-      ).execute()
+        'team_id -> user.team_id.map(_.toString).orNull,
+        'roles -> user.roles.mkString(","),
+        'activated -> user.activated,
+        'eligible -> user.eligible
+      ).executeInsert()
     }
   }
 }

@@ -13,5 +13,8 @@ GET         /signUp/success                         @com.rxu.duoesports.controll
 
 GET         /account                                @com.rxu.duoesports.controller.AccountController.account
 GET         /account/verification_code              @com.rxu.duoesports.controller.AccountController.getVerificationCode
+GET         /account/activate/success               @com.rxu.duoesports.controller.AccountController.activationSuccess
+GET         /account/activate/failed                @com.rxu.duoesports.controller.AccountController.activationFailure
+GET         /account/activate/:tokenId              @com.rxu.duoesports.controller.AccountController.activate(tokenId: String)
 
 GET         /profile/:userId                        @com.rxu.duoesports.controller.UserController.profile(userId: Long)

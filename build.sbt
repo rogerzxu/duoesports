@@ -13,6 +13,8 @@ libraryDependencies ++= Seq(
   "org.mariadb.jdbc" % "mariadb-java-client" % "2.2.0",
   "net.codingwell" %% "scala-guice" % "4.1.0",
   guice,
+  "com.typesafe.play" %% "play-mailer" % "6.0.1",
+  "com.typesafe.play" %% "play-mailer-guice" % "6.0.1",
   "com.mohiva" %% "play-silhouette" % "5.0.0",
   "com.mohiva" %% "play-silhouette-password-bcrypt" % "5.0.0",
   "com.mohiva" %% "play-silhouette-persistence" % "5.0.0",

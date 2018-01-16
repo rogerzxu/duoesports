@@ -83,7 +83,9 @@ class SignInController @Inject()(
 
   private def verifyUser(maybeUser: Option[User]): Future[User] = {
     maybeUser match {
-      case Some(user) if !user.activated => Future.failed(new AccessDeniedException(s"User ${user.email} has not been activated"))
+      case Some(user) if !user.activated =>
+        Future.failed(new AccessDeniedException(s"User ${user.email} has not been activated"))
+        //TODO: resend activation email
       case Some(user) => Future.successful(user)
       case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))
     }
