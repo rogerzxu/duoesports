@@ -33,6 +33,12 @@ class ErrorHandler @Inject()(
     Future.successful(InternalServerError(com.rxu.duoesports.views.html.errors.internalServerError()))
   }
 
+  override def onDevServerError(request: RequestHeader, exception: UsefulException) = {
+    logger.error("Internal Server Error", exception)
+    implicit val req: RequestHeader = request
+    Future.successful(InternalServerError(com.rxu.duoesports.views.html.errors.internalServerError()))
+  }
+
   override def onNotFound(request: RequestHeader, message: String) = {
     implicit val req: RequestHeader = request
     Future.successful(NotFound(com.rxu.duoesports.views.html.errors.notFound()))

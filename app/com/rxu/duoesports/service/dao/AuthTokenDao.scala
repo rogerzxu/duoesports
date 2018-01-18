@@ -20,7 +20,7 @@ class AuthTokenDao @Inject()(
       SQL(
         s"""
           SELECT * FROM AuthToken
-          WHERE email = {email}
+          WHERE id = {id}
         """
       ).on('id -> id).as(AuthToken.parser.singleOpt)
     }
@@ -30,17 +30,17 @@ class AuthTokenDao @Inject()(
     db.withConnection { implicit c =>
       SQL(
         s"""
-           INSERT INTO AuthToken (id, userId, expiry)
-           VALUES ({id}, {userId}, {expiry})
+           INSERT INTO AuthToken (id, user_id, expiry)
+           VALUES ({id}, {user_id}, {expiry})
            ON DUPLICATE KEY UPDATE
              id = {id},
-             userId = {userId},
-             expiry = {expiryId}
+             user_id = {user_id},
+             expiry = {expiry}
          """
       ).on(
         'id -> authToken.id,
-        'userId -> authToken.user_id,
-        'expiry -> authToken.expiry
+        'user_id -> authToken.user_id,
+        'expiry -> authToken.expiry.toString
       ).execute()
     }
   }

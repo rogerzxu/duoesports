@@ -7,9 +7,9 @@ import play.api.data.Forms.mapping
 case class SignInData(
   email: String,
   password: String,
-  rememberMe: String
+  rememberMe: Option[String]
 ) {
-  def remember: Boolean = rememberMe equals "on"
+  def remember: Boolean = rememberMe contains "on"
 }
 
 object SignInForm {
@@ -18,7 +18,7 @@ object SignInForm {
     mapping(
       "signInEmail" -> email,
       "signInPassword" -> nonEmptyText,
-      "rememberMe" -> text
+      "rememberMe" -> optional(text)
     )(SignInData.apply)(SignInData.unapply)
   )
 
