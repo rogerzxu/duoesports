@@ -4,13 +4,13 @@ import controllers.AssetsFinder
 
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.Silhouette
-import com.mohiva.play.silhouette.api.actions.{SecuredRequest, UserAwareRequest}
+import com.mohiva.play.silhouette.api.actions.SecuredRequest
 import com.rxu.duoesports.security.DefaultEnv
 import com.rxu.duoesports.service.{AuthTokenService, UserService}
 import com.rxu.duoesports.util.ActivateUserException
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Request}
 
@@ -39,17 +39,15 @@ class AccountController @Inject()(
     }
   }
 
-  def activationSuccess = silhouette.UserAwareAction { implicit request: UserAwareRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.account.activationSuccess())
-  }
-
-  def activationFailure = silhouette.UserAwareAction { implicit request: UserAwareRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.account.activationSuccess())
-  }
-
   def activate(tokenId: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
-    authTokenService.activate(tokenId) map (_ => Redirect(routes.AccountController.activationSuccess())) recover {
-      case ex: ActivateUserException => Redirect(routes.AccountController.activationFailure())
+    authTokenService.activate(tokenId) map (_ => Ok(com.rxu.duoesports.views.html.account.activation(success = true, None))) recover {
+      case ex: ActivateUserException => BadRequest(com.rxu.duoesports.views.html.account.activation(success = false, Some(ex.getMessage)))
+    }
+  }
+
+  def sendActivationEmail(email: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
+    authTokenService.generateAndSendEmail(email) map (_ => Ok(Messages("resend.activation.success"))) recover {
+      case ex: Throwable => InternalServerError(Messages("resend.activation.failure") + s" ${ex.getMessage}")
     }
   }
 

@@ -1,8 +1,0 @@
-@import play.api.i18n.Messages
-@import org.webjars.play.WebJarsUtil
-
-@()(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
-
-@com.rxu.duoesports.views.html.main(messages("activation.title")) {
-    <h1>@messages("activation.failure")</h1>
-}

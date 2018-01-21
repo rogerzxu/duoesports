@@ -13,7 +13,7 @@ new Vue({
     signUpErrorMsg: ''
   },
   methods: {
-    checkEmailUnique: function (event) {
+    signUp: function (event) {
       event.preventDefault();
       var $form = $('#signUpForm');
 
@@ -22,7 +22,6 @@ new Vue({
         .then(function(success) {
           window.location.href = "/signUp/success";
         }, function(failure) {
-          console.log(failure.data);
           this.signUpSuccess = false;
           this.signUpErrorMsg = failure.data;
         });

@@ -1,20 +1,19 @@
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                           controllers.Assets.versioned(file)
-->          /webjars                                webjars.Routes
+GET         /assets/*file                                controllers.Assets.versioned(file)
+->          /webjars                                     webjars.Routes
 
-GET         /                                       @com.rxu.duoesports.controller.HomeController.view
+GET         /                                            @com.rxu.duoesports.controller.HomeController.view
 
-POST        /signIn                                 @com.rxu.duoesports.controller.SignInController.signIn
-GET         /signOut                                @com.rxu.duoesports.controller.SignInController.signOut
+POST        /signIn                                      @com.rxu.duoesports.controller.SignInController.signIn
+GET         /signOut                                     @com.rxu.duoesports.controller.SignInController.signOut
 
-GET         /signUp                                 @com.rxu.duoesports.controller.SignUpController.view
-POST        /signUp                                 @com.rxu.duoesports.controller.SignUpController.signUp
-GET         /signUp/success                         @com.rxu.duoesports.controller.SignUpController.signUpSuccess
+GET         /signUp                                      @com.rxu.duoesports.controller.SignUpController.view
+POST        /signUp                                      @com.rxu.duoesports.controller.SignUpController.signUp
+GET         /signUp/success                              @com.rxu.duoesports.controller.SignUpController.signUpSuccess
 
-GET         /account                                @com.rxu.duoesports.controller.AccountController.account
-GET         /account/verification_code              @com.rxu.duoesports.controller.AccountController.getVerificationCode
-GET         /account/activate/success               @com.rxu.duoesports.controller.AccountController.activationSuccess
-GET         /account/activate/failed                @com.rxu.duoesports.controller.AccountController.activationFailure
-GET         /account/activate/:tokenId              @com.rxu.duoesports.controller.AccountController.activate(tokenId: String)
+GET         /account                                     @com.rxu.duoesports.controller.AccountController.account
+GET         /account/verification-code                   @com.rxu.duoesports.controller.AccountController.getVerificationCode
+GET         /account/activate/:tokenId                   @com.rxu.duoesports.controller.AccountController.activate(tokenId: String)
+GET         /account/send-activation-email/:email        @com.rxu.duoesports.controller.AccountController.sendActivationEmail(email: String)
 
-GET         /profile/:userId                        @com.rxu.duoesports.controller.UserController.profile(userId: Long)
+GET         /profile/:userId                             @com.rxu.duoesports.controller.UserController.profile(userId: Long)

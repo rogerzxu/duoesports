@@ -14,7 +14,7 @@ import com.rxu.duoesports.service.{AuthTokenService, MailerService, UserService}
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Request}
+import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Cookie, Request}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,7 +39,11 @@ class SignUpController @Inject()(
   }
 
   def signUpSuccess = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.signUp.signUpSuccess())
+    request.cookies.get("duoesportsEmail") match {
+      case Some(cookie) => val url = routes.AccountController.sendActivationEmail(email = cookie.value).absoluteURL
+        Ok(com.rxu.duoesports.views.html.signUp.signUpSuccess(Some(url)))
+      case None => Ok(com.rxu.duoesports.views.html.signUp.signUpSuccess(None))
+    }
   }
 
   def signUp = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
@@ -65,11 +69,12 @@ class SignUpController @Inject()(
             for {
               userId <- userService.create(user)
               _ <- authInfoRepository.add(loginInfo, authInfo)
-              authToken <- authTokenService.create(userId)
+              _ <- authTokenService.generateAndSendEmail(userId)
             } yield {
               silhouette.env.eventBus.publish(SignUpEvent(user, request))
-              mailerService.sendActivationEmail(user.email, routes.AccountController.activate(authToken.id).absoluteURL())
-              Ok(Messages("signup.success"))
+              Ok(Messages("signup.success")) //TODO: Secure cookie
+                .withCookies(Cookie("duoesportsEmail", user.email))
+                .bakeCookies()
             }
         }
       }

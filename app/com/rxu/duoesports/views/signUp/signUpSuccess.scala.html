@@ -1,9 +1,29 @@
 @import play.api.i18n.Messages
 @import org.webjars.play.WebJarsUtil
 
-@()(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+@(resendUrl: Option[String])(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @com.rxu.duoesports.views.html.main(messages("signup.title")) {
     <link rel="stylesheet" href="@assets.path("stylesheets/signUp.css")">
-    <h1>@messages("signup.success")</h1>
+    <div class="row text-center">
+        <h3>@messages("signup.success")</h3>
+    </div>
+    <div id="resendActivation" class="form-group text-center">
+        @if(resendUrl.isDefined){
+            <h3>@messages("resend.activation.label")</h3>
+            <form id="resendActivationForm" v-on:submit="resendActivation" novalidate action="@resendUrl.get" method="GET">
+                <div class="row signUpRow">
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="btn btn-primary my-2" id="resendActivationButton">Resend Activation Email</button>
+                    </div>
+                </div>
+            </form>
+            <div class="row" :class="{hidden: hideResentMsg}">
+                <div class="col-md-12 text-center">
+                    <p>{{ resentActivationMsg }}</p>
+                </div>
+            </div>
+        }
+    </div>
+    <script src="@assets.path("javascripts/signUpSuccess.js")"></script>
 }

@@ -42,6 +42,11 @@ class UserService @Inject()(
     userDao.findById(id)
   }
 
+  def findByEmail(email: String): Future[Option[User]] = {
+    logger.debug(s"Finding user by email $email")
+    userDao.findByEmail(email)
+  }
+
   def activate(id: Long): Future[Unit] = {
     logger.debug(s"Activating user by id $id")
     userDao.activate(id)

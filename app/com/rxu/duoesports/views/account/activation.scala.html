@@ -1,0 +1,12 @@
+@import play.api.i18n.Messages
+@import org.webjars.play.WebJarsUtil
+
+@(success: Boolean, msg: Option[String])(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+
+@com.rxu.duoesports.views.html.main(messages("activation.title")) {
+    @if(success){
+        <h2>@messages("activation.success")</h2>
+    } else {
+        <h2>@messages("activation.failure"): @msg.get</h2>
+    }
+}
