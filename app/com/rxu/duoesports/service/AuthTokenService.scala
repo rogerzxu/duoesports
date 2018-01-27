@@ -21,10 +21,12 @@ class AuthTokenService @Inject()(
 ) extends LazyLogging {
 
   def generateAndSendEmail(email: String)(implicit req: RequestHeader): Future[(AuthToken, String)] = {
+    logger.info(s"Generating activation email for $email")
     userService.findByEmail(email) flatMap generateAndSendEmail
   }
 
   def generateAndSendEmail(userId: Long)(implicit req: RequestHeader): Future[(AuthToken, String)] = {
+    logger.info(s"Generating activation email for $userId")
     userService.findById(userId) flatMap generateAndSendEmail
   }
 
@@ -38,7 +40,9 @@ class AuthTokenService @Inject()(
           (token, url)
         }
       }
-      case None => throw GenerateAuthTokenException(s"Cannot generate confirmation email for unknown user.")
+      case None =>
+        logger.error("Cannot generate confirmation email for unknown user")
+        throw GenerateAuthTokenException(s"Cannot generate confirmation email for unknown user.")
     }
   }
 
@@ -48,10 +52,12 @@ class AuthTokenService @Inject()(
       case Some(authToken) => if (authToken.isValid) {
         userService.activate(authToken.user_id)
       } else {
+        logger.error(s"Activation Token $authToken has already expired")
         Future.failed(ActivateUserException(s"Activation URL has already expired"))
-        //TODO: "send email again"
       }
-      case None => Future.failed(ActivateUserException(s"Cannot find token $id to Activate"))
+      case None =>
+        logger.error(s"Cannot find token $id to activate")
+        Future.failed(ActivateUserException(s"Cannot find token $id to Activate"))
     }
   }
 

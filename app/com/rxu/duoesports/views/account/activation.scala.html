@@ -1,12 +1,19 @@
 @import play.api.i18n.Messages
 @import org.webjars.play.WebJarsUtil
 
-@(success: Boolean, msg: Option[String])(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+@(errorMsg: Option[String] = None, resendUrl: Option[String] = None)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @com.rxu.duoesports.views.html.main(messages("activation.title")) {
-    @if(success){
-        <h2>@messages("activation.success")</h2>
+    @if(errorMsg.isEmpty){
+        <div class="row text-center">
+            <h3>@messages("activation.success")</h3>
+        </div>
     } else {
-        <h2>@messages("activation.failure"): @msg.get</h2>
+        <div class="row text-center">
+            <h3>@messages("activation.failure"): @errorMsg.get</h3>
+        </div>
+        @if(resendUrl.isDefined){
+            @com.rxu.duoesports.views.html.forms.resendActivationForm(resendUrl.get)
+        }
     }
 }

@@ -39,11 +39,10 @@ class SignUpController @Inject()(
   }
 
   def signUpSuccess = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
-    request.cookies.get("duoesportsEmail") match {
-      case Some(cookie) => val url = routes.AccountController.sendActivationEmail(email = cookie.value).absoluteURL
-        Ok(com.rxu.duoesports.views.html.signUp.signUpSuccess(Some(url)))
-      case None => Ok(com.rxu.duoesports.views.html.signUp.signUpSuccess(None))
+    val resendUrl = request.cookies.get("duoesportsEmail") map { cookie =>
+      routes.AccountController.sendActivationEmail(email = cookie.value).absoluteURL
     }
+    Ok(com.rxu.duoesports.views.html.signUp.signUpSuccess(resendUrl))
   }
 
   def signUp = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>

@@ -12,7 +12,7 @@
         @helper.CSRF.formField
         <h2 class="errorMsg" :class="{hidden: signUpSuccess}">{{ signUpErrorMsg }}</h2>
         <div class="form-group">
-            <div class="row bordered-row signUpRow">
+            <div class="row bordered-row paddedRow">
                 <div class="col-md-4">
                     <label>Email</label>
                 </div>
@@ -22,7 +22,7 @@
                     <span class="errorMsg" v-if="!$v.email.email">@messages("signup.invalid.email.message")</span>
                 </div>
             </div>
-            <div class="row bordered-row signUpRow">
+            <div class="row bordered-row paddedRow">
                 <div class="col-md-4">
                     <label>Name</label>
                 </div>
@@ -35,7 +35,7 @@
                     class="form-control" autocomplete="lname" name="lastName" id="lastName" placeholder="Last Name">
                 </div>
             </div>
-            <div class="row bordered-row signUpRow">
+            <div class="row bordered-row paddedRow">
                 <div class="col-md-4">
                     <label>Password</label>
                 </div>
@@ -52,7 +52,7 @@
                     <span class="errorMsg" v-if="!$v.confirmPassword.sameAsPassword">@messages("signup.password.mismatch.message")</span>
                 </div>
             </div>
-            <div class="row bordered-row signUpRow">
+            <div class="row bordered-row paddedRow">
                 <div class="col-md-12 text-center">
                     <button :disabled="$v.$invalid" type="submit" class="btn btn-lg signUpButton" id="sign-up-submit-button">Submit</button>
                 </div>

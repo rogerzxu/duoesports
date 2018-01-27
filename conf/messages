@@ -1,12 +1,12 @@
 home.title = Duo E-Sports Home
 
-activation.title = Account Activation Successful
-activation.success = Account Activation Successful!
-activation.failure = Account Activation Failed
+activation.title = Account Activation
+activation.success = Account activation successful!
+activation.failure = Account activation failed
 
-resend.activation.success = Successfully resent activation email!
-resend.activation.failure = Failed to resend activation email:
-resend.activation.label = Click below if you still have not received the activation email.
+resend.activation.success = Successfully resent account activation email!
+resend.activation.failure = Failed to resend account activation email:
+resend.activation.label = Click below to resend the account activation email.
 
 signin.not.activated = Account has not been activated. Please check the email you provided during registration for instructions.
 signin.invalid.credentials = Invalid Credentials!
@@ -15,7 +15,7 @@ signin.success = Successfully signed in!
 
 signup.title = Sign-Up
 signup.duplicate.email = That email address is already in use. Please try again with a different email.
-signup.success = You have successfully signed up! You should receive a confirmation email shortly. Please be sure to check your spam folder if you have not received it.
+signup.success = You have successfully signed up! You should receive a confirmation email shortly. Please be sure to check your spam folder.
 signup.failure = An error occurred while signing up. Please try again.
 signup.header = Registration
 signup.invalid.email.message = Invalid email format

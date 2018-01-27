@@ -40,8 +40,13 @@ class AccountController @Inject()(
   }
 
   def activate(tokenId: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
-    authTokenService.activate(tokenId) map (_ => Ok(com.rxu.duoesports.views.html.account.activation(success = true, None))) recover {
-      case ex: ActivateUserException => BadRequest(com.rxu.duoesports.views.html.account.activation(success = false, Some(ex.getMessage)))
+    authTokenService.activate(tokenId) map (_ => Ok(com.rxu.duoesports.views.html.account.activation())) recover {
+      case ex: ActivateUserException => {
+        val resendUrl = request.cookies.get("duoesportsEmail") map { cookie =>
+          routes.AccountController.sendActivationEmail(email = cookie.value).absoluteURL
+        }
+        BadRequest(com.rxu.duoesports.views.html.account.activation(Some(ex.getMessage + "."), resendUrl))
+      }
     }
   }
 

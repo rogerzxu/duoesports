@@ -19,13 +19,13 @@ class UserService @Inject()(
   with LazyLogging {
 
   def getVerificationCode(email: String): Future[String] = {
-    logger.debug(s"Creating RIOT verification code for $email")
+    logger.info(s"Creating RIOT verification code for $email")
     val verificationCode = UUID.randomUUID.toString
     userDao.addVerificationCode(email, verificationCode) map (_ => verificationCode)
   }
 
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
-    logger.debug(s"Retrieving user: $loginInfo")
+    logger.info(s"Retrieving user: $loginInfo")
     userDao.findByEmail(email = loginInfo.providerKey)
   }
 
@@ -38,17 +38,17 @@ class UserService @Inject()(
   }
 
   def findById(id: Long): Future[Option[User]] = {
-    logger.debug(s"Finding user by id $id")
+    logger.info(s"Finding user by id $id")
     userDao.findById(id)
   }
 
   def findByEmail(email: String): Future[Option[User]] = {
-    logger.debug(s"Finding user by email $email")
+    logger.info(s"Finding user by email $email")
     userDao.findByEmail(email)
   }
 
   def activate(id: Long): Future[Unit] = {
-    logger.debug(s"Activating user by id $id")
+    logger.info(s"Activating user by id $id")
     userDao.activate(id)
   }
 

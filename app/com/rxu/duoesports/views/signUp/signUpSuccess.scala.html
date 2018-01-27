@@ -8,22 +8,8 @@
     <div class="row text-center">
         <h3>@messages("signup.success")</h3>
     </div>
-    <div id="resendActivation" class="form-group text-center">
-        @if(resendUrl.isDefined){
-            <h3>@messages("resend.activation.label")</h3>
-            <form id="resendActivationForm" v-on:submit="resendActivation" novalidate action="@resendUrl.get" method="GET">
-                <div class="row signUpRow">
-                    <div class="col-md-12 text-center">
-                        <button type="submit" class="btn btn-primary my-2" id="resendActivationButton">Resend Activation Email</button>
-                    </div>
-                </div>
-            </form>
-            <div class="row" :class="{hidden: hideResentMsg}">
-                <div class="col-md-12 text-center">
-                    <p>{{ resentActivationMsg }}</p>
-                </div>
-            </div>
-        }
-    </div>
-    <script src="@assets.path("javascripts/signUpSuccess.js")"></script>
+    @if(resendUrl.isDefined){
+        @com.rxu.duoesports.views.html.forms.resendActivationForm(resendUrl.get)
+    }
+
 }
