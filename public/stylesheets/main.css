@@ -1,5 +1,6 @@
 body {
-    padding-top: 50px;
+    position: relative;
+    min-height: 1200px;
 }
 
 .row {
@@ -26,8 +27,23 @@ textarea {
     resize: none;
 }
 
+.navbar-nav {
+    padding-left: 40px;
+}
+
+.navbar-brand {
+    color: #181818;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
 .navbar {
-    height: 50px;
+    background-image: linear-gradient(to bottom,#8b9bb7 0,#050607 100%);
+}
+
+.banner-image {
+    height: inherit;
+    width: inherit;
 }
 
 .hidden {
@@ -42,6 +58,7 @@ textarea {
 
 #sign-in-menu {
     position: absolute;
+    margin-top: 55px;
     right: 0;
     width: 300px;
     padding: 10px;
@@ -49,6 +66,7 @@ textarea {
 
 #profile-menu {
     position: absolute;
+    margin-top: 55px;
     right: 0;
     padding: 10px;
     width: 120px;
@@ -78,4 +96,19 @@ textarea {
 
 #rememberMe {
     margin: 15px 10px 0 -5px;
+}
+
+footer {
+    text-align: center;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+.copyright {
+    padding: 16px;
+    height: 50px;
+    background-color: #131519;
+    color: rgba(255,255,255,.6);
 }
