@@ -12,8 +12,9 @@ POST        /signUp                                      @com.rxu.duoesports.con
 GET         /signUp/success                              @com.rxu.duoesports.controller.SignUpController.signUpSuccess
 
 GET         /account                                     @com.rxu.duoesports.controller.AccountController.account
+GET         /account/password                            @com.rxu.duoesports.controller.AccountController.changePasswordPage
+GET         /account/lol-account                         @com.rxu.duoesports.controller.AccountController.lolAccount
+GET         /account/player                              @com.rxu.duoesports.controller.AccountController.player
 GET         /account/verification-code                   @com.rxu.duoesports.controller.AccountController.getVerificationCode
 GET         /account/activate/:tokenId                   @com.rxu.duoesports.controller.AccountController.activate(tokenId: String)
 GET         /account/send-activation-email/:email        @com.rxu.duoesports.controller.AccountController.sendActivationEmail(email: String)
-
-GET         /profile/:userId                             @com.rxu.duoesports.controller.UserController.profile(userId: Long)

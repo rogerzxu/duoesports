@@ -43,13 +43,13 @@
                     <section>
                         <input v-model="password" v-on:input="$v.password.$touch" v-bind:class="{error: $v.password.$error, valid: $v.password.$dirty && !$v.password.$invalid}"
                         type="password" autocomplete="new-password" class="form-control" name="password" id="password" placeholder="Password">
-                        <span class="errorMsg" v-if="!$v.password.minLength">@messages("signup.password.minLength.message")</span>
+                        <span class="errorMsg" v-if="!$v.password.minLength">@messages("password.minLength.message")</span>
                     </section>
                 </div>
                 <div class="col-md-4">
                     <input v-model="confirmPassword" v-on:input="$v.confirmPassword.$touch" v-bind:class="{error: $v.confirmPassword.$error, valid: $v.confirmPassword.$dirty && !$v.confirmPassword.$invalid}"
                     type="password" autocomplete="new-password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
-                    <span class="errorMsg" v-if="!$v.confirmPassword.sameAsPassword">@messages("signup.password.mismatch.message")</span>
+                    <span class="errorMsg" v-if="!$v.confirmPassword.sameAsPassword">@messages("password.mismatch.message")</span>
                 </div>
             </div>
             <div class="row bordered-row paddedRow">

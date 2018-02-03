@@ -1,0 +1,11 @@
+@import play.api.i18n.Messages
+@import org.webjars.play.WebJarsUtil
+@import com.rxu.duoesports.models.User
+
+@(user: User)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+
+@com.rxu.duoesports.views.html.main(messages("home.title"), Some(user)) {
+    @com.rxu.duoesports.views.html.account.accountSidebar("LoL Account"){
+        <h1>League of Legends Account</h1>
+    }
+}

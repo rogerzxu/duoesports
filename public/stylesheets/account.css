@@ -1,0 +1,64 @@
+h1 {
+    text-align: left;
+    padding-bottom: 30px;
+}
+
+.error {
+    border-color: red;
+    background: #FDD;
+}
+
+.error:focus {
+    outline-color: #F99;
+}
+
+.valid {
+    border-color: #5A5;
+    background: #EFE;
+}
+
+.valid:focus {
+    outline-color: #8E8;
+}
+
+.regionSelect {
+    width: 100px;
+    height: 32px;
+}
+
+.wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
+#sidebar {
+    min-width: 150px;
+    max-width: 150px;
+}
+
+#profile-content {
+    width: 750px;
+}
+
+.nav-item {
+    padding: 5px 0 5px 5px;
+}
+
+.active {
+    color: black;
+    border-left: 2px solid indianred;
+}
+
+.saveAccountButton {
+    background-color: #00b16a;
+    border-radius: 2px;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    padding: 15px 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    width: 180px;
+    height: 60px;
+}

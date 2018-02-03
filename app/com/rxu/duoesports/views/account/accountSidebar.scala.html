@@ -1,0 +1,38 @@
+@import org.webjars.play.WebJarsUtil
+@import play.api.i18n.Messages
+
+@(page: String)(profileContent: Html)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+
+<link rel="stylesheet" href="@assets.path("stylesheets/account.css")">
+<div class="wrapper">
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Profile</h3>
+        </div>
+        <ul class="list-unstyled components">
+            @if(page == "Account") {
+                <li class="nav-item active">Account</li>
+            } else {
+                <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.account">Account</a></li>
+            }
+            @if(page == "Password") {
+                <li class="nav-item active">Password</li>
+            } else {
+                <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.changePasswordPage">Password</a></li>
+            }
+            @if(page == "Player") {
+                <li class="nav-item active">Player</li>
+            } else {
+                <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.player">Player</a></li>
+            }
+            @if(page == "LoL Account") {
+                <li class="nav-item active">LoL Account</li>
+            } else {
+                <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.lolAccount">LoL Account</a></li>
+            }
+        </ul>
+    </nav>
+    <div id="profile-content">
+        @profileContent
+    </div>
+</div>

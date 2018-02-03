@@ -77,8 +77,7 @@
                             <a class="navbar-brand" href="#" v-on:click="showProfileMenu" v-on:click.self.prevent>@user.get.firstName</a>
                             <div id="profile-menu" class="panel panel-default" :class="{hidden: isHidden}">
                                 <div class="panel-body">
-                                    <a href="@com.rxu.duoesports.controller.routes.AccountController.account">Account</a>
-                                    <a href="@com.rxu.duoesports.controller.routes.UserController.profile(user.get.id.get)">Profile</a>
+                                    <a href="@com.rxu.duoesports.controller.routes.AccountController.account">Account Settings</a>
                                 </div>
                                 <div class="panel-footer">
                                     <a href="@com.rxu.duoesports.controller.routes.SignInController.signOut">Sign-Out</a>

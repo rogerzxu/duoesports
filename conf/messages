@@ -19,5 +19,6 @@ signup.success = You have successfully signed up! You should receive a confirmat
 signup.failure = An error occurred while signing up. Please try again.
 signup.header = Registration
 signup.invalid.email.message = Invalid email format
-signup.password.minLength.message = Password must be at least 8 characters
-signup.password.mismatch.message = Passwords must match
+
+password.minLength.message = Password must be at least 8 characters
+password.mismatch.message = Passwords must match

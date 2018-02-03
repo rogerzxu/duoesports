@@ -69,7 +69,7 @@ textarea {
     margin-top: 55px;
     right: 0;
     padding: 10px;
-    width: 120px;
+    width: 160px;
 }
 
 .signInButton {
@@ -111,4 +111,8 @@ footer {
     height: 50px;
     background-color: #131519;
     color: rgba(255,255,255,.6);
+}
+
+h1 {
+    text-align: center;
 }

@@ -30,7 +30,7 @@ class UserService @Inject()(
   }
 
   def create(user: User): Future[Long] = {
-    logger.debug(s"Creating user: $user")
+    logger.info(s"Creating user: $user")
     userDao.create(user) map {
       case Some(userId) => userId
       case None => throw CreateUserException(s"Failed to create user $user")

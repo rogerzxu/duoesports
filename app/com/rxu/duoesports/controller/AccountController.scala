@@ -33,6 +33,18 @@ class AccountController @Inject()(
     Ok(com.rxu.duoesports.views.html.account.account(request.identity))
   }
 
+  def changePasswordPage = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    Ok(com.rxu.duoesports.views.html.account.password(request.identity))
+  }
+
+  def player = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    Ok(com.rxu.duoesports.views.html.account.player(request.identity))
+  }
+
+  def lolAccount = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    Ok(com.rxu.duoesports.views.html.account.lolAccount(request.identity))
+  }
+
   def getVerificationCode = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     userService.getVerificationCode(request.identity.email) map { code =>
       Ok(Json.obj("verification_code" -> code))

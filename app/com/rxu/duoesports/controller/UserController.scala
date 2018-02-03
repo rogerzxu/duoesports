@@ -26,11 +26,5 @@ class UserController @Inject()(
   with LazyLogging
   with I18nSupport {
 
-  def profile(userId: Long) = silhouette.UserAwareAction.async { implicit request: UserAwareRequest[DefaultEnv, AnyContent] =>
-    userService.findById(userId) map {
-      case Some(user) => Ok(com.rxu.duoesports.views.html.users.profile(user)(request.identity))
-      case _ => NotFound("User Not Found")
-    }
-  }
 
 }
