@@ -48,7 +48,7 @@ class SignUpController @Inject()(
   def signUp = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
     SignUpForm.form.bindFromRequest.fold(
       form => {
-        logger.warn(s"Received invalid sign-up form: ${form.toString}")
+        logger.error(s"Received invalid sign-up form: ${form.toString}")
         Future.successful(BadRequest(Messages("signup.failure")))
       },
       signUpData => {
@@ -57,8 +57,7 @@ class SignUpController @Inject()(
           case Some(_) => Future.successful(Conflict(Messages("signup.duplicate.email")))
           case None =>
             val authInfo = passwordHasherRegistry.current.hash(signUpData.password)
-            val user = User(
-              id = None,
+            val user = User(id = None,
               email = signUpData.email,
               password = authInfo.password,
               firstName = signUpData.firstName,

@@ -8,6 +8,7 @@ import org.webjars.play.WebJarsUtil
 import play.api.{controllers, _}
 import play.api.mvc.Results._
 import play.api.http.DefaultHttpErrorHandler
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.RequestHeader
 import play.api.routing.Router
@@ -28,20 +29,20 @@ class ErrorHandler @Inject()(
   with I18nSupport {
 
   override def onProdServerError(request: RequestHeader, exception: UsefulException) = {
-    logger.error("Internal Server Error", exception)
+    logger.error("PROD Internal Server Error", exception)
     implicit val req: RequestHeader = request
-    Future.successful(InternalServerError(com.rxu.duoesports.views.html.errors.internalServerError()))
+    Future.successful(Redirect(com.rxu.duoesports.controller.routes.ErrorController.internalServerError()))
   }
 
   override def onDevServerError(request: RequestHeader, exception: UsefulException) = {
-    logger.error("Internal Server Error", exception)
+    logger.error("DEV Internal Server Error", exception)
     implicit val req: RequestHeader = request
-    Future.successful(InternalServerError(com.rxu.duoesports.views.html.errors.internalServerError()))
+    Future.successful(Redirect(com.rxu.duoesports.controller.routes.ErrorController.internalServerError()))
   }
 
   override def onNotFound(request: RequestHeader, message: String) = {
     implicit val req: RequestHeader = request
-    Future.successful(NotFound(com.rxu.duoesports.views.html.errors.notFound()))
+    Future.successful(Redirect(com.rxu.duoesports.controller.routes.ErrorController.notFound()))
   }
 
 }

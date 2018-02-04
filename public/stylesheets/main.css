@@ -53,7 +53,17 @@ textarea {
 .errorMsg {
     font-family: Lato, Helvetica, sans-serif;
     font-size: 12px;
-    color: #F99;
+    color: #ff7777;
+}
+
+.errorMsgLarge {
+    font-family: Lato, Helvetica, sans-serif;
+    color: #ff7777;
+}
+
+.successMsgLarge {
+    font-family: Lato, Helvetica, sans-serif;
+    color: #00b16a;
 }
 
 #sign-in-menu {

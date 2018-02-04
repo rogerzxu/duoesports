@@ -1,5 +1,8 @@
 home.title = Duo E-Sports Home
 
+account.accountInfo.save.failure = An error occurred while saving your account information. Please try again.
+account.accountInfo.save.success = Successfully updated account info!
+
 activation.title = Account Activation
 activation.success = Account activation successful!
 activation.failure = Account activation failed

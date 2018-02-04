@@ -2,12 +2,16 @@
 @import org.webjars.play.WebJarsUtil
 @import com.rxu.duoesports.models.User
 
+@import com.rxu.duoesports.models.Timezone
 @(user: User)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @com.rxu.duoesports.views.html.main(messages("home.title"), Some(user)) {
     @com.rxu.duoesports.views.html.account.accountSidebar("Account"){
         <h1>Account Settings</h1>
         <form v-on:submit="saveAccountSettings" id="accountSettingsForm">
+            <h4 class="successMsgLarge" :class="{hidden: !saveAccountSuccess}">{{ saveAccountSuccessMsg }}</h4>
+            <h4 class="errorMsgLarge" :class="{hidden: !saveAccountFailure}">{{ saveAccountFailureMsg }}</h4>
+            @helper.CSRF.formField
             <div class="form-group">
                 <div class="row bordered-row paddedRow">
                     <div class="col-md-4">
@@ -28,6 +32,23 @@
                     <div class="col-md-4">
                         <input v-model="lastName" v-on:input="$v.lastName.$touch" v-bind:class="{error: $v.lastName.$error, valid: $v.lastName.$dirty && !$v.lastName.$invalid}"
                         class="form-control" autocomplete="lname" name="lastName" id="lastName" placeholder="@user.lastName">
+                    </div>
+                </div>
+                <div class="row bordered-row paddedRow">
+                    <div class="col-md-4">
+                        <label for="timezone">Time-Zone</label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <select class="form-control" name="timezone" form="accountSettingsForm">
+                                <option @if(user.timezone == Timezone.EASTERN){selected="selected"}>Eastern</option>
+                                <option @if(user.timezone == Timezone.CENTRAL){selected="selected"}>Central</option>
+                                <option @if(user.timezone == Timezone.MOUNTAIN){selected="selected"}>Mountain</option>
+                                <option @if(user.timezone == Timezone.PACIFIC){selected="selected"}>Pacific</option>
+                                <option @if(user.timezone == Timezone.ALASKA){selected="selected"}>Alaska</option>
+                                <option @if(user.timezone == Timezone.HAWAII){selected="selected"}>Hawaii</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="row bordered-row paddedRow">

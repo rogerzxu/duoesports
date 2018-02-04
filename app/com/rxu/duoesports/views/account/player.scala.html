@@ -7,5 +7,36 @@
 @com.rxu.duoesports.views.html.main(messages("home.title"), Some(user)) {
     @com.rxu.duoesports.views.html.account.accountSidebar("Player"){
         <h1>Player Profile</h1>
+        <form v-on:submit="savePlayerProfile" id="playerProfileForm">
+            <div class="form-group">
+                <div class="row bordered-row paddedRow">
+                    <div class="col-md-4">
+                        <label>Email</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input class="form-control" disabled value="@user.email">
+                    </div>
+                </div>
+                <div class="row bordered-row paddedRow">
+                    <div class="col-md-4">
+                        <label>Name</label>
+                    </div>
+                    <div class="col-md-4">
+                        <input v-model="firstName" v-on:input="$v.firstName.$touch" v-bind:class="{error: $v.firstName.$error, valid: $v.firstName.$dirty && !$v.firstName.$invalid}"
+                        class="form-control" autocomplete="fname" name="firstName" id="firstName" placeholder="@user.firstName">
+                    </div>
+                    <div class="col-md-4">
+                        <input v-model="lastName" v-on:input="$v.lastName.$touch" v-bind:class="{error: $v.lastName.$error, valid: $v.lastName.$dirty && !$v.lastName.$invalid}"
+                        class="form-control" autocomplete="lname" name="lastName" id="lastName" placeholder="@user.lastName">
+                    </div>
+                </div>
+                <div class="row bordered-row paddedRow">
+                    <div class="col-md-12">
+                        <button :disabled="$v.$invalid" type="submit" class="btn btn-lg saveAccountButton" id="save-account-settings-button">Save</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     }
+    <script src="@assets.path("javascripts/playerProfile.js")"></script>
 }

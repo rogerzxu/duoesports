@@ -1,8 +1,9 @@
 @import play.api.i18n.Messages
 @import org.webjars.play.WebJarsUtil
+@import com.rxu.duoesports.models.User
 
-@()(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+@(user: Option[User])(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@com.rxu.duoesports.views.html.main(messages("signup.title")) {
-    <h1>An Internal Error Occured</h1>
+@com.rxu.duoesports.views.html.main(messages("signup.title"), user) {
+    <h1>An Internal Error Occurred</h1>
 }

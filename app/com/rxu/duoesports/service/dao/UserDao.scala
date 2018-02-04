@@ -3,6 +3,7 @@ package com.rxu.duoesports.service.dao
 import anorm._
 import com.google.inject.name.Named
 import com.google.inject.{Inject, Singleton}
+import com.rxu.duoesports.dto.UpdateAccountInfo
 import com.rxu.duoesports.models.User
 import com.typesafe.scalalogging.LazyLogging
 import play.api.db.Database
@@ -38,9 +39,9 @@ class UserDao @Inject()(
     }
   }
 
-  def activate(id: Long): Future[Unit] = Future {
+  def activate(id: Long): Future[Int] = Future {
     db.withConnection { implicit c =>
-      val result = SQL(
+      SQL(
         s"""
            UPDATE User SET activated = true where id = {id}
          """
@@ -48,15 +49,21 @@ class UserDao @Inject()(
     }
   }
 
-  def addVerificationCode(email: String, code: String): Future[Unit] = Future {
+  def update(userId: Long, updateAccountInfo: UpdateAccountInfo): Future[Int] = Future {
     db.withConnection { implicit c =>
-      val result = SQL(
+      SQL(
         s"""
-           UPDATE User SET verification_code = {verification_code} where email = {email}
+           UPDATE User SET
+            firstName = {firstName},
+            lastName = {lastName},
+            timezone = {timezone}
+           WHERE id = {id}
          """
       ).on(
-        'verification_code -> code,
-        'email -> email
+        'firstName -> updateAccountInfo.firstName,
+        'lastName -> updateAccountInfo.lastName,
+        'timezone -> updateAccountInfo.getTimezone.toString,
+        'id -> userId
       ).executeUpdate()
     }
   }
@@ -74,11 +81,14 @@ class UserDao @Inject()(
              summonerName,
              summoner_id,
              region,
-             verification_code,
              team_id,
-             roles,
              activated,
-             eligible)
+             eligible,
+             roles,
+             description,
+             discordId,
+             profileImageUrl,
+             timezone)
            VALUES(
              {email},
              {password},
@@ -88,11 +98,14 @@ class UserDao @Inject()(
              {summonerName},
              {summoner_id},
              {region},
-             {verification_code},
              {team_id},
-             {roles},
              {activated},
-             {eligible})
+             {eligible},
+             {roles},
+             {description},
+             {discordId},
+             {profileImageUrl},
+             {timezone})
         """
       ).on(
         'email -> user.email,
@@ -103,11 +116,14 @@ class UserDao @Inject()(
         'summonerName -> user.summonerName.orNull,
         'summoner_id -> user.summoner_id.map(_.toString).orNull,
         'region -> user.region.map(_.toString).orNull,
-        'verification_code -> user.verification_code.orNull,
         'team_id -> user.team_id.map(_.toString).orNull,
-        'roles -> user.roles.mkString(","),
         'activated -> user.activated,
-        'eligible -> user.eligible
+        'eligible -> user.eligible,
+        'roles -> user.roles.mkString(","),
+        'description -> user.description.orNull,
+        'discordId -> user.discordId.orNull,
+        'profileImageUrl -> user.profileImageUrl.orNull,
+        'timezone -> user.timezone.toString
       ).executeInsert()
     }
   }
