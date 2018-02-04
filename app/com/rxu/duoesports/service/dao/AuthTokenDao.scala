@@ -26,6 +26,17 @@ class AuthTokenDao @Inject()(
     }
   }
 
+  def deleteByUser(userId: Long): Future[Boolean] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           DELETE FROM AuthToken
+           WHERE user_id = {user_id}
+         """
+      ).on('user_id -> userId).execute()
+    }
+  }
+
   def upsert(authToken: AuthToken): Future[Unit] = Future {
     db.withConnection { implicit c =>
       SQL(

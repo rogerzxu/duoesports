@@ -53,7 +53,11 @@ class AuthTokenService @Inject()(
         userService.activate(authToken.user_id) flatMap {
           case 0 => logger.error(s"MariaDB failed to activate user $id")
             Future.failed(ActivateUserException(s"MariaDB failed to activate user $id"))
-          case _ => Future.successful(())
+          case _ => for {
+            _ <- authTokenDao.deleteByUser(authToken.user_id)
+          } yield {
+            logger.info(s"Deleting auth tokens for activated user ${authToken.user_id}")
+          }
         }
       } else {
         logger.error(s"Activation Token $authToken has already expired")

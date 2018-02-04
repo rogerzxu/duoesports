@@ -6,9 +6,8 @@ import com.rxu.duoesports.models.Region.Region
 import com.rxu.duoesports.models.Role.Role
 import com.rxu.duoesports.models.Timezone.Timezone
 import com.rxu.duoesports.models.UserRole.UserRole
-import com.rxu.duoesports.util.TimestampHelpers
 
-import java.sql.Timestamp
+import java.time.LocalDateTime
 
 case class User(
   id: Option[Long],
@@ -28,8 +27,8 @@ case class User(
   discordId: Option[String] = None,
   profileImageUrl: Option[String] = None,
   timezone: Timezone = Timezone.EASTERN,
-  created_at: Timestamp = new Timestamp(System.currentTimeMillis()),
-  updated_at: Timestamp = new Timestamp(System.currentTimeMillis())
+  created_at: LocalDateTime = LocalDateTime.now(),
+  updated_at: LocalDateTime = LocalDateTime.now()
 ) extends Identity {
 
   def normalize: User = this.copy(email = email.trim.toLowerCase,
@@ -38,7 +37,7 @@ case class User(
   )
 }
 
-object User extends TimestampHelpers {
+object User {
   implicit val regionOptColumn = Column.columnToOption[Region]
   val parser: RowParser[User] = Macro.namedParser[User]
 }
