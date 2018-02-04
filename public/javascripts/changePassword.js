@@ -6,11 +6,28 @@ new Vue({
   data: {
     currentPassword: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    changePasswordSuccess: false,
+    changePasswordSuccessMsg: '',
+    changePasswordFailure: false,
+    changePasswordFailureMsg: ''
   },
   methods: {
     changePassword: function(event) {
       event.preventDefault();
+      var $form = $('#changePasswordForm');
+
+      this.$http.headers.common['X-CSRF-TOKEN'] = document.querySelector('[name="csrfToken"]').getAttribute('value');
+      this.$http.post($form.attr('action'), $form.serialize(), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+        .then(function(success) {
+          this.changePasswordSuccess = true;
+          this.changePasswordSuccessMsg = success.data;
+          this.changePasswordFailure = false;
+        }, function(failure) {
+          this.changePasswordFailure = true;
+          this.changePasswordFailureMsg = failure.data;
+          this.changePasswordSuccess = false;
+        });
     }
   },
   validations: {

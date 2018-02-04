@@ -2,10 +2,16 @@ home.title = Duo E-Sports Home
 
 account.accountInfo.save.failure = An error occurred while saving your account information. Please try again.
 account.accountInfo.save.success = Successfully updated account info!
+account.changePassword.save.invalidCurrentPassword = Current password is invalid.
+account.changePassword.save.failure = An error occurred while changing your password. Please try again.
+account.changePassword.save.success = Successfully updated password!
 
 activation.title = Account Activation
 activation.success = Account activation successful!
 activation.failure = Account activation failed
+
+password.minLength.message = Password must be at least 8 characters
+password.mismatch.message = Passwords must match
 
 resend.activation.success = Successfully resent account activation email!
 resend.activation.failure = Failed to resend account activation email:
@@ -22,6 +28,3 @@ signup.success = You have successfully signed up! You should receive a confirmat
 signup.failure = An error occurred while signing up. Please try again.
 signup.header = Registration
 signup.invalid.email.message = Invalid email format
-
-password.minLength.message = Password must be at least 8 characters
-password.mismatch.message = Passwords must match

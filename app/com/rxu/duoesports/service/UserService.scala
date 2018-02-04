@@ -19,6 +19,7 @@ class UserService @Inject()(
   with LazyLogging {
 
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
+    //TODO: Caching
     logger.trace(s"Retrieving user: $loginInfo")
     userDao.findByEmail(email = loginInfo.providerKey)
   }

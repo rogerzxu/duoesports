@@ -65,10 +65,10 @@ class SignInController @Inject()(
           result
         }) recover {
           case ex: AccessDeniedException =>
-            logger.info(s"User ${signInData.email} failed to login", ex)
+            logger.warn(s"User ${signInData.email} failed to login", ex)
             Unauthorized(Messages("signin.not.activated"))
           case ex: ProviderException =>
-            logger.info(s"User ${signInData.email} failed to login: ${ex.getMessage}")
+            logger.warn(s"User ${signInData.email} failed to login: ${ex.getMessage}")
             Unauthorized(Messages("signin.invalid.credentials"))
         }
       }

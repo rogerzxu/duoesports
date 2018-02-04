@@ -17,7 +17,7 @@ new Vue({
       var $form = $('#accountSettingsForm');
 
       this.$http.headers.common['X-CSRF-TOKEN'] = document.querySelector('[name="csrfToken"]').getAttribute('value');
-      this.$http.post('/account', $form.serialize(), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+      this.$http.post($form.attr('action'), $form.serialize(), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
         .then(function(success) {
           this.saveAccountSuccess = true;
           this.saveAccountSuccessMsg = success.data;

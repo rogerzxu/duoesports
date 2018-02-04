@@ -5,13 +5,13 @@
 <div id="resendActivation" class="form-group text-center">
     <h3>@messages("resend.activation.label")</h3>
     <form id="resendActivationForm" v-on:submit="resendActivation" novalidate action="@resendUrl" method="GET">
-        <div class="row paddedRow">
+        <div class="row rowLargePadding">
             <div class="col-md-12 text-center">
                 <button type="submit" class="btn btn-primary my-2" id="resendActivationButton">Resend Activation Email</button>
             </div>
         </div>
     </form>
-    <div class="row" :class="{hidden: hideResentMsg}">
+    <div class="row rowSmallPadding" :class="{hidden: hideResentMsg}">
         <div class="col-md-12 text-center">
             <p>{{ resentActivationMsg }}</p>
         </div>

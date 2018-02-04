@@ -9,7 +9,7 @@
         <h1>Player Profile</h1>
         <form v-on:submit="savePlayerProfile" id="playerProfileForm">
             <div class="form-group">
-                <div class="row bordered-row paddedRow">
+                <div class="row bordered-row rowLargePadding">
                     <div class="col-md-4">
                         <label>Email</label>
                     </div>
@@ -17,7 +17,7 @@
                         <input class="form-control" disabled value="@user.email">
                     </div>
                 </div>
-                <div class="row bordered-row paddedRow">
+                <div class="row bordered-row rowLargePadding">
                     <div class="col-md-4">
                         <label>Name</label>
                     </div>
@@ -30,7 +30,7 @@
                         class="form-control" autocomplete="lname" name="lastName" id="lastName" placeholder="@user.lastName">
                     </div>
                 </div>
-                <div class="row bordered-row paddedRow">
+                <div class="row bordered-row rowLargePadding">
                     <div class="col-md-12">
                         <button :disabled="$v.$invalid" type="submit" class="btn btn-lg saveAccountButton" id="save-account-settings-button">Save</button>
                     </div>

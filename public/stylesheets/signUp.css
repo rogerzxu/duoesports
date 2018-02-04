@@ -2,6 +2,20 @@ h1 {
     padding-bottom: 30px;
 }
 
+.error {
+    border-color: red;
+    background: #FDD;
+}
+
+.error:focus {
+    outline-color: #F99;
+}
+
+.regionSelect {
+    width: 100px;
+    height: 32px;
+}
+
 .signUpButton {
     background-color: #00b16a;
     border-radius: 2px;
@@ -16,15 +30,6 @@ h1 {
     height: 60px;
 }
 
-.error {
-    border-color: red;
-    background: #FDD;
-}
-
-.error:focus {
-    outline-color: #F99;
-}
-
 .valid {
     border-color: #5A5;
     background: #EFE;
@@ -32,9 +37,4 @@ h1 {
 
 .valid:focus {
     outline-color: #8E8;
-}
-
-.regionSelect {
-    width: 100px;
-    height: 32px;
 }

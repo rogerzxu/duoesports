@@ -8,12 +8,12 @@
 @com.rxu.duoesports.views.html.main(messages("home.title"), Some(user)) {
     @com.rxu.duoesports.views.html.account.accountSidebar("Account"){
         <h1>Account Settings</h1>
-        <form v-on:submit="saveAccountSettings" id="accountSettingsForm">
+        <form v-on:submit="saveAccountSettings" id="accountSettingsForm" action="@com.rxu.duoesports.controller.routes.AccountController.updateAccountInfo">
             <h4 class="successMsgLarge" :class="{hidden: !saveAccountSuccess}">{{ saveAccountSuccessMsg }}</h4>
             <h4 class="errorMsgLarge" :class="{hidden: !saveAccountFailure}">{{ saveAccountFailureMsg }}</h4>
             @helper.CSRF.formField
             <div class="form-group">
-                <div class="row bordered-row paddedRow">
+                <div class="row bordered-row rowLargePadding">
                     <div class="col-md-4">
                         <label>Email</label>
                     </div>
@@ -21,7 +21,7 @@
                         <input class="form-control" disabled value="@user.email">
                     </div>
                 </div>
-                <div class="row bordered-row paddedRow">
+                <div class="row bordered-row rowLargePadding">
                     <div class="col-md-4">
                         <label>Name</label>
                     </div>
@@ -34,7 +34,7 @@
                         class="form-control" autocomplete="lname" name="lastName" id="lastName" placeholder="@user.lastName">
                     </div>
                 </div>
-                <div class="row bordered-row paddedRow">
+                <div class="row bordered-row rowLargePadding">
                     <div class="col-md-4">
                         <label for="timezone">Time-Zone</label>
                     </div>
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row bordered-row paddedRow">
+                <div class="row bordered-row rowLargePadding">
                     <div class="col-md-12">
                         <button :disabled="$v.$invalid" type="submit" class="btn btn-lg saveAccountButton" id="save-account-settings-button">Save</button>
                     </div>
