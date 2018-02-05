@@ -20,11 +20,11 @@ new Vue({
       this.$http.post($form.attr('action'), $form.serialize(), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
         .then(function(success) {
           this.saveAccountSuccess = true;
-          this.saveAccountSuccessMsg = success.data;
+          this.saveAccountSuccessMsg = success.data['message'];
           this.saveAccountFailure = false;
         }, function(failure) {
           this.saveAccountFailure = true;
-          this.saveAccountFailureMsg = failure.data;
+          this.saveAccountFailureMsg = failure.data['message'];
           this.saveAccountSuccess = false;
         });
     }

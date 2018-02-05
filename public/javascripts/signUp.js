@@ -23,7 +23,7 @@ new Vue({
           window.location.href = "/signUp/success";
         }, function(failure) {
           this.signUpSuccess = false;
-          this.signUpErrorMsg = failure.data;
+          this.signUpErrorMsg = failure.data['message'];
         });
     }
   },

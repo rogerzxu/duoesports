@@ -21,11 +21,11 @@ new Vue({
       this.$http.post($form.attr('action'), $form.serialize(), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
         .then(function(success) {
           this.changePasswordSuccess = true;
-          this.changePasswordSuccessMsg = success.data;
+          this.changePasswordSuccessMsg = success.data['message'];
           this.changePasswordFailure = false;
         }, function(failure) {
           this.changePasswordFailure = true;
-          this.changePasswordFailureMsg = failure.data;
+          this.changePasswordFailureMsg = failure.data['message'];
           this.changePasswordSuccess = false;
         });
     }

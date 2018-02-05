@@ -11,9 +11,9 @@ new Vue({
 
       this.$http.get($form.attr('action'))
         .then(function(success) {
-          this.resentActivationMsg = success.data;
+          this.resentActivationMsg = success.data['message'];
         }, function(failure) {
-          this.resentActivationMsg = failure.data;
+          this.resentActivationMsg = failure.data['message'];
         });
       this.hideResentMsg = false;
     }

@@ -15,6 +15,7 @@ import com.rxu.duoesports.dto.SignInForm
 import com.rxu.duoesports.models.User
 import com.rxu.duoesports.security.DefaultEnv
 import com.rxu.duoesports.service.UserService
+import com.rxu.duoesports.util.ApiResponseHelpers
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.{I18nSupport, Messages}
@@ -35,13 +36,14 @@ class SignInController @Inject()(
   ec: ExecutionContext
 ) extends AbstractController(components)
   with LazyLogging
-  with I18nSupport {
+  with I18nSupport
+  with ApiResponseHelpers {
 
   def signIn = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
     SignInForm.form.bindFromRequest.fold(
       signInForm => {
         logger.warn(s"Received invalid sign-up form: ${signInForm.toString}")
-        Future.successful(BadRequest(Messages("signin.invalid.form")))
+        Future.successful(ApiBadRequest(Messages("signin.invalid.form")))
       },
       signInData => {
         val credentials = Credentials(signInData.email, signInData.password)
@@ -58,7 +60,7 @@ class SignInController @Inject()(
             )
           } else auth
           authValue <- silhouette.env.authenticatorService.init(authenticator)
-          result <- silhouette.env.authenticatorService.embed(authValue, Ok(Messages("signin.success")))
+          result <- silhouette.env.authenticatorService.embed(authValue, ApiOk(Messages("signin.success")))
         } yield {
           silhouette.env.eventBus.publish(LoginEvent(user, request))
           logger.info(s"User ${user.email} successfully logged in")
@@ -66,10 +68,10 @@ class SignInController @Inject()(
         }) recover {
           case ex: AccessDeniedException =>
             logger.warn(s"User ${signInData.email} failed to login", ex)
-            Unauthorized(Messages("signin.not.activated"))
+            ApiUnauthorized(Messages("signin.not.activated"))
           case ex: ProviderException =>
             logger.warn(s"User ${signInData.email} failed to login: ${ex.getMessage}")
-            Unauthorized(Messages("signin.invalid.credentials"))
+            ApiUnauthorized(Messages("signin.invalid.credentials"))
         }
       }
     )

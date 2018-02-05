@@ -11,6 +11,7 @@ import com.rxu.duoesports.dto.SignUpForm
 import com.rxu.duoesports.models.{User, UserRole}
 import com.rxu.duoesports.security.DefaultEnv
 import com.rxu.duoesports.service.{AuthTokenService, MailerService, UserService}
+import com.rxu.duoesports.util.ApiResponseHelpers
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.{I18nSupport, Messages}
@@ -32,7 +33,8 @@ class SignUpController @Inject()(
   ec: ExecutionContext
 ) extends AbstractController(components)
   with LazyLogging
-  with I18nSupport {
+  with I18nSupport
+  with ApiResponseHelpers {
 
   def view = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
     Ok(com.rxu.duoesports.views.html.signUp.signUp())
@@ -49,12 +51,12 @@ class SignUpController @Inject()(
     SignUpForm.form.bindFromRequest.fold(
       form => {
         logger.error(s"Received invalid sign-up form: ${form.toString}")
-        Future.successful(BadRequest(Messages("signup.failure")))
+        Future.successful(ApiBadRequest(Messages("signup.failure")))
       },
       signUpData => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, signUpData.email)
         userService.retrieve(loginInfo) flatMap {
-          case Some(_) => Future.successful(Conflict(Messages("signup.duplicate.email")))
+          case Some(_) => Future.successful(ApiBadRequest(Messages("signup.duplicate.email")))
           case None =>
             val authInfo = passwordHasherRegistry.current.hash(signUpData.password)
             val user = User(id = 0,
@@ -70,7 +72,7 @@ class SignUpController @Inject()(
               _ <- authTokenService.generateAndSendEmail(userId)
             } yield {
               silhouette.env.eventBus.publish(SignUpEvent(user, request))
-              Ok(Messages("signup.success")) //TODO: Secure cookie
+              ApiOk(Messages("signup.success")) //TODO: Secure cookie
                 .withCookies(Cookie("duoesportsEmail", user.email))
                 .bakeCookies()
             }

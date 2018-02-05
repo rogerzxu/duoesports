@@ -45,10 +45,10 @@ class AccountController @Inject()(
     UpdateAccountInfoForm.form.bindFromRequest.fold(
       badForm => {
         logger.error(s"Received invalid account info form: ${badForm.toString}")
-        Future.successful(BadRequest(Messages("account.accountInfo.save.failure")))
+        Future.successful(ApiBadRequest(Messages("account.accountInfo.save.failure")))
       },
-      updateAccountInfo => userService.update(request.identity, updateAccountInfo) map (_ => Ok(Messages("account.accountInfo.save.success"))) recover {
-        case _: UpdateUserException => InternalServerError(Messages("account.accountInfo.save.failure"))
+      updateAccountInfo => userService.update(request.identity, updateAccountInfo) map (_ => ApiOk(Messages("account.accountInfo.save.success"))) recover {
+        case _: UpdateUserException => ApiInternalError(Messages("account.accountInfo.save.failure"))
       }
     )
   }
@@ -61,7 +61,7 @@ class AccountController @Inject()(
     ChangePasswordForm.form.bindFromRequest.fold(
       badForm => {
         logger.error(s"Received invalid change password form: ${badForm.toString}")
-        Future.successful(BadRequest(Messages("account.changePassword.save.failure")))
+        Future.successful(ApiBadRequest(Messages("account.changePassword.save.failure")))
       },
       changePasswordData => {
         val credentials = Credentials(request.identity.email, changePasswordData.currentPassword)
@@ -71,11 +71,11 @@ class AccountController @Inject()(
           _ <- authInfoRepository.update[PasswordInfo](loginInfo, passwordInfo)
         } yield {
           logger.info(s"User ${request.identity.email} successfully changed password")
-          Ok(Messages("account.changePassword.save.success"))
+          ApiOk(Messages("account.changePassword.save.success"))
         }) recover {
           case ex: ProviderException => {
             logger.warn(s"User ${request.identity.email} failed to change password: ${ex.getMessage}")
-            BadRequest(Messages("account.changePassword.save.invalidCurrentPassword"))
+            ApiBadRequest(Messages("account.changePassword.save.invalidCurrentPassword"))
           }
         }
       }
@@ -102,8 +102,8 @@ class AccountController @Inject()(
   }
 
   def sendActivationEmail(email: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
-    authTokenService.generateAndSendEmail(email) map (_ => Ok(Messages("resend.activation.success"))) recover {
-      case ex: Throwable => InternalServerError(Messages("resend.activation.failure") + s" ${ex.getMessage}")
+    authTokenService.generateAndSendEmail(email) map (_ => ApiOk(Messages("resend.activation.success"))) recover {
+      case ex: Throwable => ApiInternalError(Messages("resend.activation.failure") + s" ${ex.getMessage}")
     }
   }
 

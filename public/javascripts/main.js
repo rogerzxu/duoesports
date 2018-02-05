@@ -34,7 +34,7 @@ new Vue({
     },
 
     errorCallBack: function (response) {
-      this.signInErrorMsg = response.data;
+      this.signInErrorMsg = response.data['message'];
       this.signInSuccess = false;
     }
   },

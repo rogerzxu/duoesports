@@ -35,7 +35,7 @@ class ErrorHandler @Inject()(
     Future.successful{
       request.contentType match {
         case Some(ct) if ct equalsIgnoreCase "application/json" => ApiInternalError(s"An internal error occurred: ${exception.getMessage}")
-        case Some(ct) if ct equalsIgnoreCase "application/x-www-form-urlencoded" => InternalServerError(s"An internal error occurred: ${exception.getMessage}")
+        case Some(ct) if ct equalsIgnoreCase "application/x-www-form-urlencoded" => ApiInternalError(s"An internal error occurred: ${exception.getMessage}")
         case _ => Redirect(com.rxu.duoesports.controller.routes.ErrorController.internalServerError())
       }
     }
@@ -47,7 +47,7 @@ class ErrorHandler @Inject()(
     Future.successful{
       request.contentType match {
         case Some(ct) if ct equalsIgnoreCase "application/json" => ApiInternalError(s"An internal error occurred: ${exception.getMessage}")
-        case Some(ct) if ct equalsIgnoreCase "application/x-www-form-urlencoded" => InternalServerError(s"An internal error occurred: ${exception.getMessage}")
+        case Some(ct) if ct equalsIgnoreCase "application/x-www-form-urlencoded" => ApiInternalError(s"An internal error occurred: ${exception.getMessage}")
         case _ => Redirect(com.rxu.duoesports.controller.routes.ErrorController.internalServerError())
       }
     }
@@ -58,7 +58,7 @@ class ErrorHandler @Inject()(
     Future.successful{
       request.contentType match {
         case Some(ct) if ct equalsIgnoreCase "application/json" => ApiNotFound(s"Not found: $message")
-        case Some(ct) if ct equalsIgnoreCase "application/x-www-form-urlencoded" => NotFound(s"Not found: $message")
+        case Some(ct) if ct equalsIgnoreCase "application/x-www-form-urlencoded" => ApiNotFound(s"Not found: $message")
         case _ => Redirect(com.rxu.duoesports.controller.routes.ErrorController.notFound())
       }
     }
