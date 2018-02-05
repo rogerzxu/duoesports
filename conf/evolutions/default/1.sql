@@ -17,7 +17,9 @@ CREATE TABLE User (
   description       TEXT                                                                     DEFAULT NULL,
   discordId         VARCHAR(100)                                                             DEFAULT NULL,
   profileImageUrl   VARCHAR(100)                                                             DEFAULT NULL,
-  timezone          VARCHAR(30)                                                               DEFAULT 'EST',
+  timezone          VARCHAR(30)                                                              DEFAULT 'EST',
+  rank              VARCHAR(20)                                                              DEFAULT NULL,
+  alts              VARCHAR(500)                                                             DEFAULT NULL,
   updated_at        TIMESTAMP                                                                DEFAULT NOW() ON UPDATE NOW(),
   created_at        TIMESTAMP                                                                DEFAULT NOW(),
 
@@ -35,6 +37,15 @@ CREATE TABLE AuthToken (
   CONSTRAINT auth_token_user_id FOREIGN KEY (user_id) REFERENCES User (id) ON DELETE CASCADE
 );
 
+CREATE TABLE VerificationCode (
+  user_id           BIGINT(20) NOT NULL,
+  code              VARCHAR(50) NOT NULL,
+
+  CONSTRAINT verification_code_pk PRIMARY KEY (user_id)
+);
+
 # --- !Downs
 
+DROP TABLE VerificationCode;
+DROP TABLE AuthToken;
 DROP TABLE User;

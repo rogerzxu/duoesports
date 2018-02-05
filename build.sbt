@@ -9,6 +9,7 @@ resolvers += Resolver.jcenterRepo
 libraryDependencies ++= Seq(
   jdbc,
   evolutions,
+  ehcache,
   "com.typesafe.play" % "anorm_2.12" % "2.5.3",
   "org.mariadb.jdbc" % "mariadb-java-client" % "2.2.0",
   "net.codingwell" %% "scala-guice" % "4.1.0",

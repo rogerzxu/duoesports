@@ -1,7 +1,8 @@
 package com.rxu.duoesports.models
 
-import anorm.{Column, Macro, RowParser}
+import anorm.{Column, Macro, MetaDataItem, RowParser, TypeDoesNotMatch}
 import com.mohiva.play.silhouette.api.Identity
+import com.rxu.duoesports.models.Rank.Rank
 import com.rxu.duoesports.models.Region.Region
 import com.rxu.duoesports.models.Role.Role
 import com.rxu.duoesports.models.Timezone.Timezone
@@ -10,7 +11,7 @@ import com.rxu.duoesports.models.UserRole.UserRole
 import java.time.LocalDateTime
 
 case class User(
-  id: Option[Long],
+  id: Long,
   email: String,
   password: String,
   firstName: String,
@@ -27,6 +28,8 @@ case class User(
   discordId: Option[String] = None,
   profileImageUrl: Option[String] = None,
   timezone: Timezone = Timezone.EASTERN,
+  rank: Option[Rank] = None,
+  alts: Seq[String] = Seq.empty,
   created_at: LocalDateTime = LocalDateTime.now(),
   updated_at: LocalDateTime = LocalDateTime.now()
 ) extends Identity {
@@ -35,9 +38,20 @@ case class User(
     firstName = firstName.trim.capitalize,
     lastName = lastName.trim.capitalize
   )
+
+  def getCacheKey: String = s"user-$email"
 }
 
 object User {
+  implicit val altsColumn: Column[Seq[String]] = Column.nonNull { (value, meta) =>
+    val MetaDataItem(qualified, nullable, clazz) = meta
+    value match {
+      case alts: String => Right {
+        alts.split(",").filter(_.nonEmpty)
+      }
+      case _ => Left(TypeDoesNotMatch(s"Unknown Role $value"))
+    }
+  }
   implicit val regionOptColumn = Column.columnToOption[Region]
   val parser: RowParser[User] = Macro.namedParser[User]
 }

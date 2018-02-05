@@ -57,7 +57,7 @@ class SignUpController @Inject()(
           case Some(_) => Future.successful(Conflict(Messages("signup.duplicate.email")))
           case None =>
             val authInfo = passwordHasherRegistry.current.hash(signUpData.password)
-            val user = User(id = None,
+            val user = User(id = 0,
               email = signUpData.email,
               password = authInfo.password,
               firstName = signUpData.firstName,

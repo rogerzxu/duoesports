@@ -47,7 +47,7 @@ class AccountController @Inject()(
         logger.error(s"Received invalid account info form: ${badForm.toString}")
         Future.successful(BadRequest(Messages("account.accountInfo.save.failure")))
       },
-      updateAccountInfo => userService.update(request.identity.id.get, updateAccountInfo) map (_ => Ok(Messages("account.accountInfo.save.success"))) recover {
+      updateAccountInfo => userService.update(request.identity, updateAccountInfo) map (_ => Ok(Messages("account.accountInfo.save.success"))) recover {
         case _: UpdateUserException => InternalServerError(Messages("account.accountInfo.save.failure"))
       }
     )
