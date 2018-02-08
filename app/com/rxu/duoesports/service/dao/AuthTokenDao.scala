@@ -13,7 +13,7 @@ class AuthTokenDao @Inject()(
   db: Database
 )(
   @Named("jdbcEC") implicit val ec: ExecutionContext
-) extends LazyLogging{
+) extends LazyLogging {
 
   def findById(id: String): Future[Option[AuthToken]] = Future {
     db.withConnection { implicit c =>

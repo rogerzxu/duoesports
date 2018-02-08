@@ -8,6 +8,12 @@ h1 {
     border-left: 2px solid indianred;
 }
 
+.discordIcon {
+    padding-left: 5px;
+    height: 32px;
+    width: 32px;
+}
+
 .error {
     border-color: red;
     background: #FDD;
@@ -19,6 +25,11 @@ h1 {
 
 .nav-item {
     padding: 5px 0 5px 5px;
+}
+
+.rankIcon {
+    height: 64px;
+    width: 64px
 }
 
 .regionSelect {
@@ -38,6 +49,13 @@ h1 {
     text-transform: uppercase;
     width: 180px;
     height: 60px;
+}
+
+.playerFieldText {
+    color: #000f47;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
 }
 
 .valid {

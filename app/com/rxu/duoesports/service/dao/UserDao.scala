@@ -3,7 +3,7 @@ package com.rxu.duoesports.service.dao
 import anorm._
 import com.google.inject.name.Named
 import com.google.inject.{Inject, Singleton}
-import com.rxu.duoesports.dto.UpdateAccountInfo
+import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo}
 import com.rxu.duoesports.models.User
 import com.typesafe.scalalogging.LazyLogging
 import play.api.db.Database
@@ -68,6 +68,25 @@ class UserDao @Inject()(
     }
   }
 
+  def update(userId: Long, updatePlayerInfo: UpdatePlayerInfo): Future[Int] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           UPDATE User SET
+            roles = {roles},
+            description = {description},
+            discordId = {discordId}
+           WHERE id = {id}
+         """
+      ).on(
+        'roles -> updatePlayerInfo.getRoles.mkString(","),
+        'description -> updatePlayerInfo.description.orNull,
+        'discordId -> updatePlayerInfo.discordId.orNull,
+        'id -> userId
+      ).executeUpdate()
+    }
+  }
+
   def create(user: User): Future[Option[Long]] = Future {
     db.withTransaction { implicit c =>
       SQL(
@@ -83,7 +102,7 @@ class UserDao @Inject()(
              region,
              team_id,
              activated,
-             eligible,
+             verified,
              roles,
              description,
              discordId,
@@ -102,7 +121,7 @@ class UserDao @Inject()(
              {region},
              {team_id},
              {activated},
-             {eligible},
+             {verified},
              {roles},
              {description},
              {discordId},
@@ -122,7 +141,7 @@ class UserDao @Inject()(
         'region -> user.region.map(_.toString).orNull,
         'team_id -> user.team_id.map(_.toString).orNull,
         'activated -> user.activated,
-        'eligible -> user.eligible,
+        'verified -> user.verified,
         'roles -> user.roles.mkString(","),
         'description -> user.description.orNull,
         'discordId -> user.discordId.orNull,

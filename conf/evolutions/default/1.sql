@@ -12,7 +12,7 @@ CREATE TABLE User (
   region            VARCHAR(5)                                                               DEFAULT NULL,
   team_id           BIGINT(20)                                                               DEFAULT NULL,
   activated         BOOLEAN                                                                  DEFAULT FALSE,
-  eligible          BOOLEAN                                                                  DEFAULT FALSE,
+  verified          BOOLEAN                                                                  DEFAULT FALSE,
   roles             SET ('Middle', 'Jungle', 'Top', 'Bottom', 'Support', 'Coach', 'Analyst') DEFAULT NULL,
   description       TEXT                                                                     DEFAULT NULL,
   discordId         VARCHAR(100)                                                             DEFAULT NULL,

@@ -22,7 +22,7 @@ case class User(
   region: Option[Region] = None,
   team_id: Option[Long] = None,
   activated: Boolean = false,
-  eligible: Boolean = false,
+  verified: Boolean = false,
   roles: Seq[Role] = Seq.empty,
   description: Option[String] = None,
   discordId: Option[String] = None,

@@ -3,7 +3,7 @@ package com.rxu.duoesports.service
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.services.IdentityService
-import com.rxu.duoesports.dto.UpdateAccountInfo
+import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo}
 import com.rxu.duoesports.service.dao.UserDao
 import com.rxu.duoesports.models.User
 import com.rxu.duoesports.util.{ActivateUserException, CreateUserException, GetUserException, UpdateUserException}
@@ -99,6 +99,19 @@ class UserService @Inject()(
       _ <- result match {
         case 0 => logger.error(s"MariaDB failed to update Account Info for ${user.id}")
           Future.failed(UpdateUserException(s"MariaDB failed to update Account Info for ${user.id}"))
+        case _ => Future.successful(())
+      }
+      _ <- cache.remove(user.getCacheKey)
+    } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+  }
+
+  def update(user: User, updatePlayerInfo: UpdatePlayerInfo): Future[Unit] = {
+    logger.info(s"Updating player info for ${user.id}: $updatePlayerInfo")
+    for {
+      result <- userDao.update(user.id, updatePlayerInfo)
+      _ <- result match {
+        case 0 => logger.error(s"MariaDB failed to update Player Info for ${user.id}")
+          Future.failed(UpdateUserException(s"MariaDB failed to update Player Info for ${user.id}"))
         case _ => Future.successful(())
       }
       _ <- cache.remove(user.getCacheKey)

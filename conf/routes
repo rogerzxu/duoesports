@@ -17,6 +17,7 @@ GET         /account/password                            @com.rxu.duoesports.con
 POST        /account/changePassword                      @com.rxu.duoesports.controller.AccountController.changePassword
 GET         /account/lol-account                         @com.rxu.duoesports.controller.AccountController.lolAccount
 GET         /account/player                              @com.rxu.duoesports.controller.AccountController.player
+POST        /account/player                              @com.rxu.duoesports.controller.AccountController.updatePlayer
 GET         /account/activate/:tokenId                   @com.rxu.duoesports.controller.AccountController.activate(tokenId: String)
 GET         /account/send-activation-email/:email        @com.rxu.duoesports.controller.AccountController.sendActivationEmail(email: String)
 

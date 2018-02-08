@@ -9,7 +9,7 @@ import com.mohiva.play.silhouette.api.exceptions.ProviderException
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.util.{Credentials, PasswordHasherRegistry, PasswordInfo}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
-import com.rxu.duoesports.dto.{ChangePasswordForm, UpdateAccountInfoForm}
+import com.rxu.duoesports.dto.{ChangePasswordForm, UpdateAccountInfoForm, UpdatePlayerInfo}
 import com.rxu.duoesports.security.DefaultEnv
 import com.rxu.duoesports.service.{AuthTokenService, UserService}
 import com.rxu.duoesports.util.{ActivateUserException, ApiResponseHelpers, UpdateUserException}
@@ -84,6 +84,18 @@ class AccountController @Inject()(
 
   def player = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Ok(com.rxu.duoesports.views.html.account.player(request.identity))
+  }
+
+  def updatePlayer() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    UpdatePlayerInfo.form.bindFromRequest.fold(
+      badForm => {
+        logger.error(s"Received invalid player info form: ${badForm.toString}")
+        Future.successful(ApiBadRequest(Messages("account.playerInfo.save.failure")))
+      },
+      updatePlayerInfo => userService.update(request.identity, updatePlayerInfo) map (_ => ApiOk(Messages("account.playerInfo.save.success"))) recover {
+        case _: UpdateUserException => ApiInternalError(Messages("account.playerInfo.save.failure"))
+      }
+    )
   }
 
   def lolAccount = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>

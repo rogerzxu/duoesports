@@ -1,6 +1,7 @@
 body {
     position: relative;
-    min-height: 1200px;
+    min-height: 100%;
+    padding-bottom: 100px;
 }
 
 footer {
@@ -13,6 +14,10 @@ footer {
 
 h1 {
     text-align: center;
+}
+
+html {
+    height:100%;
 }
 
 textarea {
@@ -73,6 +78,19 @@ textarea {
 .panel-footer {
     background-color: white;
     text-align: center;
+}
+
+.resendActivationButton {
+    background-color: #00b16a;
+    border-radius: 2px;
+    color: white;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    padding: 10px 15px;
+    text-decoration: none;
+    text-transform: uppercase;
+    width: 250px;
 }
 
 .rowLargePadding {

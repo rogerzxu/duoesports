@@ -1,42 +1,114 @@
 @import play.api.i18n.Messages
 @import org.webjars.play.WebJarsUtil
 @import com.rxu.duoesports.models.User
+@import com.rxu.duoesports.models.Role
+@import com.rxu.duoesports.util.TemplateHelpers
 
-@(user: User)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+@(user: User, teamName: Option[String] = None)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @com.rxu.duoesports.views.html.main(messages("home.title"), Some(user)) {
     @com.rxu.duoesports.views.html.account.accountSidebar("Player"){
-        <h1>Player Profile</h1>
-        <form v-on:submit="savePlayerProfile" id="playerProfileForm">
+        <h1>Player Info</h1>
+        <form v-on:submit="savePlayerInfo" id="playerInfoForm" action="@com.rxu.duoesports.controller.routes.AccountController.updatePlayer">
+            <h4 class="successMsgLarge" :class="{hidden: !savePlayerSuccess}">{{ savePlayerSuccessMsg }}</h4>
+            <h4 class="errorMsgLarge" :class="{hidden: !savePlayerFailure}">{{ savePlayerFailureMsg }}</h4>
+            @helper.CSRF.formField
             <div class="form-group">
                 <div class="row bordered-row rowLargePadding">
                     <div class="col-md-4">
-                        <label>Email</label>
+                        <label>Profile Image</label>
                     </div>
                     <div class="col-md-8">
-                        <input class="form-control" disabled value="@user.email">
+
                     </div>
                 </div>
                 <div class="row bordered-row rowLargePadding">
                     <div class="col-md-4">
-                        <label>Name</label>
+                        <label>Summoner</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input class="form-control" disabled value="@user.summonerName.getOrElse("")">
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <select disabled class="form-control">
+                                <option selected="selected">NA</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Alts</label>
+                    </div>
+                    <div class="col-md-6">
+                        @if(user.alts.isEmpty) {
+                            <span class="playerFieldText">@messages("account.playerInfo.alts.none")</span>
+                        } else {
+                            <ul class="list-group">
+                                @user.alts.map{ alt =><li class="list-group-item playerFieldText">@alt</li>}
+                            </ul>
+                        }
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Rank</label>
+                    </div>
+                    <div class="col-md-8">
+                        @user.rank.map { rank => <img class="rankIcon" src="@TemplateHelpers.getRankIconUrl(rank)"> }
+                        <span class="playerFieldText">@user.rank.getOrElse(messages("account.playerInfo.rank.none"))</span> <!-- TODO: Style correctly with rank -->
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Team</label>
+                    </div>
+                    <div class="col-md-8">
+                        <span class="playerFieldText">@teamName.getOrElse(messages("account.playerInfo.team.none"))</span> <!-- TODO: Style correctly with team -->
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Description</label>
+                    </div>
+                    <div class="col-md-8">
+                        <textarea class="form-control" rows="5" name="description" maxLength="1000" placeholder="@messages("account.playerInfo.description.placeholder")">@user.description.map{desc=>@desc}</textarea>
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Roles</label>
                     </div>
                     <div class="col-md-4">
-                        <input v-model="firstName" v-on:input="$v.firstName.$touch" v-bind:class="{error: $v.firstName.$error, valid: $v.firstName.$dirty && !$v.firstName.$invalid}"
-                        class="form-control" autocomplete="fname" name="firstName" id="firstName" placeholder="@user.firstName">
+                        <label class="checkbox"><input name="top"  type="checkbox" @if(user.roles.contains(Role.Top)){checked="checked"}>Top</label>
+                        <label class="checkbox"><input name="jungle" type="checkbox" @if(user.roles.contains(Role.Jungle)){checked="checked"}>Jungle</label>
+                        <label class="checkbox"><input name="mid" type="checkbox" @if(user.roles.contains(Role.Middle)){checked="checked"}>Middle</label>
                     </div>
                     <div class="col-md-4">
-                        <input v-model="lastName" v-on:input="$v.lastName.$touch" v-bind:class="{error: $v.lastName.$error, valid: $v.lastName.$dirty && !$v.lastName.$invalid}"
-                        class="form-control" autocomplete="lname" name="lastName" id="lastName" placeholder="@user.lastName">
+                        <label class="checkbox"><input name="bottom" type="checkbox" @if(user.roles.contains(Role.Bottom)){checked="checked"}>Bottom</label>
+                        <label class="checkbox"><input name="support" type="checkbox" @if(user.roles.contains(Role.Support)){checked="checked"}>Support</label>
+                        <label class="checkbox"><input name="coach" type="checkbox" @if(user.roles.contains(Role.Coach)){checked="checked"}>Coach</label>
+                        <label class="checkbox"><input name="analyst" type="checkbox" @if(user.roles.contains(Role.Analyst)){checked="checked"}>Analyst</label>
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Discord ID</label>
+                        <img class="discordIcon" src="https://s3.amazonaws.com/duoesports-images/icons/discord.svg">
+                    </div>
+                    <div class="col-md-8">
+                        <input class="form-control" name="discordId" placeholder="@messages("account.playerInfo.discord.placeholder")"
+                            @if(user.discordId.isDefined && user.discordId.get.nonEmpty){value="@user.discordId.get"}>
                     </div>
                 </div>
                 <div class="row bordered-row rowLargePadding">
                     <div class="col-md-12">
-                        <button :disabled="$v.$invalid" type="submit" class="btn btn-lg saveAccountButton" id="save-account-settings-button">Save</button>
+                        <button type="submit" class="btn btn-lg saveAccountButton" id="save-player-profile-button">Save</button>
                     </div>
                 </div>
             </div>
         </form>
     }
-    <script src="@assets.path("javascripts/playerProfile.js")"></script>
+    <script src="@assets.path("javascripts/playerInfo.js")"></script>
 }
