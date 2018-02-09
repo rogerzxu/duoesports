@@ -2,7 +2,6 @@
 @import org.webjars.play.WebJarsUtil
 @import com.rxu.duoesports.models.User
 @import com.rxu.duoesports.models.Role
-@import com.rxu.duoesports.util.TemplateHelpers
 
 @(user: User, teamName: Option[String] = None)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
@@ -18,46 +17,16 @@
                     <div class="col-md-4">
                         <label>Profile Image</label>
                     </div>
-                    <div class="col-md-8">
-
-                    </div>
-                </div>
-                <div class="row bordered-row rowLargePadding">
-                    <div class="col-md-4">
-                        <label>Summoner</label>
-                    </div>
-                    <div class="col-md-6">
-                        <input class="form-control" disabled value="@user.summonerName.getOrElse("")">
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <select disabled class="form-control">
-                                <option selected="selected">NA</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row bordered-row rowLargePadding">
-                    <div class="col-md-4">
-                        <label>Alts</label>
-                    </div>
-                    <div class="col-md-6">
-                        @if(user.alts.isEmpty) {
-                            <span class="playerFieldText">@messages("account.playerInfo.alts.none")</span>
-                        } else {
-                            <ul class="list-group">
-                                @user.alts.map{ alt =><li class="list-group-item playerFieldText">@alt</li>}
-                            </ul>
+                    <div class="col-md-5">
+                        @if(user.profileImageUrl.isDefined) {
+                            <img class="profileImage" src="@user.profileImageUrl.get">
                         }
                     </div>
-                </div>
-                <div class="row bordered-row rowLargePadding">
-                    <div class="col-md-4">
-                        <label>Rank</label>
-                    </div>
-                    <div class="col-md-8">
-                        @user.rank.map { rank => <img class="rankIcon" src="@TemplateHelpers.getRankIconUrl(rank)"> }
-                        <span class="playerFieldText">@user.rank.getOrElse(messages("account.playerInfo.rank.none"))</span> <!-- TODO: Style correctly with rank -->
+                    <div class="col-md-3">
+                        <input type="hidden" role="uploadcare-uploader" name="profileImage"
+                            @if(user.profileImageUrl.isDefined){value="@user.profileImageUrl.get"}
+                            data-image-shrink="512x512 100%"
+                            data-crop="" />
                     </div>
                 </div>
                 <div class="row bordered-row rowLargePadding">
@@ -65,7 +34,9 @@
                         <label>Team</label>
                     </div>
                     <div class="col-md-8">
-                        <span class="playerFieldText">@teamName.getOrElse(messages("account.playerInfo.team.none"))</span> <!-- TODO: Style correctly with team -->
+                        <span class="playerFieldText">@teamName.getOrElse(messages("account.playerInfo.team.none"))</span>
+                            <!-- TODO: Style correctly with team -->
+                            <!-- TODO: Leave Team button -->
                     </div>
                 </div>
                 <div class="row bordered-row rowLargePadding">
@@ -111,4 +82,6 @@
         </form>
     }
     <script src="@assets.path("javascripts/playerInfo.js")"></script>
+    <script src="@assets.path("javascripts/uploadCare.js")"></script>
+    <script charset="utf-8" src="//ucarecdn.com/libs/widget/3.2.2/uploadcare.full.min.js"></script>
 }

@@ -73,12 +73,14 @@ class UserDao @Inject()(
       SQL(
         s"""
            UPDATE User SET
+            profileImageUrl = {profileImage},
             roles = {roles},
             description = {description},
             discordId = {discordId}
            WHERE id = {id}
          """
       ).on(
+        'profileImage -> updatePlayerInfo.profileImage.orNull,
         'roles -> updatePlayerInfo.getRoles.mkString(","),
         'description -> updatePlayerInfo.description.orNull,
         'discordId -> updatePlayerInfo.discordId.orNull,

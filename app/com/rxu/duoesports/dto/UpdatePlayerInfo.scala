@@ -6,6 +6,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 
 case class UpdatePlayerInfo(
+  profileImage: Option[String],
   description: Option[String],
   top: Option[String],
   jungle: Option[String],
@@ -33,6 +34,7 @@ object UpdatePlayerInfo {
 
   val form = Form(
     mapping(
+      "profileImage" -> optional(text),
       "description" -> optional(text),
       "top" -> optional(text),
       "jungle" -> optional(text),

@@ -58,6 +58,11 @@ h1 {
     letter-spacing: 0.15em;
 }
 
+.profileImage {
+    width: 200px;
+    height: 200px;
+}
+
 .valid {
     border-color: #5A5;
     background: #EFE;

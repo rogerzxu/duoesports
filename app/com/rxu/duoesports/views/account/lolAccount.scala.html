@@ -1,11 +1,60 @@
 @import play.api.i18n.Messages
 @import org.webjars.play.WebJarsUtil
 @import com.rxu.duoesports.models.User
+@import com.rxu.duoesports.util.TemplateHelpers
 
 @(user: User)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @com.rxu.duoesports.views.html.main(messages("home.title"), Some(user)) {
     @com.rxu.duoesports.views.html.account.accountSidebar("LoL Account"){
         <h1>League of Legends Account</h1>
+        <form v-on:submit="addLolAccount" id="addLolAccountForm" action="">
+            @helper.CSRF.formField
+            <div class="form-group">
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Summoner</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input class="form-control" disabled value="@user.summonerName.getOrElse("")">
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <select disabled class="form-control">
+                                <option selected="selected">NA</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Alts</label>
+                    </div>
+                    <div class="col-md-6">
+                    @if(user.alts.isEmpty) {
+                        <span class="playerFieldText">@messages("account.playerInfo.alts.none")</span>
+                    } else {
+                        <ul class="list-group">
+                        @user.alts.map{ alt =><li class="list-group-item playerFieldText">@alt</li>}
+                        </ul>
+                    }
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Rank</label>
+                    </div>
+                    <div class="col-md-8">
+                        @user.rank.map { rank => <img class="rankIcon" src="@TemplateHelpers.getRankIconUrl(rank)"> }
+                        <span class="playerFieldText">@user.rank.getOrElse(messages("account.playerInfo.rank.none"))</span>
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-lg saveAccountButton" id="save-player-profile-button">Save</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     }
 }
