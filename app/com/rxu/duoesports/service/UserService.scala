@@ -8,12 +8,12 @@ import com.rxu.duoesports.service.dao.UserDao
 import com.rxu.duoesports.models.User
 import com.rxu.duoesports.util.{ActivateUserException, CreateUserException, GetUserException, UpdateUserException}
 import com.typesafe.scalalogging.LazyLogging
-import play.api.cache.AsyncCacheApi
+import play.api.cache.{AsyncCacheApi, NamedCache}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserService @Inject()(
-  cache: AsyncCacheApi,
+  @NamedCache("user-cache") cache: AsyncCacheApi,
   userDao: UserDao
 )(
   implicit ec: ExecutionContext
