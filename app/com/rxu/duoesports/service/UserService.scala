@@ -4,13 +4,14 @@ import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.services.IdentityService
 import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo}
-import com.rxu.duoesports.service.dao.UserDao
 import com.rxu.duoesports.models.User
+import com.rxu.duoesports.service.dao.UserDao
 import com.rxu.duoesports.util.{ActivateUserException, CreateUserException, GetUserException, UpdateUserException}
 import com.typesafe.scalalogging.LazyLogging
 import play.api.cache.{AsyncCacheApi, NamedCache}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.language.postfixOps
 
 class UserService @Inject()(
   @NamedCache("user-cache") cache: AsyncCacheApi,

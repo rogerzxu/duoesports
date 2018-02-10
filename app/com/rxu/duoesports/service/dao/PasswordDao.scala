@@ -1,7 +1,7 @@
 package com.rxu.duoesports.service.dao
 
 import anorm._
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.google.inject.name.Named
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
@@ -13,6 +13,7 @@ import play.api.db.Database
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class PasswordDao @Inject()(
   db: Database
 )(

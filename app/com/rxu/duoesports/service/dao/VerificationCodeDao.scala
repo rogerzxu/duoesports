@@ -1,7 +1,7 @@
 package com.rxu.duoesports.service.dao
 
 import anorm.SQL
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import com.google.inject.name.Named
 import com.rxu.duoesports.models.VerificationCode
 import com.typesafe.scalalogging.LazyLogging
@@ -9,6 +9,7 @@ import play.api.db.Database
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class VerificationCodeDao @Inject()(
   db: Database
 )(

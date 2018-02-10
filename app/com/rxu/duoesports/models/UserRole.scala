@@ -5,6 +5,7 @@ import anorm.{Column, MetaDataItem, TypeDoesNotMatch}
 object UserRole extends Enumeration {
   type UserRole = Value
 
+  val Captain = Value("Captain")
   val Admin = Value("Admin")
   val Staff = Value("Staff")
   val Player = Value("Player")
