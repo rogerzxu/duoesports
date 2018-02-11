@@ -15,12 +15,12 @@ class VerificationService @Inject()(
   implicit ec: ExecutionContext
 ) extends LazyLogging {
 
-  def generateVerificationCode(user: User): Future[String] = {
+  def generateVerificationCode(user: User): Future[VerificationCode] = {
     val verificationCode = VerificationCode(
       user_id = user.id,
       code = UUID.randomUUID.toString
     )
-    verificationCodeDao.upsert(verificationCode) map {_ => verificationCode.code}
+    verificationCodeDao.upsert(verificationCode) map {_ => verificationCode}
   }
 
 }

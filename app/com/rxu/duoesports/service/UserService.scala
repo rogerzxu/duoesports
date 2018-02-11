@@ -36,7 +36,7 @@ class UserService @Inject()(
 
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
     logger.trace(s"Retrieving user: $loginInfo")
-    val cacheKey = s"user-${loginInfo.providerKey}"
+    val cacheKey = s"${loginInfo.providerKey}"
     cacheGetOrPut(cacheKey, userDao.findByEmail(loginInfo.providerKey))
   }
 

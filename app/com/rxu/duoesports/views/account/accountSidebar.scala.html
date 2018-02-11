@@ -30,6 +30,11 @@
             } else {
                 <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.summoner">Summoner</a></li>
             }
+            @if(page == "Add Summoner") {
+                <li class="nav-sub-item active">&bull;Add</li>
+            } else {
+                <li class="nav-sub-item">&bull;<a href="@com.rxu.duoesports.controller.routes.VerificationController.addSummonerPage">Add</a></li>
+            }
         </ul>
     </nav>
     <div id="profile-content">

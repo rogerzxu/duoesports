@@ -17,10 +17,12 @@ GET         /account/password                            @com.rxu.duoesports.con
 POST        /account/changePassword                      @com.rxu.duoesports.controller.AccountController.changePassword
 GET         /account/summoner                            @com.rxu.duoesports.controller.AccountController.summoner
 POST        /account/summoner/changePrimary              @com.rxu.duoesports.controller.AccountController.updatePrimarySummoner
+GET         /account/summoner/add                        @com.rxu.duoesports.controller.VerificationController.addSummonerPage
 GET         /account/player-info                         @com.rxu.duoesports.controller.AccountController.playerInfo
 POST        /account/player-info                         @com.rxu.duoesports.controller.AccountController.updatePlayerInfo
 GET         /account/activate/:tokenId                   @com.rxu.duoesports.controller.AccountController.activate(tokenId: String)
 GET         /account/send-activation-email/:email        @com.rxu.duoesports.controller.AccountController.sendActivationEmail(email: String)
+GET         /account/verification-code                   @com.rxu.duoesports.controller.VerificationController.generateVerificationCode()
 
 GET         /not-found                                   @com.rxu.duoesports.controller.ErrorController.notFound
 GET         /internal-server-error                       @com.rxu.duoesports.controller.ErrorController.internalServerError

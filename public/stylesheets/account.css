@@ -3,6 +3,15 @@ h1 {
     padding-bottom: 30px;
 }
 
+h4 {
+    padding-left: 15px;
+    padding-bottom: 30px;
+}
+
+p {
+    padding-left: 15px;
+}
+
 .active {
     color: black;
     border-left: 2px solid indianred;
@@ -23,8 +32,24 @@ h1 {
     outline-color: #F99;
 }
 
+.generateCodeButton {
+    background-color: #00b16a;
+    border-radius: 2px;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    width: 120px;
+    height: 34px;
+}
+
 .nav-item {
     padding: 5px 0 5px 5px;
+}
+
+.nav-sub-item {
+    padding: 5px 0 5px 15px;
 }
 
 .rankIcon {
@@ -70,6 +95,11 @@ h1 {
 
 .valid:focus {
     outline-color: #8E8;
+}
+
+.verificationInstructions {
+    padding-top: 20px;
+    width: 780px;
 }
 
 .wrapper {

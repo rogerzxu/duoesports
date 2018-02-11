@@ -48,7 +48,9 @@ class AccountController @Inject()(
         Future.successful(ApiBadRequest(Messages("account.accountInfo.save.failure")))
       },
       updateAccountInfo => userService.update(request.identity, updateAccountInfo) map (_ => ApiOk(Messages("account.accountInfo.save.success"))) recover {
-        case _: UpdateUserException => ApiInternalError(Messages("account.accountInfo.save.failure"))
+        case ex: UpdateUserException =>
+          logger.error(s"Failed to update account info $updateAccountInfo", ex)
+          ApiInternalError(Messages("account.accountInfo.save.failure"))
       }
     )
   }
@@ -93,7 +95,9 @@ class AccountController @Inject()(
         Future.successful(ApiBadRequest(Messages("account.playerInfo.save.failure")))
       },
       updatePlayerInfo => userService.update(request.identity, updatePlayerInfo) map (_ => ApiOk(Messages("account.playerInfo.save.success"))) recover {
-        case _: UpdateUserException => ApiInternalError(Messages("account.playerInfo.save.failure"))
+        case ex: UpdateUserException =>
+          logger.error(s"Failed to update player info $updatePlayerInfo", ex)
+          ApiInternalError(Messages("account.playerInfo.save.failure"))
       }
     )
   }
@@ -109,7 +113,9 @@ class AccountController @Inject()(
         Future.successful(ApiBadRequest(Messages("account.summoner.save.failure")))
       },
       updateSummoner => userService.setNewPrimary(request.identity, updateSummoner) map (_ => ApiOk(Messages("account.summer.save.success"))) recover {
-        case _: UpdateUserException => ApiInternalError(Messages("account.summoner.save.failure"))
+        case ex: UpdateUserException =>
+          logger.error(s"Failed to update primary summoner $updateSummoner", ex)
+          ApiInternalError(Messages("account.summoner.save.failure"))
       }
     )
   }
@@ -127,7 +133,9 @@ class AccountController @Inject()(
 
   def sendActivationEmail(email: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
     authTokenService.generateAndSendEmail(email) map (_ => ApiOk(Messages("resend.activation.success"))) recover {
-      case ex: Throwable => ApiInternalError(Messages("resend.activation.failure") + s" ${ex.getMessage}")
+      case ex: Throwable =>
+        logger.error(s"Failed to send activation email to $email", ex)
+        ApiInternalError(Messages("resend.activation.failure") + s" ${ex.getMessage}")
     }
   }
 

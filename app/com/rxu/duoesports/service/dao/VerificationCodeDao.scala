@@ -21,14 +21,14 @@ class VerificationCodeDao @Inject()(
       SQL(
         s"""
            INSERT INTO VerificationCode (user_id, code)
-           VALUES ({user_id}, {expiry})
+           VALUES ({user_id}, {code})
            ON DUPLICATE KEY UPDATE
              user_id = {user_id},
-             expiry = {expiry}
+             code = {code}
          """
       ).on(
         'user_id -> verificationCode.user_id,
-        'expiry -> verificationCode.code
+        'code -> verificationCode.code
       ).execute()
     }
   }

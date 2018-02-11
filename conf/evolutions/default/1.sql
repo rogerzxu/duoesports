@@ -25,7 +25,9 @@ CREATE TABLE User (
 
   CONSTRAINT user_pk PRIMARY KEY (id),
   UNIQUE INDEX email_idx (email),
-  UNIQUE INDEX summoner_idx (summonerName, region)
+  UNIQUE INDEX summoner_idx (summonerName, region),
+  UNIQUE INDEX summoner_id_idx (summoner_id, region),
+  INDEX team_id_idx (team_id)
 );
 
 CREATE TABLE AuthToken (
@@ -34,14 +36,15 @@ CREATE TABLE AuthToken (
   expiry            TIMESTAMP NOT NULL,
 
   CONSTRAINT auth_token_pk PRIMARY KEY (id),
-  CONSTRAINT auth_token_user_id FOREIGN KEY (user_id) REFERENCES User (id) ON DELETE CASCADE
+  CONSTRAINT auth_token_user_id FOREIGN KEY (user_id) REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE VerificationCode (
   user_id           BIGINT(20) NOT NULL,
   code              VARCHAR(50) NOT NULL,
 
-  CONSTRAINT verification_code_pk PRIMARY KEY (user_id)
+  CONSTRAINT verification_code_pk PRIMARY KEY (user_id),
+  CONSTRAINT verification_code_user_id FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 # --- !Downs
