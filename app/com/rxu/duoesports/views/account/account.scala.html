@@ -5,7 +5,7 @@
 @import com.rxu.duoesports.models.Timezone
 @(user: User)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@com.rxu.duoesports.views.html.main(messages("home.title"), Some(user)) {
+@com.rxu.duoesports.views.html.main(messages("account.title"), Some(user)) {
     @com.rxu.duoesports.views.html.account.accountSidebar("Account"){
         <h1>Account Settings</h1>
         <form v-on:submit="saveAccountSettings" id="accountSettingsForm" action="@com.rxu.duoesports.controller.routes.AccountController.updateAccountInfo">
@@ -59,5 +59,5 @@
             </div>
         </form>
     }
-    <script src="@assets.path("javascripts/account.js")"></script>
+    <script src="@assets.path("javascripts/account/account.js")"></script>
 }

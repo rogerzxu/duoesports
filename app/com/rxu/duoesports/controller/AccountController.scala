@@ -9,7 +9,7 @@ import com.mohiva.play.silhouette.api.exceptions.ProviderException
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.util.{Credentials, PasswordHasherRegistry, PasswordInfo}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
-import com.rxu.duoesports.dto.{ChangePasswordForm, UpdateAccountInfoForm, UpdatePlayerInfo}
+import com.rxu.duoesports.dto.{ChangePasswordForm, UpdateAccountInfoForm, UpdatePlayerInfo, UpdatePrimarySummoner}
 import com.rxu.duoesports.security.DefaultEnv
 import com.rxu.duoesports.service.{AuthTokenService, UserService}
 import com.rxu.duoesports.util.{ActivateUserException, ApiResponseHelpers, UpdateUserException}
@@ -82,11 +82,11 @@ class AccountController @Inject()(
     )
   }
 
-  def player = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.account.player(request.identity))
+  def playerInfo = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    Ok(com.rxu.duoesports.views.html.account.playerInfo(request.identity))
   }
 
-  def updatePlayer() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+  def updatePlayerInfo() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     UpdatePlayerInfo.form.bindFromRequest.fold(
       badForm => {
         logger.error(s"Received invalid player info form: ${badForm.toString}")
@@ -98,8 +98,20 @@ class AccountController @Inject()(
     )
   }
 
-  def lolAccount = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.account.lolAccount(request.identity))
+  def summoner = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    Ok(com.rxu.duoesports.views.html.account.summoner(request.identity))
+  }
+
+  def updatePrimarySummoner() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    UpdatePrimarySummoner.form.bindFromRequest.fold(
+      badForm => {
+        logger.error(s"Received invalid update summoner form: ${badForm.toString}")
+        Future.successful(ApiBadRequest(Messages("account.summoner.save.failure")))
+      },
+      updateSummoner => userService.setNewPrimary(request.identity, updateSummoner) map (_ => ApiOk(Messages("account.summer.save.success"))) recover {
+        case _: UpdateUserException => ApiInternalError(Messages("account.summoner.save.failure"))
+      }
+    )
   }
 
   def activate(tokenId: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>

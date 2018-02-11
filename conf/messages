@@ -1,19 +1,22 @@
 home.title = Duo E-Sports Home
 
+account.title = Duo E-Sports Account Settings
 account.accountInfo.save.failure = An error occurred while saving your account information. Please try again.
 account.accountInfo.save.success = Successfully updated account info!
 account.changePassword.save.invalidCurrentPassword = Current password is invalid.
 account.changePassword.save.failure = An error occurred while changing your password. Please try again.
 account.changePassword.save.success = Successfully updated password!
-account.playerInfo.alts.none = You do not have any verified alt accounts
+account.summoner.rank.none = You are either unranked or you do not have a verified Summoners
+account.summoner.save.failure = An error occured while saving your summoner information. Please try again.
+account.summer.save.success = Successfully updated summoner info!
+account.summoner.summoner.none = You do not have any verified Summoners
 account.playerInfo.description.placeholder = A short description of yourself. You can include what you''re looking for in a team, your champ pool, your schedule, etc.
 account.playerInfo.discord.placeholder = Give your Discord ID to make it easier to contact you!
-account.playerInfo.rank.none = You are either unranked or you do not have a verified LoL account
 account.playerInfo.save.failure = An error occurred while saving your player information. Please try again.
 account.playerInfo.save.success = Successfully updated player info!
 account.playerInfo.team.none = You are not on any team
 
-activation.title = Account Activation
+activation.title = Duo E-Sports Account Activation
 activation.success = Account activation successful!
 activation.failure = Account activation failed
 
@@ -29,7 +32,7 @@ signin.invalid.credentials = Invalid Credentials!
 signin.invalid.form = An unexpected error occurred while signing in
 signin.success = Successfully signed in!
 
-signup.title = Sign-Up
+signup.title = Duo E-Sports Sign-Up
 signup.duplicate.email = That email address is already in use. Please try again with a different email.
 signup.success = You have successfully signed up! You should receive a confirmation email shortly. Please be sure to check your spam folder.
 signup.failure = An error occurred while signing up. Please try again.

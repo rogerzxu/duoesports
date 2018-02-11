@@ -3,8 +3,8 @@ package com.rxu.duoesports.service
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.services.IdentityService
-import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo}
-import com.rxu.duoesports.models.User
+import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo, UpdatePrimarySummoner}
+import com.rxu.duoesports.models.{Alt, User}
 import com.rxu.duoesports.service.dao.UserDao
 import com.rxu.duoesports.util.{ActivateUserException, CreateUserException, GetUserException, UpdateUserException}
 import com.typesafe.scalalogging.LazyLogging
@@ -21,19 +21,23 @@ class UserService @Inject()(
 ) extends IdentityService[User]
   with LazyLogging {
 
-  def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
-    logger.trace(s"Retrieving user: $loginInfo")
-    val cacheKey = s"user-${loginInfo.providerKey}"
+  private def cacheGetOrPut[T](cacheKey: String, finder: Future[Option[User]]): Future[Option[User]] = {
     cache.get[Option[User]](cacheKey) flatMap {
       case Some(cachedUser) =>
         logger.trace(s"Found entry in cache for ${cacheKey}")
         Future.successful(cachedUser)
-      case None => userDao.findByEmail(email = loginInfo.providerKey) map { user =>
+      case None => finder map { user =>
         logger.trace(s"Storing entry in cache for ${cacheKey}")
         cache.set(cacheKey, user)
         user
       }
     }
+  }
+
+  def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
+    logger.trace(s"Retrieving user: $loginInfo")
+    val cacheKey = s"user-${loginInfo.providerKey}"
+    cacheGetOrPut(cacheKey, userDao.findByEmail(loginInfo.providerKey))
   }
 
   def create(user: User): Future[Long] = {
@@ -76,7 +80,7 @@ class UserService @Inject()(
 
   private def findByEmail(email: String): Future[Option[User]] = {
     logger.debug(s"Finding user by email $email")
-    userDao.findByEmail(email)
+    cacheGetOrPut(email, userDao.findByEmail(email))
   }
 
   def activate(id: Long): Future[Unit] = {
@@ -117,6 +121,29 @@ class UserService @Inject()(
       }
       _ <- cache.remove(user.getCacheKey)
     } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+  }
+
+  def setNewPrimary(user: User, updatePrimarySummoner: UpdatePrimarySummoner): Future[Unit] = {
+    logger.info(s"Updating primary summoner for ${user.id}: $updatePrimarySummoner")
+    (for {
+      newPrimaryName <- updatePrimarySummoner.getNewPrimarySummonerName
+      newPrimaryInfo <- user.alts.find(alt => alt.summonerName.equals(newPrimaryName))
+      newAlt <- (user.summonerName, user.summoner_id, user.region) match {
+        case (Some(summonerName), Some(summonerId), Some(region)) => Some(Alt(summonerName, summonerId, region))
+        case _ => None
+      }
+    } yield {
+      val newAlts = user.alts.filterNot(_.summonerName == newPrimaryName) :+ newAlt
+      for {
+        result <- userDao.changePrimarySummoner(user.id, newPrimaryInfo.summonerName, newPrimaryInfo.summonerId,
+          newPrimaryInfo.region, newAlts)
+        _ <- result match {
+          case 0 => Future.failed(UpdateUserException(s"MariaDB failed to update Summoner Info for ${user.id}"))
+          case _ => Future.successful(())
+        }
+        _ <- cache.remove(user.getCacheKey)
+      } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+    }).getOrElse(Future.successful(()))
   }
 
 }

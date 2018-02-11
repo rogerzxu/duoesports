@@ -1,6 +1,6 @@
 package com.rxu.duoesports.models
 
-import anorm.{Column, Macro, MetaDataItem, RowParser, TypeDoesNotMatch}
+import anorm.{Column, Macro, RowParser}
 import com.mohiva.play.silhouette.api.Identity
 import com.rxu.duoesports.models.Rank.Rank
 import com.rxu.duoesports.models.Region.Region
@@ -29,7 +29,7 @@ case class User(
   profileImageUrl: Option[String] = None,
   timezone: Timezone = Timezone.EASTERN,
   rank: Option[Rank] = None,
-  alts: Seq[String] = Seq.empty,
+  alts: Seq[Alt] = Seq.empty,
   created_at: LocalDateTime = LocalDateTime.now(),
   updated_at: LocalDateTime = LocalDateTime.now()
 ) extends Identity {
@@ -39,19 +39,10 @@ case class User(
     lastName = lastName.trim.capitalize
   )
 
-  def getCacheKey: String = s"user-$email"
+  def getCacheKey: String = email
 }
 
 object User {
-  implicit val altsColumn: Column[Seq[String]] = Column.nonNull { (value, meta) =>
-    val MetaDataItem(qualified, nullable, clazz) = meta
-    value match {
-      case alts: String => Right {
-        alts.split(",").filter(_.nonEmpty)
-      }
-      case _ => Left(TypeDoesNotMatch(s"Unknown Role $value"))
-    }
-  }
   implicit val regionOptColumn = Column.columnToOption[Region]
   val parser: RowParser[User] = Macro.namedParser[User]
 }

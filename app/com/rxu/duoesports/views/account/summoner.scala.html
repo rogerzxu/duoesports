@@ -1,0 +1,52 @@
+@import play.api.i18n.Messages
+@import org.webjars.play.WebJarsUtil
+@import com.rxu.duoesports.models.User
+@import com.rxu.duoesports.util.TemplateHelpers
+
+@(user: User)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+
+@com.rxu.duoesports.views.html.main(messages("account.title"), Some(user)) {
+    @com.rxu.duoesports.views.html.account.accountSidebar("Summoner"){
+        <h1>Summoner Info</h1>
+        <form v-on:submit="saveSummonerInfo" id="saveSummonerInfoForm" action="@com.rxu.duoesports.controller.routes.AccountController.updatePrimarySummoner()">
+            @helper.CSRF.formField
+            <div class="form-group">
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Summoner(s)</label>
+                        <br />
+                        <span><sub>(Select Primary)</sub></span>
+                    </div>
+                    <div class="col-md-8">
+                        @if(user.summonerName.isEmpty) {
+                            <span class="playerFieldText">@user.summonerName.getOrElse(messages("account.summoner.summoner.none"))</span>
+                        } else {
+                            <ul class="list-group">
+                                <a href="#" v-on:click="selectAlt" class="list-group-item playerFieldText active"> @user.summonerName.get (@user.region.get)</a>
+                                @user.alts.map{ alt =>
+                                    <a href="#" v-on:click="selectAlt" class="list-group-item playerFieldText"> @alt.summonerName (@alt.region)</a>
+                                }
+                            </ul>
+                        }
+                        <input v-model="newPrimary" name="newPrimary" type="hidden">
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Rank</label>
+                    </div>
+                    <div class="col-md-8">
+                        @user.rank.map { rank => <img class="rankIcon" src="@TemplateHelpers.getRankIconUrl(rank)"> }
+                        <span class="playerFieldText">@user.rank.getOrElse(messages("account.summoner.rank.none"))</span>
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-lg saveAccountButton" id="save-player-profile-button">Save</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    }
+    <script src="@assets.path("javascripts/account/summoner.js")"></script>
+}

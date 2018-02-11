@@ -4,7 +4,8 @@ import anorm._
 import com.google.inject.name.Named
 import com.google.inject.{Inject, Singleton}
 import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo}
-import com.rxu.duoesports.models.User
+import com.rxu.duoesports.models.Region.Region
+import com.rxu.duoesports.models.{Alt, User}
 import com.typesafe.scalalogging.LazyLogging
 import play.api.db.Database
 
@@ -84,6 +85,32 @@ class UserDao @Inject()(
         'roles -> updatePlayerInfo.getRoles.mkString(","),
         'description -> updatePlayerInfo.description.orNull,
         'discordId -> updatePlayerInfo.discordId.orNull,
+        'id -> userId
+      ).executeUpdate()
+    }
+  }
+
+  def changePrimarySummoner(
+    userId: Long,
+    newPrimaryName: String,
+    newPrimaryId: Long,
+    newPrimaryRegion: Region,
+    newAlts: Seq[Alt]): Future[Int] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           UPDATE User Set
+            summonerName = {summonerName},
+            summoner_id = {summonerId},
+            region = {region},
+            alts = {alts}
+           WHERE id = {id}
+         """
+      ).on(
+        'summonerName -> newPrimaryName,
+        'summonerId -> newPrimaryId,
+        'region -> newPrimaryRegion.toString,
+        'alts -> newAlts.mkString(","),
         'id -> userId
       ).executeUpdate()
     }

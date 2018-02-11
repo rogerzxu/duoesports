@@ -5,10 +5,10 @@
 
 @(user: User, teamName: Option[String] = None)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@com.rxu.duoesports.views.html.main(messages("home.title"), Some(user)) {
-    @com.rxu.duoesports.views.html.account.accountSidebar("Player"){
+@com.rxu.duoesports.views.html.main(messages("account.title"), Some(user)) {
+    @com.rxu.duoesports.views.html.account.accountSidebar("Player Info"){
         <h1>Player Info</h1>
-        <form v-on:submit="savePlayerInfo" id="playerInfoForm" action="@com.rxu.duoesports.controller.routes.AccountController.updatePlayer">
+        <form v-on:submit="savePlayerInfo" id="playerInfoForm" action="@com.rxu.duoesports.controller.routes.AccountController.updatePlayerInfo">
             <h4 class="successMsgLarge" :class="{hidden: !savePlayerSuccess}">{{ savePlayerSuccessMsg }}</h4>
             <h4 class="errorMsgLarge" :class="{hidden: !savePlayerFailure}">{{ savePlayerFailureMsg }}</h4>
             @helper.CSRF.formField
@@ -81,7 +81,6 @@
             </div>
         </form>
     }
-    <script src="@assets.path("javascripts/playerInfo.js")"></script>
-    <script src="@assets.path("javascripts/uploadCare.js")"></script>
+    <script src="@assets.path("javascripts/account/playerInfo.js")"></script>
     <script charset="utf-8" src="//ucarecdn.com/libs/widget/3.2.2/uploadcare.full.min.js"></script>
 }

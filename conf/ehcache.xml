@@ -2,12 +2,12 @@
 
     <diskStore path="java.io.tmpdir"/>
     <defaultCache
-            maxElementsInMemory="1000"
+            maxElementsInMemory="2000"
             eternal="false"
             timeToIdleSeconds="3600"
             timeToLiveSeconds="3600"
             overflowToDisk="false"
-            maxElementsOnDisk="15000"
+            maxElementsOnDisk="10000"
             diskPersistent="false"
             diskExpiryThreadIntervalSeconds="120"
             memoryStoreEvictionPolicy="LRU"
