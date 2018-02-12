@@ -4,7 +4,7 @@ import anorm.{Macro, RowParser}
 import play.api.libs.json.{Format, Json}
 
 case class VerificationCode(
-  user_id: Long,
+  userId: Long,
   code: String
 )
 

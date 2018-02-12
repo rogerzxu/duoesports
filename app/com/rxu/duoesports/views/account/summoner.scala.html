@@ -3,7 +3,8 @@
 @import com.rxu.duoesports.models.User
 @import com.rxu.duoesports.util.TemplateHelpers
 
-@(user: User)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+@import com.rxu.duoesports.models.UserAlt
+@(user: User, alts: Seq[UserAlt])(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @com.rxu.duoesports.views.html.main(messages("account.title"), Some(user)) {
     @com.rxu.duoesports.views.html.account.accountSidebar("Summoner"){
@@ -23,7 +24,7 @@
                         } else {
                             <ul class="list-group">
                                 <a href="#" v-on:click="selectAlt" class="list-group-item playerFieldText active"> @user.summonerName.get (@user.region.get)</a>
-                                @user.alts.map{ alt =>
+                                @alts.map{ alt =>
                                     <a href="#" v-on:click="selectAlt" class="list-group-item playerFieldText"> @alt.summonerName (@alt.region)</a>
                                 }
                             </ul>

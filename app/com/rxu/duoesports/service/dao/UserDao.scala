@@ -5,9 +5,10 @@ import com.google.inject.name.Named
 import com.google.inject.{Inject, Singleton}
 import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo}
 import com.rxu.duoesports.models.Region.Region
-import com.rxu.duoesports.models.{Alt, User}
+import com.rxu.duoesports.models.{UserAlt, User}
 import com.typesafe.scalalogging.LazyLogging
 import play.api.db.Database
+import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -94,23 +95,20 @@ class UserDao @Inject()(
     userId: Long,
     newPrimaryName: String,
     newPrimaryId: Long,
-    newPrimaryRegion: Region,
-    newAlts: Seq[Alt]): Future[Int] = Future {
+    newPrimaryRegion: Region): Future[Int] = Future {
     db.withConnection { implicit c =>
       SQL(
         s"""
            UPDATE User Set
             summonerName = {summonerName},
-            summoner_id = {summonerId},
-            region = {region},
-            alts = {alts}
+            summonerId = {summonerId},
+            region = {region}
            WHERE id = {id}
          """
       ).on(
         'summonerName -> newPrimaryName,
         'summonerId -> newPrimaryId,
         'region -> newPrimaryRegion.toString,
-        'alts -> newAlts.mkString(","),
         'id -> userId
       ).executeUpdate()
     }
@@ -125,11 +123,11 @@ class UserDao @Inject()(
              password,
              firstName,
              lastName,
-             user_role,
+             userRole,
              summonerName,
-             summoner_id,
+             summonerId,
              region,
-             team_id,
+             teamId,
              activated,
              verified,
              roles,
@@ -137,18 +135,17 @@ class UserDao @Inject()(
              discordId,
              profileImageUrl,
              timezone,
-             rank,
-             alts)
+             rank)
            VALUES(
              {email},
              {password},
              {firstName},
              {lastName},
-             {user_role},
+             {userRole},
              {summonerName},
-             {summoner_id},
+             {summonerId},
              {region},
-             {team_id},
+             {teamId},
              {activated},
              {verified},
              {roles},
@@ -156,19 +153,18 @@ class UserDao @Inject()(
              {discordId},
              {profileImageUrl},
              {timezone},
-             {rank},
-             {alts})
+             {rank})
         """
       ).on(
         'email -> user.email,
         'password -> user.password,
         'firstName -> user.firstName,
         'lastName -> user.lastName,
-        'user_role -> user.user_role.toString,
+        'userRole -> user.userRole.toString,
         'summonerName -> user.summonerName.orNull,
-        'summoner_id -> user.summoner_id.map(_.toString).orNull,
+        'summonerId -> user.summonerId.map(_.toString).orNull,
         'region -> user.region.map(_.toString).orNull,
-        'team_id -> user.team_id.map(_.toString).orNull,
+        'teamId -> user.teamId.map(_.toString).orNull,
         'activated -> user.activated,
         'verified -> user.verified,
         'roles -> user.roles.mkString(","),
@@ -176,8 +172,7 @@ class UserDao @Inject()(
         'discordId -> user.discordId.orNull,
         'profileImageUrl -> user.profileImageUrl.orNull,
         'timezone -> user.timezone.toString,
-        'rank -> user.rank.map(_.toString).orNull,
-        'alts -> user.alts.mkString(",")
+        'rank -> user.rank.map(_.toString).orNull
       ).executeInsert()
     }
   }

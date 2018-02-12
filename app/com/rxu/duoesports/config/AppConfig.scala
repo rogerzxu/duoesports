@@ -16,6 +16,9 @@ class AppConfig extends LazyLogging {
   val jdbcMaxThreads = c.getInt("jdbc.maxThreads")
   val mariaDbUrl = c.getString("db.default.url")
 
+  val riotApiKey = c.getString("riot.api.key")
+  val riotBaseUrl = c.getString("riot.api.baseUrl")
+
   logConfig()
 
   def logConfig() = {
@@ -24,5 +27,6 @@ class AppConfig extends LazyLogging {
     logger.info(s"Authentication Cookie Max Age: $authCookieMaxAge")
     logger.info(s"JDBC Max Threads: $jdbcMaxThreads")
     logger.info(s"MariaDB URL: $mariaDbUrl")
+    logger.info(s"RIOT API base url: $riotBaseUrl")
   }
 }

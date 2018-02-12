@@ -32,9 +32,9 @@ class AuthTokenDao @Inject()(
       SQL(
         s"""
            DELETE FROM AuthToken
-           WHERE user_id = {user_id}
+           WHERE userId = {userId}
          """
-      ).on('user_id -> userId).execute()
+      ).on('userId -> userId).execute()
     }
   }
 
@@ -42,16 +42,16 @@ class AuthTokenDao @Inject()(
     db.withConnection { implicit c =>
       SQL(
         s"""
-           INSERT INTO AuthToken (id, user_id, expiry)
-           VALUES ({id}, {user_id}, {expiry})
+           INSERT INTO AuthToken (id, userId, expiry)
+           VALUES ({id}, {userId}, {expiry})
            ON DUPLICATE KEY UPDATE
              id = {id},
-             user_id = {user_id},
+             userId = {userId},
              expiry = {expiry}
          """
       ).on(
         'id -> authToken.id,
-        'user_id -> authToken.user_id,
+        'userId -> authToken.userId,
         'expiry -> authToken.expiry.toString
       ).execute()
     }

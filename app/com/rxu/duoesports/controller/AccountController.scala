@@ -11,7 +11,7 @@ import com.mohiva.play.silhouette.api.util.{Credentials, PasswordHasherRegistry,
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.rxu.duoesports.dto.{ChangePasswordForm, UpdateAccountInfoForm, UpdatePlayerInfo, UpdatePrimarySummoner}
 import com.rxu.duoesports.security.DefaultEnv
-import com.rxu.duoesports.service.{AuthTokenService, UserService}
+import com.rxu.duoesports.service.{AuthTokenService, UserAltService, UserService}
 import com.rxu.duoesports.util.{ActivateUserException, ApiResponseHelpers, UpdateUserException}
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
@@ -25,6 +25,7 @@ class AccountController @Inject()(
   silhouette: Silhouette[DefaultEnv],
   authTokenService: AuthTokenService,
   userService: UserService,
+  userAltService: UserAltService,
   passwordHasherRegistry: PasswordHasherRegistry,
   credentialsProvider: CredentialsProvider,
   authInfoRepository: AuthInfoRepository
@@ -102,8 +103,10 @@ class AccountController @Inject()(
     )
   }
 
-  def summoner = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.account.summoner(request.identity))
+  def summoner = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    userAltService.findByUserId(request.identity.id) map { alts =>
+      Ok(com.rxu.duoesports.views.html.account.summoner(request.identity, alts))
+    }
   }
 
   def updatePrimarySummoner() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>

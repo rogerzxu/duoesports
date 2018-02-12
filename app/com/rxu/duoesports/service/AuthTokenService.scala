@@ -50,10 +50,10 @@ class AuthTokenService @Inject()(
         case None => logger.error(s"Cannot find token $id to activate")
           Future.failed(ActivateUserException(s"Cannot find token $id to Activate"))
       }
-      _ <- userService.activate(authToken.user_id)
-      _ <- authTokenDao.deleteByUser(authToken.user_id)
+      _ <- userService.activate(authToken.userId)
+      _ <- authTokenDao.deleteByUser(authToken.userId)
     } yield {
-      logger.info(s"Deleting auth tokens for activated user ${authToken.user_id}")
+      logger.info(s"Deleting auth tokens for activated user ${authToken.userId}")
     }
   }
 

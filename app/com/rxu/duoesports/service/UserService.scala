@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.services.IdentityService
 import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo, UpdatePrimarySummoner}
-import com.rxu.duoesports.models.{Alt, User}
+import com.rxu.duoesports.models.{UserAlt, User}
 import com.rxu.duoesports.service.dao.UserDao
 import com.rxu.duoesports.util.{ActivateUserException, CreateUserException, GetUserException, UpdateUserException}
 import com.typesafe.scalalogging.LazyLogging
@@ -15,7 +15,8 @@ import scala.language.postfixOps
 
 class UserService @Inject()(
   @NamedCache("user-cache") cache: AsyncCacheApi,
-  userDao: UserDao
+  userDao: UserDao,
+  userAltService: UserAltService
 )(
   implicit ec: ExecutionContext
 ) extends IdentityService[User]
@@ -125,25 +126,27 @@ class UserService @Inject()(
 
   def setNewPrimary(user: User, updatePrimarySummoner: UpdatePrimarySummoner): Future[Unit] = {
     logger.info(s"Updating primary summoner for ${user.id}: $updatePrimarySummoner")
-    (for {
-      newPrimaryName <- updatePrimarySummoner.getNewPrimarySummonerName
-      newPrimaryInfo <- user.alts.find(alt => alt.summonerName.equals(newPrimaryName))
-      newAlt <- (user.summonerName, user.summoner_id, user.region) match {
-        case (Some(summonerName), Some(summonerId), Some(region)) => Some(Alt(summonerName, summonerId, region))
-        case _ => None
-      }
-    } yield {
-      val newAlts = user.alts.filterNot(_.summonerName == newPrimaryName) :+ newAlt
-      for {
-        result <- userDao.changePrimarySummoner(user.id, newPrimaryInfo.summonerName, newPrimaryInfo.summonerId,
-          newPrimaryInfo.region, newAlts)
-        _ <- result match {
-          case 0 => Future.failed(UpdateUserException(s"MariaDB failed to update Summoner Info for ${user.id}"))
-          case _ => Future.successful(())
+    userAltService.findByUserId(user.id) flatMap { alts =>
+      (for {
+        newPrimaryName <- updatePrimarySummoner.getNewPrimarySummonerName
+        newPrimaryInfo <- alts.find(alt => alt.summonerName.equals(newPrimaryName))
+        newAlt <- (user.summonerName, user.summonerId, user.region) match {
+          case (Some(summonerName), Some(summonerId), Some(region)) => Some(UserAlt(user.id, summonerName, summonerId, region))
+          case _ => None
         }
-        _ <- cache.remove(user.getCacheKey)
-      } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
-    }).getOrElse(Future.successful(()))
+      } yield {
+        for {
+          result <- userDao.changePrimarySummoner(user.id, newPrimaryInfo.summonerName, newPrimaryInfo.summonerId, newPrimaryInfo.region)
+          _ <- result match {
+            case 0 => Future.failed(UpdateUserException(s"MariaDB failed to update Summoner Info for ${user.id}"))
+            case _ => Future.successful(())
+          }
+          _ <- userAltService.create(newAlt)
+          _ <- userAltService.deleteBySummonerName(newPrimaryInfo.summonerName, newPrimaryInfo.region)
+          _ <- cache.remove(user.getCacheKey)
+        } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+      }).getOrElse(Future.successful(()))
+    }
   }
 
 }

@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 case class AuthToken (
   id: String,
-  user_id: Long,
+  userId: Long,
   expiry: LocalDateTime
 ) {
   def isValid: Boolean = {

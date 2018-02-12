@@ -20,14 +20,14 @@ class VerificationCodeDao @Inject()(
     db.withConnection { implicit c =>
       SQL(
         s"""
-           INSERT INTO VerificationCode (user_id, code)
-           VALUES ({user_id}, {code})
+           INSERT INTO VerificationCode (userId, code)
+           VALUES ({userId}, {code})
            ON DUPLICATE KEY UPDATE
-             user_id = {user_id},
+             userId = {userId},
              code = {code}
          """
       ).on(
-        'user_id -> verificationCode.user_id,
+        'userId -> verificationCode.userId,
         'code -> verificationCode.code
       ).execute()
     }

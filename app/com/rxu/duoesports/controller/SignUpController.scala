@@ -64,7 +64,7 @@ class SignUpController @Inject()(
               password = authInfo.password,
               firstName = signUpData.firstName,
               lastName = signUpData.lastName,
-              user_role = UserRole.Player
+              userRole = UserRole.Player
             ).normalize
             for {
               userId <- userService.create(user)

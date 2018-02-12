@@ -16,11 +16,11 @@ case class User(
   password: String,
   firstName: String,
   lastName: String,
-  user_role: UserRole,
+  userRole: UserRole,
   summonerName: Option[String] = None,
-  summoner_id: Option[Long] = None,
+  summonerId: Option[Long] = None,
   region: Option[Region] = None,
-  team_id: Option[Long] = None,
+  teamId: Option[Long] = None,
   activated: Boolean = false,
   verified: Boolean = false,
   roles: Seq[Role] = Seq.empty,
@@ -29,9 +29,8 @@ case class User(
   profileImageUrl: Option[String] = None,
   timezone: Timezone = Timezone.EASTERN,
   rank: Option[Rank] = None,
-  alts: Seq[Alt] = Seq.empty,
-  created_at: LocalDateTime = LocalDateTime.now(),
-  updated_at: LocalDateTime = LocalDateTime.now()
+  createdAt: LocalDateTime = LocalDateTime.now(),
+  updatedAt: LocalDateTime = LocalDateTime.now()
 ) extends Identity {
 
   def normalize: User = this.copy(email = email.trim.toLowerCase,
