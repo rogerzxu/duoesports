@@ -42,13 +42,16 @@ object Rank extends Enumeration {
     comparator.indexOf(rank2).compareTo(comparator.indexOf(rank1))
   }
 
-  def max(ranks: Seq[Rank]): Rank = {
-    var max = ranks.head
-    for(i <- ranks.indices) {
-      val temp = ranks(i)
-      if(compare(temp, max) > 0) max = temp
+  def max(maybeRanks: Seq[Rank]): Option[Rank] = {
+    maybeRanks match {
+      case ranks if ranks.nonEmpty => var max = ranks.head
+        for(i <- ranks.indices) {
+          val temp = ranks(i)
+          if(compare(temp, max) > 0) max = temp
+        }
+        Some(max)
+      case _ => None
     }
-    max
   }
 
   implicit val rankColumn: Column[Rank] = Column.nonNull { (value, meta) =>

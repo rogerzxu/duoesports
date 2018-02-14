@@ -26,7 +26,7 @@
                         <input type="hidden" role="uploadcare-uploader" name="profileImage"
                             @if(user.profileImageUrl.isDefined){value="@user.profileImageUrl.get"}
                             data-image-shrink="512x512 100%"
-                            data-crop="" />
+                            data-crop="512:512" />
                     </div>
                 </div>
                 <div class="row bordered-row rowLargePadding">

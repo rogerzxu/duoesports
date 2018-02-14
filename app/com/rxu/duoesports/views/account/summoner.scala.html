@@ -10,6 +10,8 @@
     @com.rxu.duoesports.views.html.account.accountSidebar("Summoner"){
         <h1>Summoner Info</h1>
         <form v-on:submit="saveSummonerInfo" id="saveSummonerInfoForm" action="@com.rxu.duoesports.controller.routes.AccountController.updatePrimarySummoner()">
+            <h4 class="successMsgLarge" :class="{hidden: !saveSummonerSuccess}">{{ saveSummonerSuccessMsg }}</h4>
+            <h4 class="errorMsgLarge" :class="{hidden: !saveSummonerFailure}">{{ saveSummonerFailureMsg }}</h4>
             @helper.CSRF.formField
             <div class="form-group">
                 <div class="row bordered-row rowLargePadding">

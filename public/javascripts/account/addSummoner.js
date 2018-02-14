@@ -11,10 +11,14 @@ new Vue({
     addSummonerSuccess: false,
     addSummonerSuccessMsg: '',
     addSummonerFailure: false,
-    addSummonerFailureMsg: ''
+    addSummonerFailureMsg: '',
+    loading: false,
+    addSummonerButton: 'Save'
   },
   methods: {
     addSummoner: function (event) {
+      this.loading = true;
+      this.addSummonerButton = 'Loading';
       event.preventDefault();
       var $form = $('#addSummonerForm');
 
@@ -24,11 +28,15 @@ new Vue({
           this.addSummonerSuccess = true;
           this.addSummonerSuccessMsg = success.data['message'];
           this.addSummonerFailure = false;
+          this.loading = false;
+          this.addSummonerButton = 'Save';
           window.scrollTo(0,0);
         }, function(failure) {
           this.addSummonerFailure = true;
           this.addSummonerFailureMsg = failure.data['message'];
           this.addSummonerSuccess = false;
+          this.loading = false;
+          this.addSummonerButton = 'Save';
           window.scrollTo(0,0);
         });
     },
