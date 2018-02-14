@@ -24,10 +24,12 @@ new Vue({
           this.savePlayerSuccess = true;
           this.savePlayerSuccessMsg = success.data['message'];
           this.savePlayerFailure = false;
+          window.scrollTo(0,0);
         }, function(failure) {
           this.savePlayerFailure = true;
           this.savePlayerFailureMsg = failure.data['message'];
           this.savePlayerSuccess = false;
+          window.scrollTo(0,0);
         });
     }
   }

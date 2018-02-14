@@ -18,10 +18,12 @@ new Vue({
           this.saveSummonerSuccess = true;
           this.saveSummonerSuccessMsg = success.data['message'];
           this.saveSummonerFailure = false;
+          window.scrollTo(0,0);
         }, function(failure) {
           this.saveSummonerFailure = true;
           this.saveSummonerFailureMsg = failure.data['message'];
           this.saveSummonerSuccess = false;
+          window.scrollTo(0,0);
         });
     },
 

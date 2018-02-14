@@ -19,6 +19,16 @@ class UserAltService @Inject()(
     userAltDao.findByUserId(userId)
   }
 
+  def findBySummonerName(summonerName: String, region: Region): Future[Option[UserAlt]] = {
+    logger.debug(s"Finding User Alt by summoner $summonerName $region")
+    userAltDao.findBySummonerName(summonerName, region)
+  }
+
+  def findBySummonerNameOrId(summonerName: String, summonerId: Long, region: Region): Future[Seq[UserAlt]] = {
+    logger.debug(s"Finding User Alt by summoner $summonerName or id $summonerId $region")
+    userAltDao.findBySummonerNameOrId(summonerName, summonerId, region)
+  }
+
   def create(userAlt: UserAlt): Future[Unit] = {
     logger.debug(s"Creating UserAlt $userAlt")
     userAltDao.insert(userAlt)

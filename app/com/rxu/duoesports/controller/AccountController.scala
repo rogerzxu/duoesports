@@ -115,7 +115,7 @@ class AccountController @Inject()(
         logger.error(s"Received invalid update summoner form: ${badForm.toString}")
         Future.successful(ApiBadRequest(Messages("account.summoner.save.failure")))
       },
-      updateSummoner => userService.setNewPrimary(request.identity, updateSummoner) map (_ => ApiOk(Messages("account.summer.save.success"))) recover {
+      updateSummoner => userService.setNewPrimary(request.identity, updateSummoner) map (_ => ApiOk(Messages("account.summoner.save.success"))) recover {
         case ex: UpdateUserException =>
           logger.error(s"Failed to update primary summoner $updateSummoner", ex)
           ApiInternalError(Messages("account.summoner.save.failure"))
@@ -125,7 +125,7 @@ class AccountController @Inject()(
 
   def activate(tokenId: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
     authTokenService.activate(tokenId) map (_ => Ok(com.rxu.duoesports.views.html.account.activation())) recover {
-      case ex: ActivateUserException => {
+      case ex: ActivateUserException=> {
         val resendUrl = request.cookies.get("duoesportsEmail") map { cookie =>
           routes.AccountController.sendActivationEmail(email = cookie.value).absoluteURL
         }

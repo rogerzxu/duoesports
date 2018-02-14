@@ -33,4 +33,26 @@ class VerificationCodeDao @Inject()(
     }
   }
 
+  def findByUserId(userId: Long): Future[Option[VerificationCode]] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           SELECT * FROM VerificationCode
+           WHERE userId = {userId}
+         """
+      ).on('userId -> userId).as(VerificationCode.parser.singleOpt)
+    }
+  }
+
+  def deleteByUser(userId: Long): Future[Boolean] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           DELETE FROM VerificationCode
+           WHERE userId = {userId}
+         """
+      ).on('userId -> userId).execute()
+    }
+  }
+
 }

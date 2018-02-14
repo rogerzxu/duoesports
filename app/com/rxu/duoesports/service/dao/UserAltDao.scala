@@ -28,6 +28,35 @@ class UserAltDao @Inject()(
     }
   }
 
+  def findBySummonerName(summonerName: String, region: Region): Future[Option[UserAlt]] = Future {
+    db.withConnection {implicit c =>
+      SQL(
+        s"""
+          SELECT * FROM UserAlt
+          WHERE summonerName = {summonerName}
+          AND region = {region}
+        """
+      ).on(
+        'summonerName -> summonerName,
+        'region -> region.toString).as(UserAlt.parser.singleOpt)
+    }
+  }
+
+  def findBySummonerNameOrId(summonerName: String, summonerId: Long, region: Region): Future[Seq[UserAlt]] = Future {
+    db.withConnection {implicit c =>
+      SQL(
+        s"""
+          SELECT * FROM UserAlt
+          WHERE (summonerName = {summonerName} OR summonerId = {summonerId})
+          AND region = {region}
+        """
+      ).on(
+        'summonerName -> summonerName,
+        'summonerId -> summonerId,
+        'region -> region.toString).as(UserAlt.parser.*)
+    }
+  }
+
   def insert(userAlt: UserAlt): Future[Unit] = Future {
     db.withConnection { implicit c =>
       SQL(

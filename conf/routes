@@ -18,6 +18,7 @@ POST        /account/changePassword                      @com.rxu.duoesports.con
 GET         /account/summoner                            @com.rxu.duoesports.controller.AccountController.summoner
 POST        /account/summoner/changePrimary              @com.rxu.duoesports.controller.AccountController.updatePrimarySummoner
 GET         /account/summoner/add                        @com.rxu.duoesports.controller.VerificationController.addSummonerPage
+POST        /account/summoner/add                        @com.rxu.duoesports.controller.VerificationController.addSummoner
 GET         /account/player-info                         @com.rxu.duoesports.controller.AccountController.playerInfo
 POST        /account/player-info                         @com.rxu.duoesports.controller.AccountController.updatePlayerInfo
 GET         /account/activate/:tokenId                   @com.rxu.duoesports.controller.AccountController.activate(tokenId: String)

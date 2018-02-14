@@ -21,4 +21,5 @@
     <logger name="org.jdbcdslog.ConnectionLogger" level="OFF"  />
     <logger name="org.jdbcdslog.StatementLogger"  level="INFO" />
     <logger name="org.jdbcdslog.ResultSetLogger"  level="OFF"  />
+    <logger name="play.shaded.ahc" level="INFO" />
 </configuration>

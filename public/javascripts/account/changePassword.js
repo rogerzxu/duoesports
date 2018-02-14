@@ -23,10 +23,12 @@ new Vue({
           this.changePasswordSuccess = true;
           this.changePasswordSuccessMsg = success.data['message'];
           this.changePasswordFailure = false;
+          window.scrollTo(0,0);
         }, function(failure) {
           this.changePasswordFailure = true;
           this.changePasswordFailureMsg = failure.data['message'];
           this.changePasswordSuccess = false;
+          window.scrollTo(0,0);
         });
     }
   },

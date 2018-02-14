@@ -3,13 +3,13 @@ package com.rxu.duoesports.riot
 import com.google.inject.Inject
 import com.rxu.duoesports.config.AppConfig
 import com.rxu.duoesports.models.Region.Region
-import com.rxu.duoesports.riot.dto.RiotSummoner
-import com.rxu.duoesports.util.RiotApiException
+import com.rxu.duoesports.riot.dto.{RiotSummoner, RiotSummonerLeague}
 import com.typesafe.scalalogging.LazyLogging
 import play.api.libs.json.Json
-import play.api.libs.ws.WSClient
+import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration._
 
 class RiotClient @Inject()(
   appConfig: AppConfig,
@@ -27,17 +27,36 @@ class RiotClient @Inject()(
     appConfig.riotBaseUrl.replaceFirst("region", riotRegions(region.toString)) + path
   }
 
-  def getSummonerByName(summonerName: String, region: Region): Future[RiotSummoner] = {
-    val path = s"/lol/summoner/v3/summoners/by-name/$summonerName"
-    val url = buildUrl(path, region)
+  private def executeRequest[T](path: String, region: Region)(parser: WSResponse => T): Future[T] = {
     logger.info(s"GET $path")
-    ws.url(url).get map { response =>
+    val url = buildUrl(path, region)
+    ws.url(url)
+      .withHttpHeaders("X-RIOT-TOKEN" -> appConfig.riotApiKey)
+      .withRequestTimeout(10.seconds)
+      .get map { response =>
       logger.info(s"Received ${response.status} response from $url")
       logger.info(s"Response body: ${response.body}")
-      Json.parse(response.body).validate[RiotSummoner].fold(
-        _ => throw RiotApiException(s"Unable to parse response ${response.body} from $url"),
-        riotSummoner => riotSummoner
-      )
+      parser(response)
+    }
+  }
+
+  def findBySummonerName(summonerName: String, region: Region): Future[Option[RiotSummoner]] = {
+    val path = s"/lol/summoner/v3/summoners/by-name/$summonerName"
+    executeRequest(path, region){ response =>
+      Json.parse(response.body).asOpt[RiotSummoner]
+    }
+  }
+
+  def getVerificationCode(summonerId: Long, region: Region): Future[String] = {
+    val path = s"/lol/platform/v3/third-party-code/by-summoner/$summonerId"
+    Thread.sleep(3000) //TODO: really don't like to do this, but RIOT API is slow to update
+    executeRequest(path, region)(_.body.replaceAll("\"", ""))
+  }
+
+  def getLeagueForSummoner(summonerId: Long, region: Region): Future[Seq[RiotSummonerLeague]] = {
+    val path = s"/lol/league/v3/positions/by-summoner/$summonerId"
+    executeRequest(path, region){ response =>
+      Json.parse(response.body).as[Seq[RiotSummonerLeague]]
     }
   }
 

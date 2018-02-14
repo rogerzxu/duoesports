@@ -22,10 +22,12 @@ new Vue({
           this.saveAccountSuccess = true;
           this.saveAccountSuccessMsg = success.data['message'];
           this.saveAccountFailure = false;
+          window.scrollTo(0,0);
         }, function(failure) {
           this.saveAccountFailure = true;
           this.saveAccountFailureMsg = failure.data['message'];
           this.saveAccountSuccess = false;
+          window.scrollTo(0,0);
         });
     }
   },

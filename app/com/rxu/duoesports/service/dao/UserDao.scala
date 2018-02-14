@@ -4,11 +4,11 @@ import anorm._
 import com.google.inject.name.Named
 import com.google.inject.{Inject, Singleton}
 import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo}
+import com.rxu.duoesports.models.Rank.Rank
 import com.rxu.duoesports.models.Region.Region
-import com.rxu.duoesports.models.{UserAlt, User}
+import com.rxu.duoesports.models.User
 import com.typesafe.scalalogging.LazyLogging
 import play.api.db.Database
-import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,6 +41,35 @@ class UserDao @Inject()(
     }
   }
 
+  def findBySummonerName(summonerName: String, region: Region): Future[Option[User]] = Future {
+    db.withConnection {implicit c =>
+      SQL(
+        s"""
+          SELECT * FROM User
+          WHERE summonerName = {summonerName}
+          AND region = {region}
+        """
+      ).on(
+        'summonerName -> summonerName,
+        'region -> region.toString).as(User.parser.singleOpt)
+    }
+  }
+
+  def findBySummonerNameOrId(summonerName: String, summonerId: Long, region: Region): Future[Seq[User]] = Future {
+    db.withConnection {implicit c =>
+      SQL(
+        s"""
+          SELECT * FROM User
+          WHERE (summonerName = {summonerName} OR summonerId = {summonerId})
+          AND region = {region}
+        """
+      ).on(
+        'summonerName -> summonerName,
+        'summonerId -> summonerId,
+        'region -> region.toString).as(User.parser.*)
+    }
+  }
+
   def activate(id: Long): Future[Int] = Future {
     db.withConnection { implicit c =>
       SQL(
@@ -48,6 +77,41 @@ class UserDao @Inject()(
            UPDATE User SET activated = true where id = {id}
          """
       ).on('id -> id).executeUpdate()
+    }
+  }
+
+  def addSummoner(id: Long, summonerName: String, summonerId: Long, region: Region): Future[Int] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           UPDATE User SET
+            verified = true,
+            summonerName = {summonerName},
+            summonerId = {summonerId},
+            region = {region}
+           WHERE id = {id}
+         """
+      ).on(
+        'summonerName -> summonerName,
+        'summonerId -> summonerId,
+        'region -> region.toString,
+        'id -> id
+      ).executeUpdate()
+    }
+  }
+
+  def update(id: Long, rank: Rank): Future[Int] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           UPDATE User SET
+            rank = {rank}
+           WHERE id = {id}
+         """
+      ).on(
+        'rank -> rank.toString,
+        'id -> id
+      ).executeUpdate()
     }
   }
 

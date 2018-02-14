@@ -35,6 +35,22 @@ object Rank extends Enumeration {
   val B4 = Value("BRONZE IV")
   val B5 = Value("BRONZE V")
 
+  private val comparator = List(CHALLENGER, MASTER, D1, D2, D3, D4, D5, P1, P2, P3, P4, P5, G1, G2,
+    G3, G4, G5, S1, S2, S3, S4, S5, B1, B2, B3, B4, B5)
+
+  def compare(rank1: Rank, rank2: Rank): Int = {
+    comparator.indexOf(rank2).compareTo(comparator.indexOf(rank1))
+  }
+
+  def max(ranks: Seq[Rank]): Rank = {
+    var max = ranks.head
+    for(i <- ranks.indices) {
+      val temp = ranks(i)
+      if(compare(temp, max) > 0) max = temp
+    }
+    max
+  }
+
   implicit val rankColumn: Column[Rank] = Column.nonNull { (value, meta) =>
     val MetaDataItem(qualified, nullable, clazz) = meta
     value match {

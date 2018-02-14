@@ -8,7 +8,9 @@
 @com.rxu.duoesports.views.html.main(messages("account.title"), Some(user)) {
     @com.rxu.duoesports.views.html.account.accountSidebar("Add Summoner") {
         <h1>Add Summoner</h1>
-        <form v-on:submit="addSummoner" id="addSummonerForm">
+        <form v-on:submit="addSummoner" id="addSummonerForm" action="@com.rxu.duoesports.controller.routes.VerificationController.addSummoner">
+            <h4 class="successMsgLarge" :class="{hidden: !addSummonerSuccess}">{{ addSummonerSuccessMsg }}</h4>
+            <h4 class="errorMsgLarge" :class="{hidden: !addSummonerFailure}">{{ addSummonerFailureMsg }}</h4>
             @helper.CSRF.formField
             <div class="form-group">
                 <div class="row bordered-row rowLargePadding">
@@ -22,7 +24,7 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <select disabled class="form-control">
+                            <select name="region" class="form-control" form="addSummonerForm">
                                 <option selected="selected">NA</option>
                             </select>
                         </div>

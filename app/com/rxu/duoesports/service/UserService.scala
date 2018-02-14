@@ -4,9 +4,11 @@ import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.services.IdentityService
 import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo, UpdatePrimarySummoner}
-import com.rxu.duoesports.models.{UserAlt, User}
+import com.rxu.duoesports.models.Rank.Rank
+import com.rxu.duoesports.models.Region.Region
+import com.rxu.duoesports.models.{User, UserAlt}
 import com.rxu.duoesports.service.dao.UserDao
-import com.rxu.duoesports.util.{ActivateUserException, CreateUserException, GetUserException, UpdateUserException}
+import com.rxu.duoesports.util.{ActivateUserException, AddSummonerException, CreateUserException, GetUserException, UpdateUserException}
 import com.typesafe.scalalogging.LazyLogging
 import play.api.cache.{AsyncCacheApi, NamedCache}
 
@@ -84,6 +86,16 @@ class UserService @Inject()(
     cacheGetOrPut(email, userDao.findByEmail(email))
   }
 
+  def findBySummonerName(summonerName: String, region: Region): Future[Option[User]] = {
+    logger.debug(s"Finding user by summoner $summonerName $region")
+    userDao.findBySummonerName(summonerName, region)
+  }
+
+  def findBySummonerNameOrId(summonerName: String, summonerId: Long, region: Region): Future[Seq[User]] = {
+    logger.debug(s"Finding user by summoner $summonerName or id $summonerId $region")
+    userDao.findBySummonerNameOrId(summonerName, summonerId, region)
+  }
+
   def activate(id: Long): Future[Unit] = {
     logger.info(s"Activating user by id $id")
     for {
@@ -94,6 +106,32 @@ class UserService @Inject()(
         case _ => Future.successful(())
       }
       user <- getById(id)
+      _ <- cache.remove(user.getCacheKey)
+    } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+  }
+
+  def putSummoner(user: User, summonerName: String, summonerId: Long, region: Region): Future[Unit] = {
+    logger.info(s"Putting summoner for user ${user.id}: ($summonerName, $summonerId, $region)")
+    for {
+      result <- userDao.addSummoner(user.id, summonerName, summonerId, region)
+      _ <- result match {
+        case 0 => logger.error(s"MariaDB failed to add summoner for user ${user.id}")
+          Future.failed(UpdateUserException(s"MariaDB failed to add summoner for user ${user.id}"))
+        case _ => Future.successful(())
+      }
+      _ <- cache.remove(user.getCacheKey)
+    } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+  }
+
+  def update(user: User, rank: Rank): Future[Unit] = {
+    logger.info(s"Updating Rank for ${user.id} to $rank")
+    for {
+      result <- userDao.update(user.id, rank)
+      _ <- result match {
+        case 0 => logger.error(s"MariaDB failed to update rank for user ${user.id}")
+          Future.failed(UpdateUserException(s"MariaDB failed to update rank for user ${user.id}"))
+        case _ => Future.successful(())
+      }
       _ <- cache.remove(user.getCacheKey)
     } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
   }

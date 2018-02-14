@@ -21,13 +21,15 @@ new Vue({
       this.$http.headers.common['X-CSRF-TOKEN'] = document.querySelector('[name="csrfToken"]').getAttribute('value');
       this.$http.post($form.attr('action'), $form.serialize(), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
         .then(function(success) {
-          this.saveSummonerSuccess = true;
-          this.saveSummonerSuccessMsg = success.data['message'];
-          this.saveSummonerFailure = false;
+          this.addSummonerSuccess = true;
+          this.addSummonerSuccessMsg = success.data['message'];
+          this.addSummonerFailure = false;
+          window.scrollTo(0,0);
         }, function(failure) {
-          this.saveSummonerFailure = true;
-          this.saveSummonerFailureMsg = failure.data['message'];
-          this.saveSummonerSuccess = false;
+          this.addSummonerFailure = true;
+          this.addSummonerFailureMsg = failure.data['message'];
+          this.addSummonerSuccess = false;
+          window.scrollTo(0,0);
         });
     },
     generateCode: function (event) {
