@@ -70,7 +70,7 @@ class AccountController @Inject()(
         val credentials = Credentials(request.identity.email, changePasswordData.currentPassword)
         (for {
           loginInfo <- credentialsProvider.authenticate(credentials)
-          passwordInfo =  passwordHasherRegistry.current.hash(changePasswordData.password)
+          passwordInfo = passwordHasherRegistry.current.hash(changePasswordData.password)
           _ <- authInfoRepository.update[PasswordInfo](loginInfo, passwordInfo)
         } yield {
           logger.info(s"User ${request.identity.email} successfully changed password")
@@ -121,25 +121,6 @@ class AccountController @Inject()(
           ApiInternalError(Messages("account.summoner.save.failure"))
       }
     )
-  }
-
-  def activate(tokenId: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
-    authTokenService.activate(tokenId) map (_ => Ok(com.rxu.duoesports.views.html.account.activation())) recover {
-      case ex: ActivateUserException=> {
-        val resendUrl = request.cookies.get("duoesportsEmail") map { cookie =>
-          routes.AccountController.sendActivationEmail(email = cookie.value).absoluteURL
-        }
-        BadRequest(com.rxu.duoesports.views.html.account.activation(Some(ex.getMessage + "."), resendUrl))
-      }
-    }
-  }
-
-  def sendActivationEmail(email: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
-    authTokenService.generateAndSendEmail(email) map (_ => ApiOk(Messages("resend.activation.success"))) recover {
-      case ex: Throwable =>
-        logger.error(s"Failed to send activation email to $email", ex)
-        ApiInternalError(Messages("resend.activation.failure") + s" ${ex.getMessage}")
-    }
   }
 
 }

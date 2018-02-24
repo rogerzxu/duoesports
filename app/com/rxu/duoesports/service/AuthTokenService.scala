@@ -20,23 +20,40 @@ class AuthTokenService @Inject()(
   implicit ec: ExecutionContext
 ) extends LazyLogging {
 
-  def generateAndSendEmail(email: String)(implicit req: RequestHeader): Future[(AuthToken, String)] = {
+  def sendActivationEmail(email: String)(implicit req: RequestHeader): Future[(AuthToken, String)] = {
     logger.info(s"Generating activation email for $email")
-    userService.getByEmail(email) flatMap generateAndSendEmail
+    userService.getByEmail(email) flatMap generateAndSendActivationEmail
   }
 
-  def generateAndSendEmail(userId: Long)(implicit req: RequestHeader): Future[(AuthToken, String)] = {
+  def sendActivationEmail(userId: Long)(implicit req: RequestHeader): Future[(AuthToken, String)] = {
     logger.info(s"Generating activation email for $userId")
-    userService.getById(userId) flatMap generateAndSendEmail
+    userService.getById(userId) flatMap generateAndSendActivationEmail
   }
 
-  private def generateAndSendEmail(user: User)(implicit req: RequestHeader): Future[(AuthToken, String)] = {
+  private def generateAndSendActivationEmail(user: User)(implicit req: RequestHeader): Future[(AuthToken, String)] = {
     val token = AuthToken(UUID.randomUUID().toString, user.id, LocalDateTime.now().plusWeeks(2L))
     authTokenDao.upsert(token) map { _ =>
-      val url = routes.AccountController.activate(token.id).absoluteURL()
+      val url = routes.ActivationController.activate(token.id).absoluteURL()
       mailerService.sendActivationEmail(user.email, url)
       (token, url)
     }
+  }
+
+  def sendResetPasswordEmail(email: String)(implicit req: RequestHeader): Future[(AuthToken, String)] = {
+    logger.info(s"Generating reset password email for $email")
+    for {
+      user <- userService.getByEmail(email)
+      token = AuthToken(UUID.randomUUID().toString, user.id, LocalDateTime.now().plusHours(1L))
+      _ <- authTokenDao.upsert(token)
+    } yield {
+      val url = routes.ResetPasswordController.resetPasswordPage(token.id).absoluteURL()
+      mailerService.sendResetPasswordEmail(user.email, url)
+      (token, url)
+    }
+  }
+
+  def findById(id: String): Future[Option[AuthToken]] = {
+    authTokenDao.findById(id)
   }
 
   def activate(id: String): Future[Unit] = {

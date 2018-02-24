@@ -1,0 +1,21 @@
+h1 {
+    padding-bottom: 30px;
+}
+
+.error {
+    border-color: red;
+    background: #FDD;
+}
+
+.error:focus {
+    outline-color: #F99;
+}
+
+.valid {
+    border-color: #5A5;
+    background: #EFE;
+}
+
+.valid:focus {
+    outline-color: #8E8;
+}

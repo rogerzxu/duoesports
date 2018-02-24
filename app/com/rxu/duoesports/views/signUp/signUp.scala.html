@@ -7,6 +7,7 @@
 
 @com.rxu.duoesports.views.html.main(messages("signup.title")) {
     <link rel="stylesheet" href="@assets.path("stylesheets/signUp.css")">
+    <link rel="stylesheet" href="@assets.path("stylesheets/vuelidateForm.css")">
     <h1>@messages("signup.header")</h1>
     <form id="signUpForm" v-on:submit="signUp" novalidate action="@com.rxu.duoesports.controller.routes.SignUpController.signUp" method="POST">
         @helper.CSRF.formField

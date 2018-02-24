@@ -21,9 +21,14 @@ GET         /account/summoner/add                        @com.rxu.duoesports.con
 POST        /account/summoner/add                        @com.rxu.duoesports.controller.VerificationController.addSummoner
 GET         /account/player-info                         @com.rxu.duoesports.controller.AccountController.playerInfo
 POST        /account/player-info                         @com.rxu.duoesports.controller.AccountController.updatePlayerInfo
-GET         /account/activate/:tokenId                   @com.rxu.duoesports.controller.AccountController.activate(tokenId: String)
-GET         /account/send-activation-email/:email        @com.rxu.duoesports.controller.AccountController.sendActivationEmail(email: String)
+GET         /account/activate/:tokenId                   @com.rxu.duoesports.controller.ActivationController.activate(tokenId: String)
+GET         /account/send-activation-email/:email        @com.rxu.duoesports.controller.ActivationController.sendActivationEmail(email: String)
 GET         /account/verification-code                   @com.rxu.duoesports.controller.VerificationController.generateVerificationCode()
+
+GET         /forgot-password                             @com.rxu.duoesports.controller.ResetPasswordController.view
+POST        /send-reset-password-email                   @com.rxu.duoesports.controller.ResetPasswordController.sendResetPasswordEmail
+GET         /reset-password/:tokenId                     @com.rxu.duoesports.controller.ResetPasswordController.resetPasswordPage(tokenId: String)
+POST        /reset-password/:tokenId                     @com.rxu.duoesports.controller.ResetPasswordController.resetPassword(tokenId: String)
 
 GET         /not-found                                   @com.rxu.duoesports.controller.ErrorController.notFound
 GET         /internal-server-error                       @com.rxu.duoesports.controller.ErrorController.internalServerError

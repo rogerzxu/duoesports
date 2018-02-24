@@ -50,11 +50,16 @@
                                                 type="password" autocomplete="current-password" class="form-control" name="signInPassword" id="signInPassword" placeholder="Password">
                                             </div>
                                             <span class="errorMsg" :class="{hidden: signInSuccess}">{{ signInErrorMsg }}</span>
-                                            <div class="form-check">
-                                                <label class="form-check-label">
-                                                    <input type="checkbox" class="form-check-input" name="rememberMe" id="rememberMe">
-                                                    Remember Me
-                                                </label>
+                                            <div class="row">
+                                                <div class="col-md-6 form-check">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input" name="rememberMe" id="rememberMe">
+                                                        Remember Me
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-6 forgotPassword">
+                                                    <a href="@com.rxu.duoesports.controller.routes.ResetPasswordController.view">Forgot Password?</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -10,7 +10,7 @@ import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.rxu.duoesports.dto.SignUpForm
 import com.rxu.duoesports.models.{User, UserRole}
 import com.rxu.duoesports.security.DefaultEnv
-import com.rxu.duoesports.service.{AuthTokenService, MailerService, UserService}
+import com.rxu.duoesports.service.{AuthTokenService, UserService}
 import com.rxu.duoesports.util.ApiResponseHelpers
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
@@ -25,8 +25,7 @@ class SignUpController @Inject()(
   authInfoRepository: AuthInfoRepository,
   passwordHasherRegistry: PasswordHasherRegistry,
   userService: UserService,
-  authTokenService: AuthTokenService,
-  mailerService: MailerService
+  authTokenService: AuthTokenService
 )(
   implicit webJarsUtil: WebJarsUtil,
   assets: AssetsFinder,
@@ -42,7 +41,7 @@ class SignUpController @Inject()(
 
   def signUpSuccess = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
     val resendUrl = request.cookies.get("duoesportsEmail") map { cookie =>
-      routes.AccountController.sendActivationEmail(email = cookie.value).absoluteURL
+      routes.ActivationController.sendActivationEmail(email = cookie.value).absoluteURL
     }
     Ok(com.rxu.duoesports.views.html.signUp.signUpSuccess(resendUrl))
   }
@@ -69,7 +68,7 @@ class SignUpController @Inject()(
             for {
               userId <- userService.create(user)
               _ <- authInfoRepository.add(loginInfo, authInfo)
-              _ <- authTokenService.generateAndSendEmail(userId)
+              _ <- authTokenService.sendActivationEmail(userId)
             } yield {
               silhouette.env.eventBus.publish(SignUpEvent(user, request))
               ApiOk(Messages("signup.success")) //TODO: Secure cookie

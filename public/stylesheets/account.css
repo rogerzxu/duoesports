@@ -1,6 +1,5 @@
 h1 {
     text-align: left;
-    padding-bottom: 30px;
 }
 
 h4 {
@@ -20,15 +19,6 @@ p {
     padding-left: 5px;
     height: 32px;
     width: 32px;
-}
-
-.error {
-    border-color: red;
-    background: #FDD;
-}
-
-.error:focus {
-    outline-color: #F99;
 }
 
 .generateCodeButton {
@@ -89,15 +79,6 @@ p {
 .profileImage {
     width: 200px;
     height: 200px;
-}
-
-.valid {
-    border-color: #5A5;
-    background: #EFE;
-}
-
-.valid:focus {
-    outline-color: #8E8;
 }
 
 .verificationInstructions {
