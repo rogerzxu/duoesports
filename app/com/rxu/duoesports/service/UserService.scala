@@ -8,7 +8,7 @@ import com.rxu.duoesports.models.Rank.Rank
 import com.rxu.duoesports.models.Region.Region
 import com.rxu.duoesports.models.{User, UserAlt}
 import com.rxu.duoesports.service.dao.UserDao
-import com.rxu.duoesports.util.{ActivateUserException, AddSummonerException, CreateUserException, GetUserException, UpdateUserException}
+import com.rxu.duoesports.util.{ActivateUserException, CacheHelpers, CreateUserException, GetUserException, UpdateUserException}
 import com.typesafe.scalalogging.LazyLogging
 import play.api.cache.{AsyncCacheApi, NamedCache}
 
@@ -16,26 +16,14 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 
 class UserService @Inject()(
-  @NamedCache("user-cache") cache: AsyncCacheApi,
   userDao: UserDao,
   userAltService: UserAltService
 )(
-  implicit ec: ExecutionContext
+  implicit val ec: ExecutionContext,
+  @NamedCache("user-cache") cache: AsyncCacheApi
 ) extends IdentityService[User]
-  with LazyLogging {
-
-  private def cacheGetOrPut[T](cacheKey: String, finder: Future[Option[User]]): Future[Option[User]] = {
-    cache.get[Option[User]](cacheKey) flatMap {
-      case Some(cachedUser) =>
-        logger.trace(s"Found entry in cache for ${cacheKey}")
-        Future.successful(cachedUser)
-      case None => finder map { user =>
-        logger.trace(s"Storing entry in cache for ${cacheKey}")
-        cache.set(cacheKey, user)
-        user
-      }
-    }
-  }
+  with LazyLogging
+  with CacheHelpers {
 
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
     logger.trace(s"Retrieving user: $loginInfo")
@@ -86,6 +74,7 @@ class UserService @Inject()(
     cacheGetOrPut(email, userDao.findByEmail(email))
   }
 
+  //TODO: cache?
   def findBySummonerName(summonerName: String, region: Region): Future[Option[User]] = {
     logger.debug(s"Finding user by summoner $summonerName $region")
     userDao.findBySummonerName(summonerName, region)

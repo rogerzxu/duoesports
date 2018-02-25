@@ -24,6 +24,7 @@ new Vue({
         }, function(failure) {
           this.signUpSuccess = false;
           this.signUpErrorMsg = failure.data['message'];
+          window.scrollTo(0,0);
         });
     }
   },

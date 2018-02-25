@@ -7,7 +7,7 @@ new Vue({
     email: '',
     sendResetEmailSuccess: false,
     sendResetEmailFailure: false,
-    sendResetEmailMsg: '',
+    sendResetEmailMsg: ''
   },
   methods: {
     sendResetPassword: function (event) {
@@ -20,10 +20,12 @@ new Vue({
           this.sendResetEmailSuccess = true;
           this.sendResetEmailMsg = success.data['message'];
           this.sendResetEmailFailure = false;
+          window.scrollTo(0,0);
         }, function(failure) {
           this.sendResetEmailSuccess = false;
           this.sendResetEmailMsg = failure.data['message'];
           this.sendResetEmailFailure = true;
+          window.scrollTo(0,0);
         });
     }
   },

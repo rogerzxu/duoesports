@@ -29,6 +29,7 @@ case class User(
   profileImageUrl: Option[String] = None,
   timezone: Timezone = Timezone.EASTERN,
   rank: Option[Rank] = None,
+  isFreeAgent: Boolean = false,
   createdAt: LocalDateTime = LocalDateTime.now(),
   updatedAt: LocalDateTime = LocalDateTime.now()
 ) extends Identity {
@@ -39,6 +40,8 @@ case class User(
   )
 
   def getCacheKey: String = email
+
+  def isTeamless: Boolean = teamId.isEmpty
 }
 
 object User {

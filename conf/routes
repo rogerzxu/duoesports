@@ -30,5 +30,8 @@ POST        /send-reset-password-email                   @com.rxu.duoesports.con
 GET         /reset-password/:tokenId                     @com.rxu.duoesports.controller.ResetPasswordController.resetPasswordPage(tokenId: String)
 POST        /reset-password/:tokenId                     @com.rxu.duoesports.controller.ResetPasswordController.resetPassword(tokenId: String)
 
+GET         /teams                                       @com.rxu.duoesports.controller.TeamController.teams
+GET         /teams/create                                @com.rxu.duoesports.controller.TeamController.createPage
+
 GET         /not-found                                   @com.rxu.duoesports.controller.ErrorController.notFound
 GET         /internal-server-error                       @com.rxu.duoesports.controller.ErrorController.internalServerError

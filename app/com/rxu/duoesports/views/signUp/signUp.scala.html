@@ -11,7 +11,7 @@
     <h1>@messages("signup.header")</h1>
     <form id="signUpForm" v-on:submit="signUp" novalidate action="@com.rxu.duoesports.controller.routes.SignUpController.signUp" method="POST">
         @helper.CSRF.formField
-        <h2 class="errorMsg" :class="{hidden: signUpSuccess}">{{ signUpErrorMsg }}</h2>
+        <h4 class="errorMsgLarge" :class="{hidden: signUpSuccess}">{{ signUpErrorMsg }}</h4>
         <div class="form-group">
             <div class="row bordered-row rowLargePadding">
                 <div class="col-md-4">

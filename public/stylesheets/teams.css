@@ -1,0 +1,23 @@
+.createTeamButton {
+    background-color: #00b16a;
+    border-radius: 2px;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    padding: 15px 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    width: 230px;
+    height: 60px;
+}
+
+.disabledButtonTooltip {
+    pointer-events: none;
+}
+
+.discordIcon {
+    padding-left: 5px;
+    height: 32px;
+    width: 32px;
+}

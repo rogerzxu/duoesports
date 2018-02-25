@@ -199,7 +199,8 @@ class UserDao @Inject()(
              discordId,
              profileImageUrl,
              timezone,
-             rank)
+             rank,
+             isFreeAgent)
            VALUES(
              {email},
              {password},
@@ -217,7 +218,8 @@ class UserDao @Inject()(
              {discordId},
              {profileImageUrl},
              {timezone},
-             {rank})
+             {rank},
+             {isFreeAgent})
         """
       ).on(
         'email -> user.email,
@@ -236,7 +238,8 @@ class UserDao @Inject()(
         'discordId -> user.discordId.orNull,
         'profileImageUrl -> user.profileImageUrl.orNull,
         'timezone -> user.timezone.toString,
-        'rank -> user.rank.map(_.toString).orNull
+        'rank -> user.rank.map(_.toString).orNull,
+        'isFreeAgent -> user.isFreeAgent
       ).executeInsert()
     }
   }

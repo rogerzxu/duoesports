@@ -1,4 +1,22 @@
 # --- !Ups
+CREATE TABLE Team (
+  id              BIGINT(20)                                                               AUTO_INCREMENT,
+  name            VARCHAR(200) NOT NULL,
+  region          VARCHAR(5)   NOT NULL,
+  divisionId      BIGINT(20)                                                               DEFAULT NULL,
+  seasonId        BIGINT(20)                                                               DEFAULT NULL,
+  description     TEXT                                                                     DEFAULT NULL,
+  logoUrl         VARCHAR(100)                                                             DEFAULT NULL,
+  eligible        BOOLEAN                                                                  DEFAULT TRUE,
+  isRecruiting    BOOLEAN                                                                  DEFAULT FALSE,
+  recruitingRoles SET ('Middle', 'Jungle', 'Top', 'Bottom', 'Support', 'Coach', 'Analyst') DEFAULT NULL,
+  discordServer   VARCHAR(100)                                                             DEFAULT NULL,
+  updatedAt       TIMESTAMP                                                                DEFAULT NOW() ON UPDATE NOW(),
+  createdAt       TIMESTAMP                                                                DEFAULT NOW(),
+
+  CONSTRAINT team_pk PRIMARY KEY (id),
+  UNIQUE INDEX team_name_idx (name)
+);
 
 CREATE TABLE User (
   id              BIGINT(20)   NOT NULL                                                    AUTO_INCREMENT,
@@ -19,6 +37,7 @@ CREATE TABLE User (
   profileImageUrl VARCHAR(100)                                                             DEFAULT NULL,
   timezone        VARCHAR(30)                                                              DEFAULT 'EST',
   rank            VARCHAR(20)                                                              DEFAULT NULL,
+  isFreeAgent     BOOLEAN                                                                  DEFAULT FALSE,
   updatedAt       TIMESTAMP                                                                DEFAULT NOW() ON UPDATE NOW(),
   createdAt       TIMESTAMP                                                                DEFAULT NOW(),
 
@@ -26,7 +45,10 @@ CREATE TABLE User (
   UNIQUE INDEX email_idx (email),
   UNIQUE INDEX summoner_idx (summonerName, region),
   UNIQUE INDEX summoner_id_idx (summonerId, region),
-  INDEX team_id_idx (teamId)
+  INDEX team_id_idx (teamId),
+  CONSTRAINT user_team_id FOREIGN KEY (teamId) REFERENCES Team (id)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE UserAlt (
@@ -43,9 +65,9 @@ CREATE TABLE UserAlt (
 );
 
 CREATE TABLE AuthToken (
-  id      VARCHAR(50) NOT NULL,
+  id     VARCHAR(50) NOT NULL,
   userId BIGINT(20)  NOT NULL,
-  expiry  TIMESTAMP   NOT NULL,
+  expiry TIMESTAMP   NOT NULL,
 
   CONSTRAINT auth_token_pk PRIMARY KEY (id),
   CONSTRAINT auth_token_user_id FOREIGN KEY (userId) REFERENCES User (id)
@@ -55,7 +77,7 @@ CREATE TABLE AuthToken (
 
 CREATE TABLE VerificationCode (
   userId BIGINT(20)  NOT NULL,
-  code    VARCHAR(50) NOT NULL,
+  code   VARCHAR(50) NOT NULL,
 
   CONSTRAINT verification_code_pk PRIMARY KEY (userId),
   CONSTRAINT verification_code_user_id FOREIGN KEY (userId) REFERENCES User (id)
@@ -67,4 +89,6 @@ CREATE TABLE VerificationCode (
 
 DROP TABLE VerificationCode;
 DROP TABLE AuthToken;
+DROP TABLE UserAlt;
 DROP TABLE User;
+DROP TABLE Team;

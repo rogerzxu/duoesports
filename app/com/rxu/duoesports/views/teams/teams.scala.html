@@ -1,0 +1,26 @@
+@import play.api.i18n.Messages
+@import org.webjars.play.WebJarsUtil
+@import com.rxu.duoesports.models.User
+@import com.rxu.duoesports.util.TemplateHelpers
+
+@(user: Option[User])(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+
+@com.rxu.duoesports.views.html.main(messages("teams.title"), user) {
+    <link rel="stylesheet" href="@assets.path("stylesheets/teams.css")">
+    <h1>@messages("teams.header")</h1>
+
+    <div class="row bordered-row rowLargePadding">
+        <div class="col-md-12 text-center">
+            @if(TemplateHelpers.canCreateTeam(user)) {
+                <a href="@com.rxu.duoesports.controller.routes.TeamController.createPage">
+                    <button type="submit" class="btn btn-lg createTeamButton">Create Team</button>
+                </a>
+            } else {
+                <div class="tooltip-wrapper" data-toggle="tooltip" data-placement="bottom"
+                    data-title="@messages("teams.cantCreate.placeholder")">
+                    <button disabled type="submit" class="btn btn-lg createTeamButton disabledButtonTooltip">Create Team</button>
+                </div>
+            }
+        </div>
+    </div>
+}

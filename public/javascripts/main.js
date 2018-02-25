@@ -1,3 +1,7 @@
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+});
+
 Vue.use(window.vuelidate.default);
 Vue.use(VueResource);
 var { required } = window.validators;

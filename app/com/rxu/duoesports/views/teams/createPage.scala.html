@@ -1,0 +1,61 @@
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
+@import org.webjars.play.WebJarsUtil
+@import controllers.AssetsFinder
+@import com.rxu.duoesports.models.User
+
+@(user: User)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+
+@com.rxu.duoesports.views.html.main(messages("teams.create.title"), Some(user)) {
+    <link rel="stylesheet" href="@assets.path("stylesheets/teams.css")">
+    <h1>@messages("teams.create.header")</h1>
+    <form id="createTeamForm" v-on:submit="createTeam">
+        @helper.CSRF.formField
+        <h4 class="errorMsgLarge" :class="{hidden: createTeamFailure}">{{ createTeamFailureMsg }}</h4>
+        <div class="form-group">
+            <div class="row bordered-row rowLargePadding">
+                <div class="col-md-4">
+                    <label>Team Name</label>
+                </div>
+                <div class="col-md-8">
+                    <input v-model="teamName" v-on:input="$v.teamName.$touch" v-bind:class="{error: $v.teamName.$error, valid: $v.teamName.$dirty && !$v.teamName.$invalid}"
+                    class="form-control" name="teamName" id="teamName" placeholder="Team Name">
+                </div>
+            </div>
+            <div class="row bordered-row rowLargePadding">
+                <div class="col-md-4">
+                    <label>Team Logo</label>
+                </div>
+                <div class="col-md-8">
+                    <input type="hidden" role="uploadcare-uploader" name="teamLogo"
+                            data-image-shrink="512x512 100%"
+                            data-crop="512:512" />
+                </div>
+            </div>
+            <div class="row bordered-row rowLargePadding">
+                <div class="col-md-4">
+                    <label>Description</label>
+                </div>
+                <div class="col-md-8">
+                    <textarea class="form-control" rows="5" name="description" maxLength="1000" placeholder="@messages("teams.create.description.placeholder")">@user.description.map{desc=>@desc}</textarea>
+                </div>
+            </div>
+            <div class="row bordered-row rowLargePadding">
+                <div class="col-md-4">
+                    <label>Discord Server</label>
+                    <img class="discordIcon" src="https://s3.amazonaws.com/duoesports-images/icons/discord.svg">
+                </div>
+                <div class="col-md-8">
+                    <input class="form-control" name="discordServer" placeholder="@messages("teams.create.discordServer.placeholder")">
+                </div>
+            </div>
+            <div class="row bordered-row rowLargePadding">
+                <div class="col-md-12 text-center">
+                    <button :disabled="$v.$invalid" type="submit" class="btn btn-lg createTeamButton">Create Team</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <script src="@assets.path("javascripts/teams/createTeam.js")"></script>
+    <script charset="utf-8" src="//ucarecdn.com/libs/widget/3.2.2/uploadcare.full.min.js"></script>
+}
