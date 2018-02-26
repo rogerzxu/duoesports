@@ -27,8 +27,9 @@ new Vue({
 
           window.scrollTo(0,0);
         }, function(failure) {
+          console.log(failure.data['message']);
           this.createTeamFailure = true;
-          this.savePlayerFailureMsg = failure.data['message'];
+          this.createTeamFailureMsg = failure.data['message'];
           window.scrollTo(0,0);
         });
     }

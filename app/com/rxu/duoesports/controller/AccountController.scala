@@ -11,7 +11,7 @@ import com.mohiva.play.silhouette.api.util.{Credentials, PasswordHasherRegistry,
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.rxu.duoesports.dto.{ChangePasswordForm, UpdateAccountInfoForm, UpdatePlayerInfo, UpdatePrimarySummoner}
 import com.rxu.duoesports.security.DefaultEnv
-import com.rxu.duoesports.service.{AuthTokenService, UserAltService, UserService}
+import com.rxu.duoesports.service.{AuthTokenService, TeamService, UserAltService, UserService}
 import com.rxu.duoesports.util.{ActivateUserException, ApiResponseHelpers, UpdateUserException}
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
@@ -24,6 +24,7 @@ class AccountController @Inject()(
   components: ControllerComponents,
   silhouette: Silhouette[DefaultEnv],
   authTokenService: AuthTokenService,
+  teamService: TeamService,
   userService: UserService,
   userAltService: UserAltService,
   passwordHasherRegistry: PasswordHasherRegistry,
@@ -48,7 +49,7 @@ class AccountController @Inject()(
         logger.error(s"Received invalid account info form: ${badForm.toString}")
         Future.successful(ApiBadRequest(Messages("account.accountInfo.save.failure")))
       },
-      updateAccountInfo => userService.update(request.identity, updateAccountInfo) map (_ => ApiOk(Messages("account.accountInfo.save.success"))) recover {
+      updateAccountInfo => userService.updateAccountInfo(request.identity, updateAccountInfo) map (_ => ApiOk(Messages("account.accountInfo.save.success"))) recover {
         case ex: UpdateUserException =>
           logger.error(s"Failed to update account info $updateAccountInfo", ex)
           ApiInternalError(Messages("account.accountInfo.save.failure"))
@@ -85,8 +86,13 @@ class AccountController @Inject()(
     )
   }
 
-  def playerInfo = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.account.playerInfo(request.identity))
+  def playerInfo = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    request.identity.teamId match {
+      case Some(teamId) => teamService.getById(teamId) map { team =>
+        Ok(com.rxu.duoesports.views.html.account.playerInfo(request.identity, Some(team.name)))
+      }
+      case None => Future.successful(Ok(com.rxu.duoesports.views.html.account.playerInfo(request.identity)))
+    }
   }
 
   def updatePlayerInfo() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
@@ -95,7 +101,7 @@ class AccountController @Inject()(
         logger.error(s"Received invalid player info form: ${badForm.toString}")
         Future.successful(ApiBadRequest(Messages("account.playerInfo.save.failure")))
       },
-      updatePlayerInfo => userService.update(request.identity, updatePlayerInfo) map (_ => ApiOk(Messages("account.playerInfo.save.success"))) recover {
+      updatePlayerInfo => userService.updatePlayerInfo(request.identity, updatePlayerInfo) map (_ => ApiOk(Messages("account.playerInfo.save.success"))) recover {
         case ex: UpdateUserException =>
           logger.error(s"Failed to update player info $updatePlayerInfo", ex)
           ApiInternalError(Messages("account.playerInfo.save.failure"))

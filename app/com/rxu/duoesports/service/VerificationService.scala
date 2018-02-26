@@ -75,9 +75,9 @@ class VerificationService @Inject()(
     val maybeRiotRank = Rank.max(userLeagues.filter(_.isSoloQOrFlex).map(_.getRank))
     (user.rank, maybeRiotRank) match {
       case (Some(userRank), Some(riotRank)) =>
-        if(Rank.compare(riotRank, userRank) > 0) userService.update(user, riotRank)
+        if(Rank.compare(riotRank, userRank) > 0) userService.updateRank(user, riotRank)
         else Future.successful(())
-      case (None, Some(riotRank)) => userService.update(user, riotRank)
+      case (None, Some(riotRank)) => userService.updateRank(user, riotRank)
       case _ => Future.successful(())
     }
   }

@@ -32,6 +32,7 @@ POST        /reset-password/:tokenId                     @com.rxu.duoesports.con
 
 GET         /teams                                       @com.rxu.duoesports.controller.TeamController.teams
 GET         /teams/create                                @com.rxu.duoesports.controller.TeamController.createPage
+POST        /teams/create                                @com.rxu.duoesports.controller.TeamController.create
 
 GET         /not-found                                   @com.rxu.duoesports.controller.ErrorController.notFound
 GET         /internal-server-error                       @com.rxu.duoesports.controller.ErrorController.internalServerError

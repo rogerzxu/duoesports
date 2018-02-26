@@ -11,7 +11,8 @@
     <h1>@messages("teams.create.header")</h1>
     <form id="createTeamForm" v-on:submit="createTeam">
         @helper.CSRF.formField
-        <h4 class="errorMsgLarge" :class="{hidden: createTeamFailure}">{{ createTeamFailureMsg }}</h4>
+        <h4 class="errorMsgLarge" :class="{hidden: !createTeamFailure}">{{ createTeamFailureMsg }}</h4>
+        <input hidden name="region" value="@user.region.get.toString">
         <div class="form-group">
             <div class="row bordered-row rowLargePadding">
                 <div class="col-md-4">

@@ -69,7 +69,7 @@ class TeamDao @Inject()(
         'name -> team.name,
         'region -> team.region.toString,
         'divisionId -> team.divisionId.map(_.toString).orNull,
-        'seasonid -> team.seasonId.map(_.toString).orNull,
+        'seasonId -> team.seasonId.map(_.toString).orNull,
         'description -> team.description.orNull,
         'logoUrl -> team.logoUrl.orNull,
         'eligible -> team.eligible,

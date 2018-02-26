@@ -6,7 +6,8 @@ import com.mohiva.play.silhouette.api.services.IdentityService
 import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo, UpdatePrimarySummoner}
 import com.rxu.duoesports.models.Rank.Rank
 import com.rxu.duoesports.models.Region.Region
-import com.rxu.duoesports.models.{User, UserAlt}
+import com.rxu.duoesports.models.UserRole.UserRole
+import com.rxu.duoesports.models.{User, UserAlt, UserRole}
 import com.rxu.duoesports.service.dao.UserDao
 import com.rxu.duoesports.util.{ActivateUserException, CacheHelpers, CreateUserException, GetUserException, UpdateUserException}
 import com.typesafe.scalalogging.LazyLogging
@@ -112,7 +113,7 @@ class UserService @Inject()(
     } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
   }
 
-  def update(user: User, rank: Rank): Future[Unit] = {
+  def updateRank(user: User, rank: Rank): Future[Unit] = {
     logger.info(s"Updating Rank for ${user.id} to $rank")
     for {
       result <- userDao.update(user.id, rank)
@@ -125,7 +126,7 @@ class UserService @Inject()(
     } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
   }
 
-  def update(user: User, updateAccountInfo: UpdateAccountInfo): Future[Unit] = {
+  def updateAccountInfo(user: User, updateAccountInfo: UpdateAccountInfo): Future[Unit] = {
     logger.info(s"Updating account info for ${user.id}: $updateAccountInfo")
     for {
       result <- userDao.update(user.id, updateAccountInfo)
@@ -138,7 +139,7 @@ class UserService @Inject()(
     } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
   }
 
-  def update(user: User, updatePlayerInfo: UpdatePlayerInfo): Future[Unit] = {
+  def updatePlayerInfo(user: User, updatePlayerInfo: UpdatePlayerInfo): Future[Unit] = {
     logger.info(s"Updating player info for ${user.id}: $updatePlayerInfo")
     for {
       result <- userDao.update(user.id, updatePlayerInfo)
@@ -174,6 +175,19 @@ class UserService @Inject()(
         } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
       }).getOrElse(Future.successful(()))
     }
+  }
+
+  def joinTeam(user: User, teamId: Long, userRole: UserRole = UserRole.Player): Future[Unit] = {
+    logger.info(s"Joining team $teamId for ${user.id}")
+    for {
+      result <- userDao.joinTeam(user.id, teamId, userRole)
+      _ <- result match {
+        case 0 => logger.error(s"MariaDB failed to update Team and UserRole for ${user.id}")
+          Future.failed(UpdateUserException(s"MariaDB failed to update Team and UserRole for ${user.id}"))
+        case _ => Future.successful(())
+      }
+      _ <- cache.remove(user.getCacheKey)
+    } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
   }
 
 }

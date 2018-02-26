@@ -1,12 +1,14 @@
 package com.rxu.duoesports.service.dao
 
 import anorm._
+import anorm.SqlParser._
 import com.google.inject.name.Named
 import com.google.inject.{Inject, Singleton}
 import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo}
 import com.rxu.duoesports.models.Rank.Rank
 import com.rxu.duoesports.models.Region.Region
 import com.rxu.duoesports.models.User
+import com.rxu.duoesports.models.UserRole.UserRole
 import com.typesafe.scalalogging.LazyLogging
 import play.api.db.Database
 
@@ -173,6 +175,23 @@ class UserDao @Inject()(
         'summonerName -> newPrimaryName,
         'summonerId -> newPrimaryId,
         'region -> newPrimaryRegion.toString,
+        'id -> userId
+      ).executeUpdate()
+    }
+  }
+
+  def joinTeam(userId: Long, teamId: Long, userRole: UserRole): Future[Int] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           UPDATE User Set
+            teamId = {teamId},
+            userRole = {userRole}
+           WHERE id = {id}
+         """
+      ).on(
+        'teamId -> teamId,
+        'userRole -> userRole.toString,
         'id -> userId
       ).executeUpdate()
     }

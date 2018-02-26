@@ -53,6 +53,8 @@ teams.create.title = Create Team
 teams.create.header = Create Team
 teams.create.description.placeholder = A short description of the team. You can include what you''re looking for in players, what roles your team needs, your team''s schedule, etc.
 teams.create.discordServer.placeholder = Give your Discord Server to make it easier to contact your team!
+teams.create.failure = An error occurred while creating the new team
+teams.create.success = Successfully created new team!
 
 signup.title = Duo E-Sports Sign-Up
 signup.duplicate.email = That email address is already in use. Please try again with a different email.
