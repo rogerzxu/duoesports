@@ -29,8 +29,13 @@ class TeamController @Inject()(
   with I18nSupport
   with ApiResponseHelpers {
 
-  def teams = silhouette.UserAwareAction { implicit request: UserAwareRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.teams.teams(request.identity))
+  def teams(page: Option[Int] = None) = silhouette.UserAwareAction.async { implicit request: UserAwareRequest[DefaultEnv, AnyContent] =>
+    for {
+      teams <- teamService.listByNamesPaginated(page.getOrElse(1))
+      teamCount <- teamService.getCount
+    } yield {
+      Ok(com.rxu.duoesports.views.html.teams.teams(request.identity, teams, page.getOrElse(1), teamCount))
+    }
   }
 
   def createPage = silhouette.SecuredAction(CanCreateTeam()) { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>

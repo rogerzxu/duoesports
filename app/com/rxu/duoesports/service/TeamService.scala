@@ -19,6 +19,17 @@ class TeamService @Inject()(
 ) extends LazyLogging
   with CacheHelpers {
 
+  def listByNamesPaginated(pageNumber: Int, limit: Int = 10): Future[Seq[Team]] = {
+    logger.debug(s"Searching for 10 teams starting with page $pageNumber")
+    teamDao.listByNamesPaginated((pageNumber - 1) * limit, limit)
+  }
+
+  def getCount: Future[Int] = {
+    cache.getOrElseUpdate("count") {
+      teamDao.getCount
+    }
+  }
+
   def create(user: User, createTeamForm: CreateTeamForm): Future[Long] = {
     create(user, Team(
       id = 0L,
@@ -45,6 +56,7 @@ class TeamService @Inject()(
       }
       _ <- userService.joinTeam(user, teamId, UserRole.Captain)
       _ <- cache.remove(team.name)
+      _ <- cache.remove("count")
     } yield {
       logger.debug(s"Invalidating ${team.name} from cache")
       teamId
@@ -63,7 +75,7 @@ class TeamService @Inject()(
 
   def getByName(name: String): Future[Team] = {
     logger.debug(s"Finding team by name $name")
-    teamDao.findByName(name) flatMap {
+    cacheGetOrPut(name, teamDao.findByName(name)) flatMap {
       case Some(team) => Future.successful(team)
       case None =>
         logger.error(s"Failed to get team $name")

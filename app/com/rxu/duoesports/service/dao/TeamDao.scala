@@ -1,6 +1,7 @@
 package com.rxu.duoesports.service.dao
 
 import anorm._
+import anorm.SqlParser._
 import com.google.inject.name.Named
 import com.google.inject.{Inject, Singleton}
 import com.rxu.duoesports.models.Team
@@ -15,6 +16,33 @@ class TeamDao @Inject()(
 )(
   @Named("jdbcEC") implicit val executionContext: ExecutionContext
 ) extends LazyLogging {
+
+  def getCount: Future[Int] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           SELECT count(id) FROM Team
+         """
+      ).as(int("count(id)").single)
+    }
+  }
+
+  //TODO: Filters: division / season, isRecruiting
+  //TODO: Change if team list becomes too large
+  def listByNamesPaginated(offset: Int, limit: Int): Future[Seq[Team]] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           SELECT * FROM Team
+           ORDER BY name asc
+           LIMIT {limit} OFFSET {offset}
+         """
+      ).on(
+        'offset -> offset,
+        'limit -> limit
+      ).as(Team.parser.*)
+    }
+  }
 
   def findById(id: Long): Future[Option[Team]] = Future {
     db.withConnection { implicit c =>

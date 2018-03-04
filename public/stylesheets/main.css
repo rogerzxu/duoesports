@@ -25,6 +25,10 @@ textarea {
     resize: none;
 }
 
+.active {
+    color: #131519;
+}
+
 .banner-image {
     height: inherit;
     width: inherit;
@@ -35,7 +39,7 @@ textarea {
 }
 
 .content {
-    width: 900px;
+    width: 1000px;
     margin: 0 auto;
     padding: 40px 15px;
 }
@@ -45,6 +49,11 @@ textarea {
     height: 50px;
     background-color: #131519;
     color: rgba(255,255,255,.6);
+}
+
+.downArrow {
+    height: 15px;
+    width: 15px;
 }
 
 .errorMsg {
@@ -83,6 +92,15 @@ textarea {
 
 .navbar-nav {
     padding-left: 40px;
+}
+
+.navIcon {
+    height: 24px;
+    width: 24px;
+}
+
+.nopadding {
+    padding: 0;
 }
 
 .panel-footer {

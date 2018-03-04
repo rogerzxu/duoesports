@@ -85,17 +85,3 @@ p {
     padding-top: 20px;
     width: 780px;
 }
-
-.wrapper {
-    display: flex;
-    align-items: stretch;
-}
-
-#profile-content {
-    width: 750px;
-}
-
-#sidebar {
-    min-width: 150px;
-    max-width: 150px;
-}

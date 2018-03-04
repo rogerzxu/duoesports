@@ -22,6 +22,7 @@ libraryDependencies ++= Seq(
   "com.mohiva" %% "play-silhouette-crypto-jca" % "5.0.0",
 
   "org.webjars" %% "webjars-play" % "2.6.2",
+  "org.webjars" % "bootstrap-select" % "1.12.4",
   "org.webjars" % "popper.js" % "1.12.9",
   "org.webjars" % "bootstrap" % "3.3.7",
   "org.webjars" % "jquery" % "3.2.1",

@@ -13,9 +13,11 @@
         <title>@title</title>
         @Html(webJarsUtil.css("bootstrap.min.css"))
         @Html(webJarsUtil.css("bootstrap-theme.min.css"))
+        @Html(webJarsUtil.css("bootstrap-select.min.css"))
         @Html(webJarsUtil.script("jquery.js"))
         @Html(webJarsUtil.script("umd/popper.min.js"))
         @Html(webJarsUtil.script("bootstrap.min.js"))
+        @Html(webJarsUtil.script("bootstrap-select.min.js"))
         @Html(webJarsUtil.script("vue.js"))
         @Html(webJarsUtil.script("vue-resource.js"))
         @Html(webJarsUtil.script("vuelidate.min.js"))
@@ -29,7 +31,7 @@
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li><a class="navbar-brand">Players</a></li>
-                        <li><a class="navbar-brand" href="@com.rxu.duoesports.controller.routes.TeamController.teams">Teams</a></li>
+                        <li><a class="navbar-brand" href="@com.rxu.duoesports.controller.routes.TeamController.teams()">Teams</a></li>
                         <li><a class="navbar-brand">Divisions</a></li>
                         <li><a class="navbar-brand">Info</a></li>
                     </ul>

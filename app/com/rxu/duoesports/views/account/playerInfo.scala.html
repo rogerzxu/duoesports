@@ -2,6 +2,7 @@
 @import org.webjars.play.WebJarsUtil
 @import com.rxu.duoesports.models.User
 @import com.rxu.duoesports.models.Role
+@import com.rxu.duoesports.util.TemplateHelpers
 
 @(user: User, teamName: Option[String] = None)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
@@ -36,6 +37,7 @@
                     <div class="col-md-8">
                         <span class="playerFieldText">@teamName.getOrElse(messages("account.playerInfo.team.none"))</span>
                             <!-- TODO: Link to team page -->
+                            <!-- TODO: Leave Team -->
                     </div>
                 </div>
                 <div class="row bordered-row rowLargePadding">
@@ -65,7 +67,7 @@
                 <div class="row bordered-row rowLargePadding">
                     <div class="col-md-4">
                         <label>Discord ID</label>
-                        <img class="discordIcon" src="https://s3.amazonaws.com/duoesports-images/icons/discord.svg">
+                        <img class="discordIcon" src="@TemplateHelpers.discordIcon">
                     </div>
                     <div class="col-md-8">
                         <input class="form-control" name="discordId" placeholder="@messages("account.playerInfo.discord.placeholder")"

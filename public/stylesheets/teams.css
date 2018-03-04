@@ -21,3 +21,63 @@
     height: 32px;
     width: 32px;
 }
+
+.searchButton {
+    background-color: #00b16a;
+    border-radius: 2px;
+    color: white;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    padding: 10px 15px;
+    text-decoration: none;
+    text-transform: uppercase;
+    width: 100px;
+}
+
+.recruitingRoles {
+    background-color: #fff;
+}
+
+.searchSidebar > li {
+    padding-bottom: 10px;
+}
+
+.searchSidebar > li > a {
+    height: inherit;
+    width: inherit;
+}
+
+.searchCheckbox {
+    margin-left: 20px;
+}
+
+.teamDivision {
+    margin-left: 20px;
+}
+
+.teamLogo {
+    width: 150px;
+    height: 150px;
+}
+
+.teamName {
+    color: #000f47;
+    letter-spacing: 0.15em;
+}
+
+.teamRow {
+    border: 1px solid lightgray;
+    margin-bottom: 10px;
+    box-shadow: 5px 5px 4px #888888;
+    min-height: 168px;
+}
+
+#sidebar ul li a:hover {
+    color: #000f47;
+    text-decoration: none;
+}
+
+#sidebar ul li a {
+    text-decoration: none;
+}
