@@ -2,6 +2,7 @@ package com.rxu.duoesports.service
 
 import com.google.inject.Inject
 import com.rxu.duoesports.dto.CreateTeamForm
+import com.rxu.duoesports.models.Role.Role
 import com.rxu.duoesports.models.{Team, User, UserRole}
 import com.rxu.duoesports.service.dao.TeamDao
 import com.rxu.duoesports.util.{CacheHelpers, CreateTeamException, DuplicateTeamException, GetTeamException}
@@ -19,15 +20,28 @@ class TeamService @Inject()(
 ) extends LazyLogging
   with CacheHelpers {
 
-  def listByNamesPaginated(pageNumber: Int, limit: Int = 10): Future[Seq[Team]] = {
-    logger.debug(s"Searching for 10 teams starting with page $pageNumber")
-    teamDao.listByNamesPaginated((pageNumber - 1) * limit, limit)
+  def searchByNamesPaginated(
+    pageNumber: Int,
+    limit: Int = 10,
+    search: Option[String] = None,
+    onlyRecruiting: Boolean = false,
+    rolesFilter: Seq[Role] = Seq.empty
+  ): Future[Seq[Team]] = {
+    teamDao.searchByNamesPaginated(
+      (pageNumber - 1) * limit,
+      limit,
+      search = search,
+      onlyRecruiting = onlyRecruiting,
+      rolesFilter = rolesFilter
+    )
   }
 
-  def getCount: Future[Int] = {
-    cache.getOrElseUpdate("count") {
-      teamDao.getCount
-    }
+  def getCount(
+    search: Option[String] = None,
+    onlyRecruiting: Boolean = false,
+    rolesFilter: Seq[Role] = Seq.empty
+  ): Future[Int] = {
+    teamDao.getCount(search, onlyRecruiting, rolesFilter)
   }
 
   def create(user: User, createTeamForm: CreateTeamForm): Future[Long] = {
@@ -56,7 +70,6 @@ class TeamService @Inject()(
       }
       _ <- userService.joinTeam(user, teamId, UserRole.Captain)
       _ <- cache.remove(team.name)
-      _ <- cache.remove("count")
     } yield {
       logger.debug(s"Invalidating ${team.name} from cache")
       teamId

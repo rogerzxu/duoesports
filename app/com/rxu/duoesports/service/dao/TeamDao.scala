@@ -4,6 +4,7 @@ import anorm._
 import anorm.SqlParser._
 import com.google.inject.name.Named
 import com.google.inject.{Inject, Singleton}
+import com.rxu.duoesports.models.Role.Role
 import com.rxu.duoesports.models.Team
 import com.typesafe.scalalogging.LazyLogging
 import play.api.db.Database
@@ -17,31 +18,66 @@ class TeamDao @Inject()(
   @Named("jdbcEC") implicit val executionContext: ExecutionContext
 ) extends LazyLogging {
 
-  def getCount: Future[Int] = Future {
+  def getCount(
+    search: Option[String] = None,
+    onlyRecruiting: Boolean = false,
+    rolesFilter: Seq[Role] = Seq.empty
+  ): Future[Int] = Future {
     db.withConnection { implicit c =>
+      val searchQuery = buildSearchQuery(search, onlyRecruiting, rolesFilter)
       SQL(
         s"""
-           SELECT count(id) FROM Team
+           SELECT count(id) FROM Team $searchQuery
          """
       ).as(int("count(id)").single)
     }
   }
 
-  //TODO: Filters: division / season, isRecruiting
+  //TODO: Filters: division / season
   //TODO: Change if team list becomes too large
-  def listByNamesPaginated(offset: Int, limit: Int): Future[Seq[Team]] = Future {
+  def searchByNamesPaginated(
+    offset: Int,
+    limit: Int,
+    search: Option[String] = None,
+    onlyRecruiting: Boolean = false,
+    rolesFilter: Seq[Role] = Seq.empty
+  ): Future[Seq[Team]] = Future {
     db.withConnection { implicit c =>
+      val queryBuilder = StringBuilder.newBuilder
+      queryBuilder.append("SELECT * FROM Team")
+      queryBuilder.append(buildSearchQuery(search, onlyRecruiting, rolesFilter))
+      queryBuilder.append(" ORDER BY name asc LIMIT {limit} OFFSET {offset}")
+      val query = queryBuilder.toString
+      logger.debug(query)
       SQL(
-        s"""
-           SELECT * FROM Team
-           ORDER BY name asc
-           LIMIT {limit} OFFSET {offset}
-         """
+        query
       ).on(
         'offset -> offset,
         'limit -> limit
       ).as(Team.parser.*)
     }
+  }
+
+  private def buildSearchQuery(
+    search: Option[String] = None,
+    onlyRecruiting: Boolean = false,
+    rolesFilter: Seq[Role] = Seq.empty
+  ): String = {
+    val searchQuery = StringBuilder.newBuilder
+    search foreach { search =>
+      searchQuery.append(s" AND name like '%$search%'")
+    }
+    if (rolesFilter.nonEmpty) {
+      searchQuery.append(s" AND (")
+      searchQuery.append(rolesFilter map { role =>
+        s"FIND_IN_SET('${role.toString}', recruitingRoles) > 0"
+      } mkString " OR ")
+      searchQuery.append(")")
+    }
+    if (onlyRecruiting) {
+      searchQuery.append(s" AND isRecruiting = 1")
+    }
+    searchQuery.toString.replaceFirst("AND", "WHERE")
   }
 
   def findById(id: Long): Future[Option[Team]] = Future {
