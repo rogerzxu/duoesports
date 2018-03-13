@@ -8,6 +8,10 @@ import play.twirl.api.Html
 object TemplateHelpers {
 
   val discordIcon = "https://s3.amazonaws.com/duoesports-images/icons/discord.svg"
+  val missingProfileImage = "https://s3.amazonaws.com/duoesports-images/icons/missing-profile-photo.png"
+  val captainIcon = "https://s3.amazonaws.com/duoesports-images/icons/captain.svg"
+  val reportIcon = "https://s3.amazonaws.com/duoesports-images/icons/report.png"
+  val questionIcon = "https://s3.amazonaws.com/duoesports-images/icons/question.png"
 
   def getRankIconUrl(rank: Rank): String = {
     s"https://s3.amazonaws.com/duoesports-images/leagueIcons/${rank.toString.replaceAll(" ", "_").toLowerCase}.png"

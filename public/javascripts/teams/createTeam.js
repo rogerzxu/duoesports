@@ -24,8 +24,7 @@ new Vue({
       this.$http.headers.common['X-CSRF-TOKEN'] = document.querySelector('[name="csrfToken"]').getAttribute('value');
       this.$http.post($form.attr('action'), $form.serialize(), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
         .then(function(success) {
-          //TODO: redirect
-          window.scrollTo(0,0);
+          window.location.href = success.data['message'];
         }, function(failure) {
           console.log(failure.data['message']);
           this.createTeamFailure = true;

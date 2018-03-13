@@ -90,7 +90,9 @@
                         </div>
                         <div class="col-md-5">
                             <div class="row">
-                                <h2 class="teamName">@team.name</h2> <!-- TODO: Link to team page -->
+                                <h2 class="teamName">
+                                    <a href="@com.rxu.duoesports.controller.routes.TeamController.team(team.name)">@team.name</a>
+                                </h2>
                             </div>
                             <div class="row">
                                 <h4 class="teamDivision">Division: @team.divisionId.getOrElse("TBD")</h4>
@@ -122,7 +124,7 @@
             <div class="row bordered-row rowLargePadding">
                 <div class="col-md-12 text-center">
                 @if(TemplateHelpers.canCreateTeam(user)) {
-                    <a href="@com.rxu.duoesports.controller.routes.TeamController.createPage">
+                    <a href="@com.rxu.duoesports.controller.routes.TeamsController.createPage">
                         <button type="submit" class="btn btn-lg createTeamButton">Create Team</button>
                     </a>
                 } else {

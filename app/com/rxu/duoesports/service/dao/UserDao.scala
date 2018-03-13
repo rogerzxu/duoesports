@@ -58,7 +58,7 @@ class UserDao @Inject()(
   }
 
   def findBySummonerNameOrId(summonerName: String, summonerId: Long, region: Region): Future[Seq[User]] = Future {
-    db.withConnection {implicit c =>
+    db.withConnection { implicit c =>
       SQL(
         s"""
           SELECT * FROM User
@@ -69,6 +69,18 @@ class UserDao @Inject()(
         'summonerName -> summonerName,
         'summonerId -> summonerId,
         'region -> region.toString).as(User.parser.*)
+    }
+  }
+
+  def getByTeamId(teamId: Long): Future[Seq[User]] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+          SELECT * FROM User
+          WHERE teamId = {teamId}
+        """
+      ).on(
+        'teamId -> teamId).as(User.parser.*)
     }
   }
 
@@ -142,16 +154,18 @@ class UserDao @Inject()(
         s"""
            UPDATE User SET
             profileImageUrl = {profileImage},
-            roles = {roles},
             description = {description},
-            discordId = {discordId}
+            discordId = {discordId},
+            isFreeAgent = {isFreeAgent},
+            freeAgentRoles = {freeAgentRoles}
            WHERE id = {id}
          """
       ).on(
         'profileImage -> updatePlayerInfo.profileImage.orNull,
-        'roles -> updatePlayerInfo.getRoles.mkString(","),
         'description -> updatePlayerInfo.description.orNull,
         'discordId -> updatePlayerInfo.discordId.orNull,
+        'isFreeAgent -> updatePlayerInfo.isFreeAgent,
+        'freeAgentRoles -> updatePlayerInfo.getFreeAgentRoles.mkString(","),
         'id -> userId
       ).executeUpdate()
     }
@@ -186,7 +200,9 @@ class UserDao @Inject()(
         s"""
            UPDATE User Set
             teamId = {teamId},
-            userRole = {userRole}
+            userRole = {userRole},
+            isFreeAgent = 0,
+            freeAgentRoles = NULL
            WHERE id = {id}
          """
       ).on(
@@ -210,16 +226,17 @@ class UserDao @Inject()(
              summonerName,
              summonerId,
              region,
+             rank,
              teamId,
+             teamRole,
              activated,
              verified,
-             roles,
              description,
              discordId,
              profileImageUrl,
              timezone,
-             rank,
-             isFreeAgent)
+             isFreeAgent,
+             freeAgentRoles)
            VALUES(
              {email},
              {password},
@@ -229,16 +246,17 @@ class UserDao @Inject()(
              {summonerName},
              {summonerId},
              {region},
+             {rank},
              {teamId},
+             {teamRole},
              {activated},
              {verified},
-             {roles},
              {description},
              {discordId},
              {profileImageUrl},
              {timezone},
-             {rank},
-             {isFreeAgent})
+             {isFreeAgent},
+             {freeAgentRoles})
         """
       ).on(
         'email -> user.email,
@@ -249,16 +267,17 @@ class UserDao @Inject()(
         'summonerName -> user.summonerName.orNull,
         'summonerId -> user.summonerId.map(_.toString).orNull,
         'region -> user.region.map(_.toString).orNull,
+        'rank -> user.rank.map(_.toString).orNull,
         'teamId -> user.teamId.map(_.toString).orNull,
+        'teamRole -> user.teamRole.map(_.toString).orNull,
         'activated -> user.activated,
         'verified -> user.verified,
-        'roles -> user.roles.mkString(","),
         'description -> user.description.orNull,
         'discordId -> user.discordId.orNull,
         'profileImageUrl -> user.profileImageUrl.orNull,
         'timezone -> user.timezone.toString,
-        'rank -> user.rank.map(_.toString).orNull,
-        'isFreeAgent -> user.isFreeAgent
+        'isFreeAgent -> user.isFreeAgent,
+        'freeAgentRoles -> user.freeAgentRoles.mkString(",")
       ).executeInsert()
     }
   }

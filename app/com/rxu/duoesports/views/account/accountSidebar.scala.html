@@ -13,27 +13,27 @@
         </div>
         <ul class="list-unstyled components">
             @if(page == "Account") {
-                <li class="nav-item active">Account</li>
+                <li class="nav-item activeSidebar">Account</li>
             } else {
                 <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.account">Account</a></li>
             }
             @if(page == "Password") {
-                <li class="nav-item active">Password</li>
+                <li class="nav-item activeSidebar">Password</li>
             } else {
                 <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.changePasswordPage">Password</a></li>
             }
             @if(page == "Player Info") {
-                <li class="nav-item active">Player Info</li>
+                <li class="nav-item activeSidebar">Player Info</li>
             } else {
                 <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.playerInfo">Player Info</a></li>
             }
             @if(page == "Summoner") {
-                <li class="nav-item active">Summoner</li>
+                <li class="nav-item activeSidebar">Summoner</li>
             } else {
                 <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.summoner">Summoner</a></li>
             }
             @if(page == "Add Summoner") {
-                <li class="nav-sub-item active">&bull;Add</li>
+                <li class="nav-sub-item activeSidebar">&bull;Add</li>
             } else {
                 <li class="nav-sub-item">&bull;<a href="@com.rxu.duoesports.controller.routes.VerificationController.addSummonerPage">Add</a></li>
             }

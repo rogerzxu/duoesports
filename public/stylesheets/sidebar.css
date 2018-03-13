@@ -1,3 +1,12 @@
+.activeSidebar {
+    color: black;
+    border-left: 2px solid indianred;
+}
+
+.nav-item {
+    padding: 5px 0 5px 5px;
+}
+
 .wrapper {
     display: flex;
     align-items: stretch;

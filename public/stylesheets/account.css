@@ -10,15 +10,9 @@ p {
     padding-left: 15px;
 }
 
-.active {
-    color: black;
-    border-left: 2px solid indianred;
-}
-
 .discordIcon {
     padding-left: 5px;
     height: 32px;
-    width: 32px;
 }
 
 .generateCodeButton {
@@ -33,12 +27,13 @@ p {
     height: 34px;
 }
 
-.instruction {
-    padding-left: 15px;
+.helpIcon {
+    padding-left: 5px;
+    height: 15px;
 }
 
-.nav-item {
-    padding: 5px 0 5px 5px;
+.instruction {
+    padding-left: 15px;
 }
 
 .nav-sub-item {

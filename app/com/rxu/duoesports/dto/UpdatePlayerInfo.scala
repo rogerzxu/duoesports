@@ -8,6 +8,7 @@ import play.api.data.Forms._
 case class UpdatePlayerInfo(
   profileImage: Option[String],
   description: Option[String],
+  freeAgent: Option[String],
   top: Option[String],
   jungle: Option[String],
   mid: Option[String],
@@ -17,7 +18,7 @@ case class UpdatePlayerInfo(
   analyst: Option[String],
   discordId: Option[String]
 ) {
-  def getRoles: Seq[Role] = {
+  def getFreeAgentRoles: Seq[Role] = {
     Seq(
       top map {_ => Role.Top},
       jungle map {_ => Role.Jungle},
@@ -28,6 +29,8 @@ case class UpdatePlayerInfo(
       analyst map {_ => Role.Analyst}
     ).flatten
   }
+
+  def isFreeAgent: Boolean = freeAgent.contains("on")
 }
 
 object UpdatePlayerInfo {
@@ -36,6 +39,7 @@ object UpdatePlayerInfo {
     mapping(
       "profileImage" -> optional(text),
       "description" -> optional(text),
+      "isFreeAgent" -> optional(text),
       "top" -> optional(text),
       "jungle" -> optional(text),
       "mid" -> optional(text),

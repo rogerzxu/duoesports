@@ -30,9 +30,11 @@ POST        /send-reset-password-email                   @com.rxu.duoesports.con
 GET         /reset-password/:tokenId                     @com.rxu.duoesports.controller.ResetPasswordController.resetPasswordPage(tokenId: String)
 POST        /reset-password/:tokenId                     @com.rxu.duoesports.controller.ResetPasswordController.resetPassword(tokenId: String)
 
-GET         /teams                                       @com.rxu.duoesports.controller.TeamController.teams(page: Option[Int] ?= None, search: Option[String] ?= None, isRecruiting: Option[String] ?= None, top: Option[String] ?= None, jungle: Option[String] ?= None, middle: Option[String] ?= None, bottom: Option[String] ?= None, support: Option[String] ?= None, coach: Option[String] ?= None, analyst: Option[String] ?= None)
-GET         /teams/create                                @com.rxu.duoesports.controller.TeamController.createPage
-POST        /teams/create                                @com.rxu.duoesports.controller.TeamController.create
+GET         /teams                                       @com.rxu.duoesports.controller.TeamsController.teams(page: Option[Int] ?= None, search: Option[String] ?= None, isRecruiting: Option[String] ?= None, top: Option[String] ?= None, jungle: Option[String] ?= None, middle: Option[String] ?= None, bottom: Option[String] ?= None, support: Option[String] ?= None, coach: Option[String] ?= None, analyst: Option[String] ?= None)
+GET         /teams/create                                @com.rxu.duoesports.controller.TeamsController.createPage
+POST        /teams/create                                @com.rxu.duoesports.controller.TeamsController.create
+
+GET         /team/:name                                  @com.rxu.duoesports.controller.TeamController.team(name: String)
 
 GET         /not-found                                   @com.rxu.duoesports.controller.ErrorController.notFound
 GET         /internal-server-error                       @com.rxu.duoesports.controller.ErrorController.internalServerError

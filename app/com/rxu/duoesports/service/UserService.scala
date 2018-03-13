@@ -75,6 +75,11 @@ class UserService @Inject()(
     cacheGetOrPut(email, userDao.findByEmail(email))
   }
 
+  def getByTeamId(teamId: Long): Future[Seq[User]] = {
+    logger.debug(s"Finding users by teamId $teamId")
+    userDao.getByTeamId(teamId)
+  }
+
   //TODO: cache?
   def findBySummonerName(summonerName: String, region: Region): Future[Option[User]] = {
     logger.debug(s"Finding user by summoner $summonerName $region")

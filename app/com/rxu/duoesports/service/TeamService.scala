@@ -96,4 +96,9 @@ class TeamService @Inject()(
     }
   }
 
+  def findByName(name: String): Future[Option[Team]] = {
+    logger.debug(s"Finding team by name $name")
+    cacheGetOrPut(name, teamDao.findByName(name))
+  }
+
 }

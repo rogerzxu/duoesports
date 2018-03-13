@@ -1,0 +1,44 @@
+@import org.webjars.play.WebJarsUtil
+@import play.api.i18n.Messages
+
+@(
+    page: String,
+    teamName: String
+)(
+    content: Html
+)(
+    implicit request: RequestHeader,
+    messages: Messages,
+    webJarsUtil: WebJarsUtil,
+    assets: AssetsFinder
+)
+
+<link rel="stylesheet" href="@assets.path("stylesheets/sidebar.css")">
+<link rel="stylesheet" href="@assets.path("stylesheets/team.css")">
+<div class="wrapper">
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Team</h3>
+        </div>
+        <ul class="list-unstyled components">
+            @if(page == "Info") {
+                <li class="nav-item activeSidebar">Info</li>
+            } else {
+                <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.TeamController.team(teamName)">Info</a></li>
+            }
+            @if(page == "Matches") {
+                <li class="nav-item activeSidebar">Upcoming Matches</li>
+            } else {
+                <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.changePasswordPage">Matches</a></li>
+            }
+            @if(page == "Apply") {
+                <li class="nav-item activeSidebar">Apply</li>
+            } else {
+                <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.playerInfo">Apply</a></li>
+            }
+        </ul>
+    </nav>
+    <div id="sidebar-content">
+        @content
+    </div>
+</div>

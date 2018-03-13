@@ -35,9 +35,13 @@
                         <label>Team</label>
                     </div>
                     <div class="col-md-8">
-                        <span class="playerFieldText">@teamName.getOrElse(messages("account.playerInfo.team.none"))</span>
-                            <!-- TODO: Link to team page -->
-                            <!-- TODO: Leave Team -->
+                        <span class="playerFieldText">
+                            @if(teamName.isDefined) {
+                                <a href="@com.rxu.duoesports.controller.routes.TeamController.team(teamName.get)">@teamName.get</a>
+                            } else {
+                                @messages("account.playerInfo.team.none")
+                            }
+                        </span><!-- TODO: Leave Team -->
                     </div>
                 </div>
                 <div class="row bordered-row rowLargePadding">
@@ -50,18 +54,28 @@
                 </div>
                 <div class="row bordered-row rowLargePadding">
                     <div class="col-md-4">
-                        <label>Roles</label>
+                        <label>Free Agent</label>
+                        <img class="helpIcon" src="@TemplateHelpers.questionIcon" data-toggle="tooltip" data-placement="bottom" data-title="@messages("account.playerInfo.freeAgent.tooltip")">
+                    </div>
+                    <div class="col-md-8">
+                        <input name="isFreeAgent" type="checkbox" @if(user.isFreeAgent){checked="checked"} data-toggle="toggle" data-on="Yes" data-off="No">
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Free Agent Roles</label>
+                        <img class="helpIcon" src="@TemplateHelpers.questionIcon" data-toggle="tooltip" data-placement="bottom" data-title="@messages("account.playerInfo.freeAgentRoles.tooltip")">
                     </div>
                     <div class="col-md-4">
-                        <label class="checkbox"><input name="top"  type="checkbox" @if(user.roles.contains(Role.Top)){checked="checked"}>Top</label>
-                        <label class="checkbox"><input name="jungle" type="checkbox" @if(user.roles.contains(Role.Jungle)){checked="checked"}>Jungle</label>
-                        <label class="checkbox"><input name="mid" type="checkbox" @if(user.roles.contains(Role.Middle)){checked="checked"}>Middle</label>
+                        <label class="checkbox"><input name="top"  type="checkbox" @if(user.freeAgentRoles.contains(Role.Top)){checked="checked"}>Top</label>
+                        <label class="checkbox"><input name="jungle" type="checkbox" @if(user.freeAgentRoles.contains(Role.Jungle)){checked="checked"}>Jungle</label>
+                        <label class="checkbox"><input name="mid" type="checkbox" @if(user.freeAgentRoles.contains(Role.Middle)){checked="checked"}>Middle</label>
                     </div>
                     <div class="col-md-4">
-                        <label class="checkbox"><input name="bottom" type="checkbox" @if(user.roles.contains(Role.Bottom)){checked="checked"}>Bottom</label>
-                        <label class="checkbox"><input name="support" type="checkbox" @if(user.roles.contains(Role.Support)){checked="checked"}>Support</label>
-                        <label class="checkbox"><input name="coach" type="checkbox" @if(user.roles.contains(Role.Coach)){checked="checked"}>Coach</label>
-                        <label class="checkbox"><input name="analyst" type="checkbox" @if(user.roles.contains(Role.Analyst)){checked="checked"}>Analyst</label>
+                        <label class="checkbox"><input name="bottom" type="checkbox" @if(user.freeAgentRoles.contains(Role.Bottom)){checked="checked"}>Bottom</label>
+                        <label class="checkbox"><input name="support" type="checkbox" @if(user.freeAgentRoles.contains(Role.Support)){checked="checked"}>Support</label>
+                        <label class="checkbox"><input name="coach" type="checkbox" @if(user.freeAgentRoles.contains(Role.Coach)){checked="checked"}>Coach</label>
+                        <label class="checkbox"><input name="analyst" type="checkbox" @if(user.freeAgentRoles.contains(Role.Analyst)){checked="checked"}>Analyst</label>
                     </div>
                 </div>
                 <div class="row bordered-row rowLargePadding">
