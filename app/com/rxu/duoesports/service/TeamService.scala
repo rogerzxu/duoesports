@@ -48,10 +48,7 @@ class TeamService @Inject()(
     create(user, Team(
       id = 0L,
       name = createTeamForm.teamName,
-      region = createTeamForm.getRegion,
-      description = createTeamForm.description,
-      logoUrl = createTeamForm.teamLogo,
-      discordServer = createTeamForm.discordServer
+      region = createTeamForm.getRegion
     ))
   }
 
@@ -77,8 +74,7 @@ class TeamService @Inject()(
   }
 
   def getById(id: Long): Future[Team] = {
-    logger.debug(s"Finding team by id $id")
-    teamDao.findById(id) flatMap {
+    findById(id) flatMap {
       case Some(team) => Future.successful(team)
       case None =>
         logger.error(s"Failed to get team $id")
@@ -87,13 +83,17 @@ class TeamService @Inject()(
   }
 
   def getByName(name: String): Future[Team] = {
-    logger.debug(s"Finding team by name $name")
-    cacheGetOrPut(name, teamDao.findByName(name)) flatMap {
+    findByName(name) flatMap {
       case Some(team) => Future.successful(team)
       case None =>
         logger.error(s"Failed to get team $name")
         Future.failed(GetTeamException(s"Could not find team $name"))
     }
+  }
+
+  def findById(id: Long): Future[Option[Team]] = {
+    logger.debug(s"Finding team by id $id")
+    cacheGetOrPut(id.toString, teamDao.findById(id))
   }
 
   def findByName(name: String): Future[Option[Team]] = {

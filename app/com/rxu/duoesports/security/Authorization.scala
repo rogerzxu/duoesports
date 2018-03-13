@@ -15,3 +15,12 @@ case class CanCreateTeam() extends Authorization[User, CookieAuthenticator] {
     Future.successful(user.isTeamless && user.verified)
   }
 }
+
+case class BelongsToThisTeam(teamId: Long) extends Authorization[User, CookieAuthenticator] {
+  override def isAuthorized[B](
+    user: User,
+    authenticator: CookieAuthenticator
+  )(implicit request: Request[B]): Future[Boolean] = {
+    Future.successful(user.teamId contains teamId)
+  }
+}

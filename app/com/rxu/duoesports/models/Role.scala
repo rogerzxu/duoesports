@@ -13,6 +13,7 @@ object Role extends Enumeration {
   val Support = Value("Support")
   val Coach = Value("Coach")
   val Analyst = Value("Analyst")
+  val Substitute = Value("Substitute")
 
   implicit val roleColumn: Column[Role] = Column.nonNull { (value, meta) =>
     val MetaDataItem(qualified, nullable, clazz) = meta

@@ -41,9 +41,10 @@ class TeamsController @Inject()(
     bottom: Option[String] = None,
     support: Option[String] = None,
     coach: Option[String] = None,
-    analyst: Option[String] = None
+    analyst: Option[String] = None,
+    substitute: Option[String] = None
   ) = silhouette.UserAwareAction.async { implicit request: UserAwareRequest[DefaultEnv, AnyContent] =>
-    val rolesFilter = getRolesToFilter(top, jungle, middle, bottom, support, coach, analyst)
+    val rolesFilter = getRolesToFilter(top, jungle, middle, bottom, support, coach, analyst, substitute)
     val recruiting = (isRecruiting contains "on") || rolesFilter.nonEmpty
     val searchQ = search flatMap { s =>
       if (s.isEmpty) None
@@ -96,7 +97,8 @@ class TeamsController @Inject()(
     bottom: Option[String] = None,
     support: Option[String] = None,
     coach: Option[String] = None,
-    analyst: Option[String] = None
+    analyst: Option[String] = None,
+    substitute: Option[String] = None
   ): Seq[Role] = {
     Seq(
       top match {
@@ -125,6 +127,10 @@ class TeamsController @Inject()(
       },
       analyst match {
         case Some(on) if on == "on" => Some(Role.Analyst)
+        case _ => None
+      },
+      substitute match {
+        case Some(on) if on == "on" => Some(Role.Substitute)
         case _ => None
       }
     ).flatten

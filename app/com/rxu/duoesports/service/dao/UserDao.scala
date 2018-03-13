@@ -201,8 +201,7 @@ class UserDao @Inject()(
            UPDATE User Set
             teamId = {teamId},
             userRole = {userRole},
-            isFreeAgent = 0,
-            freeAgentRoles = NULL
+            isFreeAgent = 0
            WHERE id = {id}
          """
       ).on(

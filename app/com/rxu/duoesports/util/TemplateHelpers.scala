@@ -1,7 +1,8 @@
 package com.rxu.duoesports.util
 
 import com.rxu.duoesports.models.Rank.Rank
-import com.rxu.duoesports.models.User
+import com.rxu.duoesports.models.Role.Role
+import com.rxu.duoesports.models.{Role, User}
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 
@@ -15,6 +16,15 @@ object TemplateHelpers {
 
   def getRankIconUrl(rank: Rank): String = {
     s"https://s3.amazonaws.com/duoesports-images/leagueIcons/${rank.toString.replaceAll(" ", "_").toLowerCase}.png"
+  }
+
+  def getRoleIcon(role: Role): String = {
+    role match {
+      case Role.Substitute => "https://s3.amazonaws.com/duoesports-images/icons/sub_icon.png"
+      case Role.Analyst => "https://s3.amazonaws.com/duoesports-images/icons/coach_analyst_icon.png"
+      case Role.Coach => "https://s3.amazonaws.com/duoesports-images/icons/coach_analyst_icon.png"
+      case r: Role => s"https://s3.amazonaws.com/duoesports-images/icons/${r.toString.toLowerCase}_icon.png"
+    }
   }
 
   def getTeamListNavigation(currentPage: Int, teamCount: Int, queryString: String)

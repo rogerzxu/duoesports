@@ -39,6 +39,11 @@
     background-color: #fff;
 }
 
+.roleIcon {
+    height: 20px;
+    width: 20px;
+}
+
 .searchSidebar > li {
     padding-bottom: 10px;
 }

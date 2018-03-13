@@ -4,8 +4,9 @@ import controllers.AssetsFinder
 
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.api.Silhouette
-import com.mohiva.play.silhouette.api.actions.UserAwareRequest
-import com.rxu.duoesports.security.DefaultEnv
+import com.mohiva.play.silhouette.api.actions.{SecuredRequest, UserAwareRequest}
+import com.rxu.duoesports.models.UserRole
+import com.rxu.duoesports.security.{BelongsToThisTeam, DefaultEnv}
 import com.rxu.duoesports.service.{TeamService, UserService}
 import com.rxu.duoesports.util.ApiResponseHelpers
 import com.typesafe.scalalogging.LazyLogging
@@ -28,6 +29,12 @@ class TeamController @Inject()(
   with LazyLogging
   with I18nSupport
   with ApiResponseHelpers {
+
+  def teamById(id: Long) = silhouette.SecuredAction(BelongsToThisTeam(id)).async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    teamService.getById(id) map { team =>
+      Redirect(routes.TeamController.team(team.name).absoluteURL)
+    }
+  }
 
   def team(name: String) = silhouette.UserAwareAction.async { implicit request: UserAwareRequest[DefaultEnv, AnyContent] =>
     teamService.findByName(name) flatMap {

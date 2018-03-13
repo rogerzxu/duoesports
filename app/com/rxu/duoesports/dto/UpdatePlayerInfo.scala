@@ -16,6 +16,7 @@ case class UpdatePlayerInfo(
   support: Option[String],
   coach: Option[String],
   analyst: Option[String],
+  substitute: Option[String],
   discordId: Option[String]
 ) {
   def getFreeAgentRoles: Seq[Role] = {
@@ -26,7 +27,8 @@ case class UpdatePlayerInfo(
       bottom map {_ => Role.Bottom},
       support map {_ => Role.Coach},
       coach map {_ => Role.Analyst},
-      analyst map {_ => Role.Analyst}
+      analyst map {_ => Role.Analyst},
+      substitute map {_ => Role.Substitute}
     ).flatten
   }
 
@@ -47,6 +49,7 @@ object UpdatePlayerInfo {
       "support" -> optional(text),
       "coach" -> optional(text),
       "analyst" -> optional(text),
+      "substitute" -> optional(text),
       "discordId" -> optional(text)
     )(UpdatePlayerInfo.apply)(UpdatePlayerInfo.unapply)
   )

@@ -9,7 +9,7 @@ CREATE TABLE Team (
   logoUrl         VARCHAR(100)                                                             DEFAULT NULL,
   eligible        BOOLEAN                                                                  DEFAULT TRUE,
   isRecruiting    BOOLEAN                                                                  DEFAULT FALSE,
-  recruitingRoles SET ('Middle', 'Jungle', 'Top', 'Bottom', 'Support', 'Coach', 'Analyst') NOT NULL,
+  recruitingRoles SET ('Middle','Jungle','Top','Bottom','Support','Coach','Analyst','Substitute') NOT NULL,
   discordServer   VARCHAR(100)                                                             DEFAULT NULL,
   updatedAt       TIMESTAMP                                                                DEFAULT NOW() ON UPDATE NOW(),
   createdAt       TIMESTAMP                                                                DEFAULT NOW(),
@@ -38,7 +38,7 @@ CREATE TABLE User (
   profileImageUrl VARCHAR(100)                                                             DEFAULT NULL,
   timezone        VARCHAR(30)                                                              DEFAULT 'EST',
   isFreeAgent     BOOLEAN                                                                  DEFAULT FALSE,
-  freeAgentRoles  SET ('Middle', 'Jungle', 'Top', 'Bottom', 'Support', 'Coach', 'Analyst') NOT NULL,
+  freeAgentRoles  SET ('Middle','Jungle','Top','Bottom','Support','Coach','Analyst','Substitute') NOT NULL,
   updatedAt       TIMESTAMP                                                                DEFAULT NOW() ON UPDATE NOW(),
   createdAt       TIMESTAMP                                                                DEFAULT NOW(),
 

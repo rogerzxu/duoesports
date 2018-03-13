@@ -16,6 +16,7 @@ account.summoner.summoner.none = You do not have any verified Summoners
 account.playerInfo.description.placeholder = A short description of yourself. You can include what you''re looking for in a team, your champ pool, your schedule, etc.
 account.playerInfo.discord.placeholder = Give your Discord ID to make it easier to contact you!
 account.playerInfo.freeAgent.tooltip = Toggle on to let others know you are a free agent
+account.playerInfo.freeAgent.disabled.tooltip = You cannot be a free agent while you are on a team
 account.playerInfo.freeAgentRoles.tooltip = Only applicable if you are a free agent
 account.playerInfo.save.failure = An error occurred while saving your player information
 account.playerInfo.save.success = Successfully updated player info!

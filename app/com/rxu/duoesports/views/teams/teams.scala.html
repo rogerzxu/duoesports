@@ -66,6 +66,9 @@
                             <li><label class="checkbox searchCheckbox">
                                 <input name="analyst" type="checkbox" @if(rolesFilter.contains(com.rxu.duoesports.models.Role.Analyst)){checked="checked"}>Analyst
                             </label></li>
+                            <li><label class="checkbox searchCheckbox">
+                                <input name="substitute" type="checkbox" @if(rolesFilter.contains(com.rxu.duoesports.models.Role.Substitute)){checked="checked"}>Substitute
+                            </label></li>
                         </ul>
                     </li>
                     <li>
@@ -86,6 +89,8 @@
                         <div class="col-md-3">
                             @if(team.logoUrl.isDefined) {
                                 <img class="teamLogo" src="@team.logoUrl.get">
+                            } else {
+                                <img class="teamLogo" src="@TemplateHelpers.missingProfileImage">
                             }
                         </div>
                         <div class="col-md-5">
@@ -108,7 +113,10 @@
                                 <div class="row"><h4>Roles:</h4></div>
                                 <ul>
                                     @team.recruitingRoles.map { role =>
-                                      <li>@role</li>
+                                      <li>
+                                          <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(role)">
+                                          @role
+                                      </li>
                                     }
                                 </ul>
                             }

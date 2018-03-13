@@ -1,9 +1,13 @@
 @import org.webjars.play.WebJarsUtil
 @import play.api.i18n.Messages
+@import com.rxu.duoesports.models.User
+@import com.rxu.duoesports.models.UserRole
+@import com.rxu.duoesports.models.Team
 
 @(
     page: String,
-    teamName: String
+    team: Team,
+    user: Option[User]
 )(
     content: Html
 )(
@@ -24,7 +28,16 @@
             @if(page == "Info") {
                 <li class="nav-item activeSidebar">Info</li>
             } else {
-                <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.TeamController.team(teamName)">Info</a></li>
+                <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.TeamController.team(team.name)">Info</a></li>
+            }
+            @user.map { user =>
+                @if(user.userRole == UserRole.Admin || (user.userRole == UserRole.Captain && user.teamId.contains(team.id))) {
+                    @if(page == "Edit") {
+                        <li class="nav-item activeSidebar">Edit</li>
+                    } else {
+                        <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.TeamController.team(team.name)">Edit</a></li>
+                    }
+                }
             }
             @if(page == "Matches") {
                 <li class="nav-item activeSidebar">Upcoming Matches</li>

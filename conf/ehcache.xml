@@ -2,7 +2,7 @@
 
     <diskStore path="java.io.tmpdir"/>
     <defaultCache
-            maxElementsInMemory="2000"
+            maxElementsInMemory="1000"
             eternal="false"
             timeToIdleSeconds="3600"
             timeToLiveSeconds="3600"
