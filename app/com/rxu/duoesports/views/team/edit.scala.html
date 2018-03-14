@@ -2,9 +2,9 @@
 @import org.webjars.play.WebJarsUtil
 @import com.rxu.duoesports.models.User
 @import com.rxu.duoesports.util.TemplateHelpers
-
 @import com.rxu.duoesports.models.Team
 @import com.rxu.duoesports.models.UserRole
+@import com.rxu.duoesports.views.html
 
 @(
     user: Option[User],
@@ -12,8 +12,8 @@
     roster: Seq[User]
 )(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@com.rxu.duoesports.views.html.main(team.name, user) {
-    @com.rxu.duoesports.views.html.team.teamSidebar("Edit", team, user){
+@html.main(team.name, user) {
+    @html.team.teamSidebar("Edit", team, user){
         <h1>Edit</h1>
     }
 }

@@ -11,6 +11,7 @@ import com.rxu.duoesports.models.Role.Role
 import com.rxu.duoesports.security.{CanCreateTeam, DefaultEnv}
 import com.rxu.duoesports.service.TeamService
 import com.rxu.duoesports.util.{ApiResponseHelpers, DuplicateTeamException}
+import com.rxu.duoesports.views.html
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.{I18nSupport, Messages}
@@ -59,7 +60,7 @@ class TeamsController @Inject()(
         )
         teamCount <- teamService.getCount(searchQ, recruiting, rolesFilter)
       } yield {
-        Ok(com.rxu.duoesports.views.html.teams.teams(
+        Ok(html.teams.teams(
           user = request.identity,
           teams = teams,
           pageNumber = page.getOrElse(1),
@@ -73,7 +74,7 @@ class TeamsController @Inject()(
   }
 
   def createPage = silhouette.SecuredAction(CanCreateTeam()) { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.teams.createPage(request.identity))
+    Ok(html.teams.createPage(request.identity))
   }
 
   def create = silhouette.SecuredAction(CanCreateTeam()).async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>

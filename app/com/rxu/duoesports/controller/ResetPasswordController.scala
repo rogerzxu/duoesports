@@ -11,6 +11,7 @@ import com.rxu.duoesports.security.DefaultEnv
 import com.rxu.duoesports.service.{AuthTokenService, UserService}
 import com.rxu.duoesports.util.{ApiResponseHelpers, GetUserException}
 import com.typesafe.scalalogging.LazyLogging
+import com.rxu.duoesports.views.html
 import org.webjars.play.WebJarsUtil
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
@@ -36,7 +37,7 @@ class ResetPasswordController @Inject()(
   with ApiResponseHelpers {
 
   def view = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.resetPassword.forgotPassword())
+    Ok(html.resetPassword.forgotPassword())
   }
 
   def sendResetPasswordEmail = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
@@ -55,8 +56,8 @@ class ResetPasswordController @Inject()(
 
   def resetPasswordPage(tokenId: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
     authTokenService.findById(tokenId) map {
-      case Some(authToken) if authToken.isValid => Ok(com.rxu.duoesports.views.html.resetPassword.resetPassword(valid = true, tokenId))
-      case _ => Ok(com.rxu.duoesports.views.html.resetPassword.resetPassword(valid = false, tokenId))
+      case Some(authToken) if authToken.isValid => Ok(html.resetPassword.resetPassword(valid = true, tokenId))
+      case _ => Ok(html.resetPassword.resetPassword(valid = false, tokenId))
     }
   }
 

@@ -12,6 +12,7 @@ import com.rxu.duoesports.models.{User, UserRole}
 import com.rxu.duoesports.security.DefaultEnv
 import com.rxu.duoesports.service.{AuthTokenService, UserService}
 import com.rxu.duoesports.util.ApiResponseHelpers
+import com.rxu.duoesports.views.html
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.{I18nSupport, Messages}
@@ -36,14 +37,14 @@ class SignUpController @Inject()(
   with ApiResponseHelpers {
 
   def view = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.signUp.signUp())
+    Ok(html.signUp.signUp())
   }
 
   def signUpSuccess = silhouette.UnsecuredAction { implicit request: Request[AnyContent] =>
     val resendUrl = request.cookies.get("duoesportsEmail") map { cookie =>
       routes.ActivationController.sendActivationEmail(email = cookie.value).absoluteURL
     }
-    Ok(com.rxu.duoesports.views.html.signUp.signUpSuccess(resendUrl))
+    Ok(html.signUp.signUpSuccess(resendUrl))
   }
 
   def signUp = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>

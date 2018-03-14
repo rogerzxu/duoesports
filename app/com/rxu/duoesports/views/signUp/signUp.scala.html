@@ -2,14 +2,16 @@
 @import play.api.mvc.RequestHeader
 @import org.webjars.play.WebJarsUtil
 @import controllers.AssetsFinder
+@import com.rxu.duoesports.views.html
+@import com.rxu.duoesports.controller.routes
 
 @(message: Option[String] = None)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@com.rxu.duoesports.views.html.main(messages("signup.title")) {
+@html.main(messages("signup.title")) {
     <link rel="stylesheet" href="@assets.path("stylesheets/signUp.css")">
     <link rel="stylesheet" href="@assets.path("stylesheets/vuelidateForm.css")">
     <h1>@messages("signup.header")</h1>
-    <form id="signUpForm" v-on:submit="signUp" novalidate action="@com.rxu.duoesports.controller.routes.SignUpController.signUp" method="POST">
+    <form id="signUpForm" v-on:submit="signUp" novalidate action="@routes.SignUpController.signUp" method="POST">
         @helper.CSRF.formField
         <h4 class="errorMsgLarge" :class="{hidden: signUpSuccess}">{{ signUpErrorMsg }}</h4>
         <div class="form-group">

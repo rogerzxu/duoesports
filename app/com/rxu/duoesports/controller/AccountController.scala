@@ -12,11 +12,12 @@ import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.rxu.duoesports.dto.{ChangePasswordForm, UpdateAccountInfoForm, UpdatePlayerInfo, UpdatePrimarySummoner}
 import com.rxu.duoesports.security.DefaultEnv
 import com.rxu.duoesports.service.{AuthTokenService, TeamService, UserAltService, UserService}
-import com.rxu.duoesports.util.{ActivateUserException, ApiResponseHelpers, UpdateUserException}
+import com.rxu.duoesports.util.{ApiResponseHelpers, UpdateUserException}
+import com.rxu.duoesports.views.html
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Request}
+import play.api.mvc.{AbstractController, AnyContent, ControllerComponents}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,7 +41,7 @@ class AccountController @Inject()(
   with ApiResponseHelpers {
 
   def account = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.account.account(request.identity))
+    Ok(html.account.account(request.identity))
   }
 
   def updateAccountInfo() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
@@ -58,7 +59,7 @@ class AccountController @Inject()(
   }
 
   def changePasswordPage = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.account.changePassword(request.identity))
+    Ok(html.account.changePassword(request.identity))
   }
 
   def changePassword() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
@@ -89,9 +90,9 @@ class AccountController @Inject()(
   def playerInfo = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     request.identity.teamId match {
       case Some(teamId) => teamService.getById(teamId) map { team =>
-        Ok(com.rxu.duoesports.views.html.account.playerInfo(request.identity, Some(team.name)))
+        Ok(html.account.playerInfo(request.identity, Some(team.name)))
       }
-      case None => Future.successful(Ok(com.rxu.duoesports.views.html.account.playerInfo(request.identity)))
+      case None => Future.successful(Ok(html.account.playerInfo(request.identity)))
     }
   }
 
@@ -111,7 +112,7 @@ class AccountController @Inject()(
 
   def summoner = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     userAltService.findByUserId(request.identity.id) map { alts =>
-      Ok(com.rxu.duoesports.views.html.account.summoner(request.identity, alts))
+      Ok(html.account.summoner(request.identity, alts))
     }
   }
 

@@ -1,14 +1,15 @@
 @import play.api.i18n.Messages
 @import org.webjars.play.WebJarsUtil
 @import com.rxu.duoesports.models.User
-@import com.rxu.duoesports.util.TemplateHelpers
+@import com.rxu.duoesports.views.html
+@import com.rxu.duoesports.controller.routes
 
 @(user: User)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@com.rxu.duoesports.views.html.main(messages("account.title"), Some(user)) {
-    @com.rxu.duoesports.views.html.account.accountSidebar("Add Summoner") {
+@html.main(messages("account.title"), Some(user)) {
+    @html.account.accountSidebar("Add Summoner") {
         <h1>Add Summoner</h1>
-        <form v-on:submit="addSummoner" id="addSummonerForm" action="@com.rxu.duoesports.controller.routes.VerificationController.addSummoner">
+        <form v-on:submit="addSummoner" id="addSummonerForm" action="@routes.VerificationController.addSummoner">
             <h4 class="successMsgLarge" :class="{hidden: !addSummonerSuccess}">{{ addSummonerSuccessMsg }}</h4>
             <h4 class="errorMsgLarge" :class="{hidden: !addSummonerFailure}">{{ addSummonerFailureMsg }}</h4>
             @helper.CSRF.formField

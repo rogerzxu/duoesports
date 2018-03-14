@@ -1,15 +1,16 @@
 @import play.api.i18n.Messages
 @import org.webjars.play.WebJarsUtil
+@import com.rxu.duoesports.views.html
 
 @(resendUrl: Option[String])(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@com.rxu.duoesports.views.html.main(messages("signup.title")) {
+@html.main(messages("signup.title")) {
     <link rel="stylesheet" href="@assets.path("stylesheets/signUp.css")">
     <div class="row text-center rowSmallPadding">
         <h3>@messages("signup.success")</h3>
     </div>
     @if(resendUrl.isDefined){
-        @com.rxu.duoesports.views.html.forms.resendActivationForm(resendUrl.get)
+        @html.forms.resendActivationForm(resendUrl.get)
     }
 
 }

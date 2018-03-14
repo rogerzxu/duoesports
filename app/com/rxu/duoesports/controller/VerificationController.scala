@@ -9,6 +9,7 @@ import com.rxu.duoesports.dto.AddSummonerForm
 import com.rxu.duoesports.security.DefaultEnv
 import com.rxu.duoesports.service.VerificationService
 import com.rxu.duoesports.util.{AddSummonerException, ApiResponseHelpers, UpdateUserException}
+import com.rxu.duoesports.views.html
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.{I18nSupport, Messages}
@@ -30,7 +31,7 @@ class VerificationController @Inject()(
   with ApiResponseHelpers {
 
   def addSummonerPage() = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.account.addSummoner(request.identity))
+    Ok(html.account.addSummoner(request.identity))
   }
 
   def generateVerificationCode() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>

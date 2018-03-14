@@ -7,6 +7,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import com.rxu.duoesports.security.DefaultEnv
 import com.rxu.duoesports.service.AuthTokenService
 import com.rxu.duoesports.util.{ActivateUserException, ApiResponseHelpers}
+import com.rxu.duoesports.views.html
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.{I18nSupport, Messages}
@@ -28,12 +29,12 @@ class ActivationController @Inject()(
   with ApiResponseHelpers {
 
   def activate(tokenId: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
-    authTokenService.activate(tokenId) map (_ => Ok(com.rxu.duoesports.views.html.activation())) recover {
+    authTokenService.activate(tokenId) map (_ => Ok(html.activation())) recover {
       case ex: ActivateUserException=> {
         val resendUrl = request.cookies.get("duoesportsEmail") map { cookie =>
           routes.ActivationController.sendActivationEmail(email = cookie.value).absoluteURL
         }
-        BadRequest(com.rxu.duoesports.views.html.activation(Some(ex.getMessage + "."), resendUrl))
+        BadRequest(html.activation(Some(ex.getMessage + "."), resendUrl))
       }
     }
   }

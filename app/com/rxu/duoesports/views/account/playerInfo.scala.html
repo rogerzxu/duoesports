@@ -3,13 +3,15 @@
 @import com.rxu.duoesports.models.User
 @import com.rxu.duoesports.models.Role
 @import com.rxu.duoesports.util.TemplateHelpers
+@import com.rxu.duoesports.views.html
+@import com.rxu.duoesports.controller.routes
 
 @(user: User, teamName: Option[String] = None)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@com.rxu.duoesports.views.html.main(messages("account.title"), Some(user)) {
-    @com.rxu.duoesports.views.html.account.accountSidebar("Player Info"){
+@html.main(messages("account.title"), Some(user)) {
+    @html.account.accountSidebar("Player Info"){
         <h1>Player Info</h1>
-        <form v-on:submit="savePlayerInfo" id="playerInfoForm" action="@com.rxu.duoesports.controller.routes.AccountController.updatePlayerInfo">
+        <form v-on:submit="savePlayerInfo" id="playerInfoForm" action="@routes.AccountController.updatePlayerInfo">
             <h4 class="successMsgLarge" :class="{hidden: !savePlayerSuccess}">{{ savePlayerSuccessMsg }}</h4>
             <h4 class="errorMsgLarge" :class="{hidden: !savePlayerFailure}">{{ savePlayerFailureMsg }}</h4>
             @helper.CSRF.formField
@@ -37,7 +39,7 @@
                     <div class="col-md-8">
                         <span class="playerFieldText">
                             @if(teamName.isDefined) {
-                                <a href="@com.rxu.duoesports.controller.routes.TeamController.team(teamName.get)">@teamName.get</a>
+                                <a href="@routes.TeamController.team(teamName.get)">@teamName.get</a>
                             } else {
                                 @messages("account.playerInfo.team.none")
                             }

@@ -7,6 +7,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.api.actions.UserAwareRequest
 import com.rxu.duoesports.security.DefaultEnv
 import com.typesafe.scalalogging.LazyLogging
+import com.rxu.duoesports.views.html
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AbstractController, AnyContent, ControllerComponents}
@@ -25,7 +26,7 @@ class HomeController @Inject()(
   with I18nSupport {
 
   def view = silhouette.UserAwareAction { implicit request: UserAwareRequest[DefaultEnv, AnyContent] =>
-    Ok(com.rxu.duoesports.views.html.home(request.identity))
+    Ok(html.home(request.identity))
   }
 
 }
