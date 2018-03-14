@@ -1,8 +1,8 @@
 @import org.webjars.play.WebJarsUtil
 @import play.api.i18n.Messages
 @import com.rxu.duoesports.models.User
-@import com.rxu.duoesports.models.UserRole
 @import com.rxu.duoesports.models.Team
+@import com.rxu.duoesports.controller.routes
 
 @(
     page: String,
@@ -28,26 +28,26 @@
             @if(page == "Info") {
                 <li class="nav-item activeSidebar">Info</li>
             } else {
-                <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.TeamController.team(team.name)">Info</a></li>
+                <li class="nav-item"><a href="@routes.TeamController.team(team.name)">Info</a></li>
             }
             @user.map { user =>
-                @if(user.userRole == UserRole.Admin || (user.userRole == UserRole.Captain && user.teamId.contains(team.id))) {
+                @if(user.canEditTeam(team.id)) {
                     @if(page == "Edit") {
                         <li class="nav-item activeSidebar">Edit</li>
                     } else {
-                        <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.TeamController.team(team.name)">Edit</a></li>
+                        <li class="nav-item"><a href="@routes.TeamController.editPage(team.name)">Edit</a></li>
                     }
                 }
             }
             @if(page == "Matches") {
                 <li class="nav-item activeSidebar">Upcoming Matches</li>
             } else {
-                <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.changePasswordPage">Matches</a></li>
+                <li class="nav-item"><a href="@routes.AccountController.changePasswordPage">Matches</a></li>
             }
             @if(page == "Apply") {
                 <li class="nav-item activeSidebar">Apply</li>
             } else {
-                <li class="nav-item"><a href="@com.rxu.duoesports.controller.routes.AccountController.playerInfo">Apply</a></li>
+                <li class="nav-item"><a href="@routes.AccountController.playerInfo">Apply</a></li>
             }
         </ul>
     </nav>

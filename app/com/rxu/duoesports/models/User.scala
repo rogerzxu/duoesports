@@ -43,6 +43,10 @@ case class User(
   def getCacheKey: String = email
 
   def isTeamless: Boolean = teamId.isEmpty
+
+  def canEditTeam(id: Long): Boolean = {
+    userRole == UserRole.Admin || (userRole == UserRole.Captain && teamId.contains(id))
+  }
 }
 
 object User {
