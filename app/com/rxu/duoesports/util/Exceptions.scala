@@ -8,6 +8,7 @@ case class UpdateUserException(msg: String) extends Exception(msg)
 case class CreateTeamException(msg: String) extends Exception(msg)
 case class DuplicateTeamException(msg: String) extends Exception(msg)
 case class GetTeamException(msg: String) extends Exception(msg)
+case class UpdateTeamException(msg: String) extends Exception(msg)
 
 case class AddSummonerException(msg: String) extends Exception(msg)
 

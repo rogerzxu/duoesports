@@ -25,33 +25,6 @@
                     class="form-control" name="teamName" id="teamName" placeholder="Team Name">
                 </div>
             </div>
-            @*<div class="row bordered-row rowLargePadding">
-                <div class="col-md-4">
-                    <label>Team Logo</label>
-                </div>
-                <div class="col-md-8">
-                    <input type="hidden" role="uploadcare-uploader" name="teamLogo"
-                            data-image-shrink="512x512 100%"
-                            data-crop="512:512" />
-                </div>
-            </div>
-            <div class="row bordered-row rowLargePadding">
-                <div class="col-md-4">
-                    <label>Description</label>
-                </div>
-                <div class="col-md-8">
-                    <textarea class="form-control" rows="5" name="description" maxLength="1000" placeholder="@messages("teams.create.description.placeholder")">@user.description.map{desc=>@desc}</textarea>
-                </div>
-            </div>
-            <div class="row bordered-row rowLargePadding">
-                <div class="col-md-4">
-                    <label>Discord Server</label>
-                    <img class="discordIcon" src="@TemplateHelpers.discordIcon">
-                </div>
-                <div class="col-md-8">
-                    <input class="form-control" name="discordServer" placeholder="@messages("teams.create.discordServer.placeholder")">
-                </div>
-            </div>*@
             <div class="row bordered-row rowLargePadding">
                 <div class="col-md-12 text-center">
                     <button :disabled="$v.$invalid" type="submit" class="btn btn-lg createTeamButton">Create Team</button>
@@ -60,5 +33,4 @@
         </div>
     </form>
     <script src="@assets.path("javascripts/teams/createTeam.js")"></script>
-    <script charset="utf-8" src="//ucarecdn.com/libs/widget/3.2.2/uploadcare.full.min.js"></script>
 }

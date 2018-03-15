@@ -81,7 +81,7 @@ class TeamsController @Inject()(
     CreateTeamForm.form.bindFromRequest.fold(
       badForm => {
         logger.error(s"Received invalid create team form: ${badForm.toString}")
-        Future.successful(ApiBadRequest(Messages("account.changePassword.save.failure")))
+        Future.successful(ApiBadRequest(Messages("teams.create.failure")))
       },
       createTeamForm => teamService.create(request.identity, createTeamForm) map { _ =>
         ApiOk(routes.TeamController.team(createTeamForm.teamName).url)

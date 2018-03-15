@@ -4,6 +4,7 @@ import anorm._
 import anorm.SqlParser._
 import com.google.inject.name.Named
 import com.google.inject.{Inject, Singleton}
+import com.rxu.duoesports.dto.EditTeam
 import com.rxu.duoesports.models.Role.Role
 import com.rxu.duoesports.models.Team
 import com.typesafe.scalalogging.LazyLogging
@@ -99,6 +100,29 @@ class TeamDao @Inject()(
            WHERE name = {name}
          """
       ).on('name -> name).as(Team.parser.singleOpt)
+    }
+  }
+
+  def update(teamId: Long, editTeam: EditTeam): Future[Int] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           UPDATE Team SET
+            logoUrl = {logoUrl},
+            description = {description},
+            isRecruiting = {isRecruiting},
+            recruitingRoles = {recruitingRoles},
+            discordServer = {discordServer}
+           WHERE id = {id}
+         """
+      ).on(
+        'logoUrl -> editTeam.logoUrl.orNull,
+        'description -> editTeam.description.orNull,
+        'isRecruiting -> editTeam.isRecruiting,
+        'recruitingRoles -> editTeam.getRecruitingRoles.mkString(","),
+        'discordServer -> editTeam.discordServer.orNull,
+        'id -> teamId
+      ).executeUpdate()
     }
   }
 

@@ -1,19 +1,124 @@
 @import play.api.i18n.Messages
 @import org.webjars.play.WebJarsUtil
+@import com.rxu.duoesports.models.Role
 @import com.rxu.duoesports.models.User
 @import com.rxu.duoesports.util.TemplateHelpers
 @import com.rxu.duoesports.models.Team
 @import com.rxu.duoesports.models.UserRole
 @import com.rxu.duoesports.views.html
+@import com.rxu.duoesports.controller.routes
 
 @(
-    user: Option[User],
-    team: Team,
-    roster: Seq[User]
+    user: User,
+    team: Team
 )(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@html.main(team.name, user) {
-    @html.team.teamSidebar("Edit", team, user){
-        <h1>Edit</h1>
+@html.main(team.name, Some(user)) {
+    @html.team.teamSidebar("Edit", team, Some(user)){
+        <h1 class="text-center formHeader">Edit Team</h1>
+        <form v-on:submit="editTeamSubmit" id="editTeamForm" action="@routes.TeamController.edit(team.name)">
+            <h4 class="successMsgLarge" :class="{hidden: !editTeamSuccess}">{{ editTeamSuccessMsg }}</h4>
+            <h4 class="errorMsgLarge" :class="{hidden: !editTeamFailure}">{{ editTeamFailureMsg }}</h4>
+            @helper.CSRF.formField
+            <div class="form-group">
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Team Logo</label>
+                        <img class="helpIcon" src="@TemplateHelpers.questionIcon" data-toggle="tooltip" data-placement="bottom"
+                            data-title="@messages("imageUpload.tooltip")">
+                    </div>
+                    <div class="col-md-5">
+                        @if(team.logoUrl.isDefined) {
+                            <img class="teamLogo" src="@team.logoUrl.get">
+                        } else {
+                            <img class="teamLogo" src="@TemplateHelpers.missingProfileImage">
+                        }
+                    </div>
+                    <div class="col-md-3">
+                        <input type="hidden" role="uploadcare-uploader" name="logoUrl"
+                            @if(team.logoUrl.isDefined){value="@team.logoUrl.get"}
+                            data-image-shrink="512x512 100%"
+                            data-crop="512:512" />
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Description</label>
+                    </div>
+                    <div class="col-md-8">
+                        <textarea class="form-control" rows="5" name="description" maxLength="1000" placeholder="@messages("team.edit.description.placeholder")">@team.description.map{desc=>@desc}</textarea>
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Recruiting</label>
+                        <img class="helpIcon" src="@TemplateHelpers.questionIcon" data-toggle="tooltip" data-placement="bottom"
+                            data-title="@messages("team.edit.recruiting.tooltip")">
+                    </div>
+                    <div class="col-md-8">
+                        <input name="isRecruiting" type="checkbox" @if(team.isRecruiting){checked="checked"} data-toggle="toggle" data-on="Yes" data-off="No">
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Recruitment Roles</label>
+                        <img class="helpIcon" src="@TemplateHelpers.questionIcon" data-toggle="tooltip" data-placement="bottom" data-title="@messages("team.edit.recruitmentRoles.tooltip")">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="checkbox">
+                            <input name="top"  type="checkbox" @if(team.recruitingRoles.contains(Role.Top)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Top)">Top
+                        </label>
+                        <label class="checkbox">
+                            <input name="jungle" type="checkbox" @if(team.recruitingRoles.contains(Role.Jungle)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Jungle)">Jungle
+                        </label>
+                        <label class="checkbox">
+                            <input name="mid" type="checkbox" @if(team.recruitingRoles.contains(Role.Middle)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Middle)">Middle
+                        </label>
+                        <label class="checkbox">
+                            <input name="bottom" type="checkbox" @if(team.recruitingRoles.contains(Role.Bottom)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Bottom)">Bottom
+                        </label>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="checkbox">
+                            <input name="support" type="checkbox" @if(team.recruitingRoles.contains(Role.Support)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Support)">Support
+                        </label>
+                        <label class="checkbox">
+                            <input name="coach" type="checkbox" @if(team.recruitingRoles.contains(Role.Coach)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Coach)">Coach
+                        </label>
+                        <label class="checkbox">
+                            <input name="analyst" type="checkbox" @if(team.recruitingRoles.contains(Role.Analyst)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Analyst)">Analyst
+                        </label>
+                        <label class="checkbox">
+                            <input name="substitute" type="checkbox" @if(team.recruitingRoles.contains(Role.Substitute)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Substitute)">Substitute
+                        </label>
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Discord Server</label>
+                        <img class="discordIcon" src="@TemplateHelpers.discordIcon">
+                    </div>
+                    <div class="col-md-8">
+                        <input class="form-control" name="discordServer" placeholder="@messages("team.edit.discordServer.placeholder")"
+                            @if(team.discordServer.isDefined && team.discordServer.get.nonEmpty){value="@team.discordServer.get"}>
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="btn btn-lg editTeamButton" id="editTeamSubmitButton">Save</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     }
+    <script src="@assets.path("javascripts/team/editTeam.js")"></script>
+    <script charset="utf-8" src="//ucarecdn.com/libs/widget/3.2.2/uploadcare.full.min.js"></script>
 }

@@ -1,7 +1,6 @@
 package com.rxu.duoesports.service.dao
 
 import anorm._
-import anorm.SqlParser._
 import com.google.inject.name.Named
 import com.google.inject.{Inject, Singleton}
 import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo}

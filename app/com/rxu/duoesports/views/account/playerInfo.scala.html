@@ -19,10 +19,14 @@
                 <div class="row bordered-row rowLargePadding">
                     <div class="col-md-4">
                         <label>Profile Image</label>
+                        <img class="helpIcon" src="@TemplateHelpers.questionIcon" data-toggle="tooltip" data-placement="bottom"
+                            data-title="@messages("imageUpload.tooltip")">
                     </div>
                     <div class="col-md-5">
                         @if(user.profileImageUrl.isDefined) {
                             <img class="profileImage" src="@user.profileImageUrl.get">
+                        } else {
+                            <img class="profileImage" src="@TemplateHelpers.missingProfileImage">
                         }
                     </div>
                     <div class="col-md-3">
@@ -71,16 +75,40 @@
                         <img class="helpIcon" src="@TemplateHelpers.questionIcon" data-toggle="tooltip" data-placement="bottom" data-title="@messages("account.playerInfo.freeAgentRoles.tooltip")">
                     </div>
                     <div class="col-md-4">
-                        <label class="checkbox"><input name="top"  type="checkbox" @if(user.freeAgentRoles.contains(Role.Top)){checked="checked"}>Top</label>
-                        <label class="checkbox"><input name="jungle" type="checkbox" @if(user.freeAgentRoles.contains(Role.Jungle)){checked="checked"}>Jungle</label>
-                        <label class="checkbox"><input name="mid" type="checkbox" @if(user.freeAgentRoles.contains(Role.Middle)){checked="checked"}>Middle</label>
-                        <label class="checkbox"><input name="bottom" type="checkbox" @if(user.freeAgentRoles.contains(Role.Bottom)){checked="checked"}>Bottom</label>
+                        <label class="checkbox">
+                            <input name="top"  type="checkbox" @if(user.freeAgentRoles.contains(Role.Top)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Top)">Top
+                        </label>
+                        <label class="checkbox">
+                            <input name="jungle" type="checkbox" @if(user.freeAgentRoles.contains(Role.Jungle)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Jungle)">Jungle
+                        </label>
+                        <label class="checkbox">
+                            <input name="mid" type="checkbox" @if(user.freeAgentRoles.contains(Role.Middle)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Middle)">Middle
+                        </label>
+                        <label class="checkbox">
+                            <input name="bottom" type="checkbox" @if(user.freeAgentRoles.contains(Role.Bottom)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Bottom)">Bottom
+                        </label>
                     </div>
                     <div class="col-md-4">
-                        <label class="checkbox"><input name="support" type="checkbox" @if(user.freeAgentRoles.contains(Role.Support)){checked="checked"}>Support</label>
-                        <label class="checkbox"><input name="coach" type="checkbox" @if(user.freeAgentRoles.contains(Role.Coach)){checked="checked"}>Coach</label>
-                        <label class="checkbox"><input name="analyst" type="checkbox" @if(user.freeAgentRoles.contains(Role.Analyst)){checked="checked"}>Analyst</label>
-                        <label class="checkbox"><input name="substitute" type="checkbox" @if(user.freeAgentRoles.contains(Role.Substitute)){checked="checked"}>Substitute</label>
+                        <label class="checkbox">
+                            <input name="support" type="checkbox" @if(user.freeAgentRoles.contains(Role.Support)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Support)">Support
+                        </label>
+                        <label class="checkbox">
+                            <input name="coach" type="checkbox" @if(user.freeAgentRoles.contains(Role.Coach)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Coach)">Coach
+                        </label>
+                        <label class="checkbox">
+                            <input name="analyst" type="checkbox" @if(user.freeAgentRoles.contains(Role.Analyst)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Analyst)">Analyst
+                        </label>
+                        <label class="checkbox">
+                            <input name="substitute" type="checkbox" @if(user.freeAgentRoles.contains(Role.Substitute)){checked="checked"}>
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Substitute)">Substitute
+                        </label>
                     </div>
                 </div>
                 <div class="row bordered-row rowLargePadding">

@@ -1,11 +1,11 @@
 package com.rxu.duoesports.service
 
 import com.google.inject.Inject
-import com.rxu.duoesports.dto.CreateTeamForm
+import com.rxu.duoesports.dto.{CreateTeamForm, EditTeam}
 import com.rxu.duoesports.models.Role.Role
 import com.rxu.duoesports.models.{Team, User, UserRole}
 import com.rxu.duoesports.service.dao.TeamDao
-import com.rxu.duoesports.util.{CacheHelpers, CreateTeamException, DuplicateTeamException, GetTeamException}
+import com.rxu.duoesports.util.{CacheHelpers, CreateTeamException, DuplicateTeamException, GetTeamException, UpdateTeamException}
 import com.typesafe.scalalogging.LazyLogging
 import play.api.cache.{AsyncCacheApi, NamedCache}
 
@@ -67,6 +67,7 @@ class TeamService @Inject()(
       }
       _ <- userService.joinTeam(user, teamId, UserRole.Captain)
       _ <- cache.remove(team.name)
+      _ <- cache.remove(team.id.toString)
     } yield {
       logger.debug(s"Invalidating ${team.name} from cache")
       teamId
@@ -99,6 +100,20 @@ class TeamService @Inject()(
   def findByName(name: String): Future[Option[Team]] = {
     logger.debug(s"Finding team by name $name")
     cacheGetOrPut(name, teamDao.findByName(name))
+  }
+
+  def update(team: Team, editTeam: EditTeam): Future[Unit] = {
+    logger.info(s"Editing team ${team.id}: $editTeam")
+    for {
+      result <- teamDao.update(team.id, editTeam)
+      _ <- result match {
+        case 0 => logger.error(s"MariaDB failed to edit team for ${team.id}")
+          Future.failed(UpdateTeamException(s"MariaDB failed to edit team for ${team.id}"))
+        case _ => Future.successful(())
+      }
+      _ <- cache.remove(team.name)
+      _ <- cache.remove(team.id.toString)
+    } yield logger.debug(s"Invalidating ${team.name} from cache")
   }
 
 }

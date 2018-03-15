@@ -16,12 +16,6 @@
     pointer-events: none;
 }
 
-.discordIcon {
-    padding-left: 5px;
-    height: 32px;
-    width: 32px;
-}
-
 .searchButton {
     background-color: #00b16a;
     border-radius: 2px;
@@ -37,11 +31,6 @@
 
 .recruitingRoles {
     background-color: #fff;
-}
-
-.roleIcon {
-    height: 20px;
-    width: 20px;
 }
 
 .searchSidebar > li {

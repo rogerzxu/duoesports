@@ -49,13 +49,18 @@ signin.invalid.credentials = Invalid Credentials!
 signin.invalid.form = An unexpected error occurred while signing in
 signin.success = Successfully signed in!
 
+team.edit.description.placeholder = A short description of the team. You can include what you''re looking for in players, what roles your team needs, your team''s schedule, etc.
+team.edit.discordServer.placeholder = Give your Discord Server to make it easier to contact your team!
+team.edit.recruiting.tooltip = Toggle on to let others know you are a recruiting
+team.edit.recruitmentRoles.tooltip = Only applicable if you are a recruiting
+team.edit.failure = An error occurred while editing the team
+team.edit.success = Successfully updated team information!
+
 teams.title = Teams
 teams.header = Teams
 teams.cantCreate.placeholder = You must have a verified summoner and be teamless to create a team
 teams.create.title = Create Team
 teams.create.header = Create Team
-teams.create.description.placeholder = A short description of the team. You can include what you''re looking for in players, what roles your team needs, your team''s schedule, etc.
-teams.create.discordServer.placeholder = Give your Discord Server to make it easier to contact your team!
 teams.create.failure = An error occurred while creating the new team
 teams.create.success = Successfully created new team!
 
@@ -65,3 +70,5 @@ signup.success = You have successfully signed up! You should receive a confirmat
 signup.failure = An error occurred while signing up. Please try again.
 signup.header = Registration
 signup.invalid.email.message = Invalid email format
+
+imageUpload.tooltip = You must save and refresh to see your image

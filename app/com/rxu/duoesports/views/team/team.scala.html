@@ -42,6 +42,16 @@
                 <p>@description</p>
             }
         </div>
+        <div class="row discordInfo">
+            @team.discordServer.map { discordServer =>
+                <div class="col-md-3">
+                    <h4>Discord Server <img class="discordIcon" src="@TemplateHelpers.discordIcon"></h4>
+                </div>
+                <div class="col-md-9">
+                    <h4 class="discordServer"><a href="@discordServer">@discordServer</a></h4>
+                </div>
+            }
+        </div>
         <div class="row">
             <div class="col-md-3">
                 <h4>Roster</h4>
@@ -86,7 +96,10 @@
                 <div class="col-md-9">
                     <ul class="list-group">
                     @team.recruitingRoles.map { role =>
-                        <li class="list-group-item">@role.toString</li>
+                        <li class="list-group-item">
+                            <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(role)">
+                            @role.toString
+                        </li>
                     }
                     </ul>
                 </div>
