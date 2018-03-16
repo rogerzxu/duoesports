@@ -21,7 +21,6 @@ new Vue({
       this.$http.headers.common['X-CSRF-TOKEN'] = document.querySelector('[name="csrfToken"]').getAttribute('value');
       this.$http.post($form.attr('action'), $form.serialize(), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
         .then(function(success) {
-          console.log(success.data);
           this.editTeamSuccess = true;
           this.editTeamSuccessMsg = success.data['message'];
           this.savePlayerFailure = false;

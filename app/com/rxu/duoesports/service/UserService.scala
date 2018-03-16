@@ -6,7 +6,7 @@ import com.mohiva.play.silhouette.api.services.IdentityService
 import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo, UpdatePrimarySummoner}
 import com.rxu.duoesports.models.Rank.Rank
 import com.rxu.duoesports.models.Region.Region
-import com.rxu.duoesports.models.UserRole.UserRole
+import com.rxu.duoesports.models.Role.Role
 import com.rxu.duoesports.models.{User, UserAlt, UserRole}
 import com.rxu.duoesports.service.dao.UserDao
 import com.rxu.duoesports.util.{ActivateUserException, CacheHelpers, CreateUserException, GetUserException, UpdateUserException}
@@ -18,18 +18,28 @@ import scala.language.postfixOps
 
 class UserService @Inject()(
   userDao: UserDao,
-  userAltService: UserAltService
+  userAltService: UserAltService,
+  @NamedCache("user-email-cache") emailCache: AsyncCacheApi,
+  @NamedCache("user-summonerName-cache") summonerNameCache: AsyncCacheApi
 )(
-  implicit val ec: ExecutionContext,
-  @NamedCache("user-cache") cache: AsyncCacheApi
+  implicit val ec: ExecutionContext
 ) extends IdentityService[User]
   with LazyLogging
   with CacheHelpers {
 
+  private def removeFromCache(user: User): Future[Unit] = {
+    for {
+      _ <- emailCache.remove(user.email)
+      _ <- user.summonerName map { summonerName =>
+        summonerNameCache.remove(summonerName)
+      } getOrElse Future.successful(())
+    } yield logger.debug(s"Invalidating ${user.email}, ${user.summonerName.getOrElse("")} from cache")
+  }
+
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
     logger.trace(s"Retrieving user: $loginInfo")
     val cacheKey = s"${loginInfo.providerKey}"
-    cacheGetOrPut(cacheKey, userDao.findByEmail(loginInfo.providerKey))
+    cacheGetOrPut(emailCache, cacheKey, userDao.findByEmail(loginInfo.providerKey))
   }
 
   def create(user: User): Future[Long] = {
@@ -40,9 +50,8 @@ class UserService @Inject()(
         case Some(userId) => Future.successful(userId)
         case None => Future.failed(CreateUserException(s"Failed to create user $user"))
       }
-      _ <- cache.remove(user.getCacheKey)
+      _ <- removeFromCache(user)
     } yield {
-      logger.debug(s"Invalidating ${user.getCacheKey} from cache")
       userId
     }
   }
@@ -65,6 +74,15 @@ class UserService @Inject()(
     }
   }
 
+  def getBySummonerName(name: String, region: Region): Future[User] = {
+    findBySummonerName(name, region) flatMap {
+      case Some(user) => Future.successful(user)
+      case None =>
+        logger.error(s"Failed to get user $name")
+        Future.failed(GetUserException(s"Could not find user $name"))
+    }
+  }
+
   private def findById(id: Long): Future[Option[User]] = {
     logger.debug(s"Finding user by id $id")
     userDao.findById(id)
@@ -72,7 +90,7 @@ class UserService @Inject()(
 
   private def findByEmail(email: String): Future[Option[User]] = {
     logger.debug(s"Finding user by email $email")
-    cacheGetOrPut(email, userDao.findByEmail(email))
+    cacheGetOrPut(emailCache, email, userDao.findByEmail(email))
   }
 
   def getByTeamId(teamId: Long): Future[Seq[User]] = {
@@ -80,10 +98,9 @@ class UserService @Inject()(
     userDao.getByTeamId(teamId)
   }
 
-  //TODO: cache?
   def findBySummonerName(summonerName: String, region: Region): Future[Option[User]] = {
     logger.debug(s"Finding user by summoner $summonerName $region")
-    userDao.findBySummonerName(summonerName, region)
+    cacheGetOrPut(summonerNameCache, summonerName, userDao.findBySummonerName(summonerName, region))
   }
 
   def findBySummonerNameOrId(summonerName: String, summonerId: Long, region: Region): Future[Seq[User]] = {
@@ -101,8 +118,8 @@ class UserService @Inject()(
         case _ => Future.successful(())
       }
       user <- getById(id)
-      _ <- cache.remove(user.getCacheKey)
-    } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+      _ <- removeFromCache(user)
+    } yield ()
   }
 
   def putSummoner(user: User, summonerName: String, summonerId: Long, region: Region): Future[Unit] = {
@@ -114,8 +131,8 @@ class UserService @Inject()(
           Future.failed(UpdateUserException(s"MariaDB failed to add summoner for user ${user.id}"))
         case _ => Future.successful(())
       }
-      _ <- cache.remove(user.getCacheKey)
-    } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+      _ <- removeFromCache(user)
+    } yield ()
   }
 
   def updateRank(user: User, rank: Rank): Future[Unit] = {
@@ -127,8 +144,8 @@ class UserService @Inject()(
           Future.failed(UpdateUserException(s"MariaDB failed to update rank for user ${user.id}"))
         case _ => Future.successful(())
       }
-      _ <- cache.remove(user.getCacheKey)
-    } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+      _ <- removeFromCache(user)
+    } yield ()
   }
 
   def updateAccountInfo(user: User, updateAccountInfo: UpdateAccountInfo): Future[Unit] = {
@@ -140,8 +157,8 @@ class UserService @Inject()(
           Future.failed(UpdateUserException(s"MariaDB failed to update Account Info for ${user.id}"))
         case _ => Future.successful(())
       }
-      _ <- cache.remove(user.getCacheKey)
-    } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+      _ <- removeFromCache(user)
+    } yield ()
   }
 
   def updatePlayerInfo(user: User, updatePlayerInfo: UpdatePlayerInfo): Future[Unit] = {
@@ -153,8 +170,22 @@ class UserService @Inject()(
           Future.failed(UpdateUserException(s"MariaDB failed to update Player Info for ${user.id}"))
         case _ => Future.successful(())
       }
-      _ <- cache.remove(user.getCacheKey)
-    } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+      _ <- removeFromCache(user)
+    } yield ()
+  }
+
+  def updateTeamRole(summonerName: String, region: Region, teamRole: Role): Future[Unit] = {
+    logger.info(s"Updating team role for ${summonerName}: $teamRole")
+    for {
+      result <- userDao.updateTeamRole(summonerName, region, teamRole)
+      _ <- result match {
+        case 0 => logger.error(s"MariaDB failed to update TeamRole for ${summonerName}")
+          Future.failed(UpdateUserException(s"MariaDB failed to update TeamRole for ${summonerName}"))
+        case _ => Future.successful(())
+      }
+      user <- getBySummonerName(summonerName, region)
+      _ <- removeFromCache(user)
+    } yield ()
   }
 
   def setNewPrimary(user: User, updatePrimarySummoner: UpdatePrimarySummoner): Future[Unit] = {
@@ -176,23 +207,23 @@ class UserService @Inject()(
           }
           _ <- userAltService.create(newAlt)
           _ <- userAltService.deleteBySummonerName(newPrimaryInfo.summonerName, newPrimaryInfo.region)
-          _ <- cache.remove(user.getCacheKey)
-        } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+          _ <- removeFromCache(user)
+        } yield ()
       }).getOrElse(Future.successful(()))
     }
   }
 
-  def joinTeam(user: User, teamId: Long, userRole: UserRole = UserRole.Player): Future[Unit] = {
+  def joinTeam(user: User, teamId: Long, asCaptain: Boolean = false): Future[Unit] = {
     logger.info(s"Joining team $teamId for ${user.id}")
     for {
-      result <- userDao.joinTeam(user.id, teamId, userRole)
+      result <- userDao.joinTeam(user.id, teamId, if(asCaptain) UserRole.Captain else user.userRole)
       _ <- result match {
         case 0 => logger.error(s"MariaDB failed to update Team and UserRole for ${user.id}")
           Future.failed(UpdateUserException(s"MariaDB failed to update Team and UserRole for ${user.id}"))
         case _ => Future.successful(())
       }
-      _ <- cache.remove(user.getCacheKey)
-    } yield logger.debug(s"Invalidating ${user.getCacheKey} from cache")
+      _ <- removeFromCache(user)
+    } yield ()
   }
 
 }

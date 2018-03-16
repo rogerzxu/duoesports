@@ -6,6 +6,7 @@ import com.google.inject.{Inject, Singleton}
 import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo}
 import com.rxu.duoesports.models.Rank.Rank
 import com.rxu.duoesports.models.Region.Region
+import com.rxu.duoesports.models.Role.Role
 import com.rxu.duoesports.models.User
 import com.rxu.duoesports.models.UserRole.UserRole
 import com.typesafe.scalalogging.LazyLogging
@@ -166,6 +167,23 @@ class UserDao @Inject()(
         'isFreeAgent -> updatePlayerInfo.isFreeAgent,
         'freeAgentRoles -> updatePlayerInfo.getFreeAgentRoles.mkString(","),
         'id -> userId
+      ).executeUpdate()
+    }
+  }
+
+  def updateTeamRole(summonerName: String, region: Region, teamRole: Role): Future[Int] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           UPDATE User SET
+            teamRole = {teamRole}
+           WHERE summonerName = {summonerName}
+           AND region = {region}
+         """
+      ).on(
+        'teamRole -> teamRole.toString,
+        'summonerName -> summonerName,
+        'region -> region.toString
       ).executeUpdate()
     }
   }

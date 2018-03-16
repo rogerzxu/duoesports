@@ -10,7 +10,8 @@
 
 @(
     user: User,
-    team: Team
+    team: Team,
+    roster: Seq[User]
 )(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @html.main(team.name, Some(user)) {
@@ -47,6 +48,42 @@
                     </div>
                     <div class="col-md-8">
                         <textarea class="form-control" rows="5" name="description" maxLength="1000" placeholder="@messages("team.edit.description.placeholder")">@team.description.map{desc=>@desc}</textarea>
+                    </div>
+                </div>
+                <div class="row bordered-row rowLargePadding">
+                    <div class="col-md-4">
+                        <label>Roster</label>
+                    </div>
+                    <div class="col-md-8">
+                        <ul class="list-group">
+                        @roster.map { player =>
+                            <li class="list-group-item roster-item">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        @if(player.userRole == UserRole.Captain){
+                                            <img class="rosterIcon" src="@TemplateHelpers.captainIcon" data-toggle="tooltip" data-placement="bottom" data-title="Captain">
+                                        }else {
+                                            <img class="rosterIcon" src="@TemplateHelpers.missingProfileImage">
+                                        }
+                                        @player.summonerName.get
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-control" name="@player.summonerName.get">
+                                            <option disabled @if(player.teamRole.isEmpty){selected="selected"}>Assign a Role</option>
+                                            <option @if(player.teamRole contains Role.Top){selected="selected"}>Top</option>
+                                            <option @if(player.teamRole contains Role.Jungle){selected="selected"}>Jungle</option>
+                                            <option @if(player.teamRole contains Role.Middle){selected="selected"}>Middle</option>
+                                            <option @if(player.teamRole contains Role.Bottom){selected="selected"}>Bottom</option>
+                                            <option @if(player.teamRole contains Role.Support){selected="selected"}>Support</option>
+                                            <option @if(player.teamRole contains Role.Coach){selected="selected"}>Coach</option>
+                                            <option @if(player.teamRole contains Role.Analyst){selected="selected"}>Analyst</option>
+                                            <option @if(player.teamRole contains Role.Substitute){selected="selected"}>Substitute</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                        </ul>
                     </div>
                 </div>
                 <div class="row bordered-row rowLargePadding">

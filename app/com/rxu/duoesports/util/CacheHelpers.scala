@@ -7,8 +7,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait CacheHelpers extends LazyLogging {
 
-  def cacheGetOrPut[T](cacheKey: String, finder: Future[Option[T]])
-    (implicit cache: AsyncCacheApi, executionContext: ExecutionContext): Future[Option[T]] = {
+  def cacheGetOrPut[T](cache: AsyncCacheApi, cacheKey: String, finder: Future[Option[T]])
+    (implicit executionContext: ExecutionContext): Future[Option[T]] = {
     cache.get[Option[T]](cacheKey) flatMap {
       case Some(cachedValue) =>
         logger.trace(s"Found entry in cache for ${cacheKey}")

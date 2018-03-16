@@ -40,8 +40,6 @@ case class User(
     lastName = lastName.trim.capitalize
   )
 
-  def getCacheKey: String = email
-
   def isTeamless: Boolean = teamId.isEmpty
 
   def canEditTeam(id: Long): Boolean = {

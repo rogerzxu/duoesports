@@ -3,7 +3,7 @@ package com.rxu.duoesports.service
 import com.google.inject.Inject
 import com.rxu.duoesports.dto.{CreateTeamForm, EditTeam}
 import com.rxu.duoesports.models.Role.Role
-import com.rxu.duoesports.models.{Team, User, UserRole}
+import com.rxu.duoesports.models.{Team, User}
 import com.rxu.duoesports.service.dao.TeamDao
 import com.rxu.duoesports.util.{CacheHelpers, CreateTeamException, DuplicateTeamException, GetTeamException, UpdateTeamException}
 import com.typesafe.scalalogging.LazyLogging
@@ -13,12 +13,20 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TeamService @Inject()(
   teamDao: TeamDao,
-  userService: UserService
+  userService: UserService,
+  @NamedCache("team-id-cache") idCache: AsyncCacheApi,
+  @NamedCache("team-id-cache") nameCache: AsyncCacheApi
 )(
-  implicit val ec: ExecutionContext,
-  @NamedCache("team-cache") cache: AsyncCacheApi
+  implicit val ec: ExecutionContext
 ) extends LazyLogging
   with CacheHelpers {
+
+  private def removeFromCache(team: Team): Future[Unit] = {
+    for {
+      _ <- idCache.remove(team.id.toString)
+      _ <- nameCache.remove(team.name)
+    } yield logger.debug(s"Invalidating ${team.id} ${team.name} from cache")
+  }
 
   def searchByNamesPaginated(
     pageNumber: Int,
@@ -65,11 +73,9 @@ class TeamService @Inject()(
         case Some(teamId) => Future.successful(teamId)
         case None => Future.failed(CreateTeamException(s"Failed to create team $team"))
       }
-      _ <- userService.joinTeam(user, teamId, UserRole.Captain)
-      _ <- cache.remove(team.name)
-      _ <- cache.remove(team.id.toString)
+      _ <- userService.joinTeam(user, teamId, asCaptain = true)
+      _ <- removeFromCache(team)
     } yield {
-      logger.debug(s"Invalidating ${team.name} from cache")
       teamId
     }
   }
@@ -94,15 +100,15 @@ class TeamService @Inject()(
 
   def findById(id: Long): Future[Option[Team]] = {
     logger.debug(s"Finding team by id $id")
-    cacheGetOrPut(id.toString, teamDao.findById(id))
+    cacheGetOrPut(idCache, id.toString, teamDao.findById(id))
   }
 
   def findByName(name: String): Future[Option[Team]] = {
     logger.debug(s"Finding team by name $name")
-    cacheGetOrPut(name, teamDao.findByName(name))
+    cacheGetOrPut(nameCache, name, teamDao.findByName(name))
   }
 
-  def update(team: Team, editTeam: EditTeam): Future[Unit] = {
+  def update(team: Team, editTeam: EditTeam, teamRoles: Map[String, Role]): Future[Unit] = {
     logger.info(s"Editing team ${team.id}: $editTeam")
     for {
       result <- teamDao.update(team.id, editTeam)
@@ -111,8 +117,10 @@ class TeamService @Inject()(
           Future.failed(UpdateTeamException(s"MariaDB failed to edit team for ${team.id}"))
         case _ => Future.successful(())
       }
-      _ <- cache.remove(team.name)
-      _ <- cache.remove(team.id.toString)
+      _ <- Future.sequence { teamRoles map { case (summonerName, role) =>
+        userService.updateTeamRole(summonerName, team.region, role)
+      }}
+      _ <- removeFromCache(team)
     } yield logger.debug(s"Invalidating ${team.name} from cache")
   }
 
