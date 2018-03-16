@@ -12,7 +12,7 @@ case class CanCreateTeam() extends Authorization[User, CookieAuthenticator] {
     user: User,
     authenticator: CookieAuthenticator
   )(implicit request: Request[B]): Future[Boolean] = {
-    Future.successful(user.isTeamless && user.verified)
+    Future.successful(user.canJoinTeam)
   }
 }
 

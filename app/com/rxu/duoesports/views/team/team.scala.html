@@ -20,12 +20,19 @@
             </div>
             <div class="col-md-8">
                 <div class="row">
-                    <div class="col-md-11">
+                    <div class="col-md-10">
                         <h1>@team.name</h1>
                     </div>
                     <div class="col-md-1">
+                        @user.map { user =>
+                          @if(user.canJoinTeam) {
+                              <img class="teamInfoControls" data-toggle="tooltip" data-placement="bottom" data-title="Apply" src="@TemplateHelpers.applyIcon">
+                          }
+                        }
+                    </div>
+                    <div class="col-md-1">
                         <!-- TODO: Report Page -->
-                        <img class="reportButton" data-toggle="tooltip" data-placement="bottom" data-title="Report" src="@TemplateHelpers.reportIcon">
+                        <img class="teamInfoControls" data-toggle="tooltip" data-placement="bottom" data-title="Report" src="@TemplateHelpers.reportIcon">
                     </div>
                 </div>
                 <div class="row bordered-row rowSmallPadding">

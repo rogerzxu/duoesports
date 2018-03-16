@@ -62,8 +62,6 @@
                                     <div class="col-md-6">
                                         @if(player.userRole == UserRole.Captain){
                                             <img class="rosterIcon" src="@TemplateHelpers.captainIcon" data-toggle="tooltip" data-placement="bottom" data-title="Captain">
-                                        }else {
-                                            <img class="rosterIcon" src="@TemplateHelpers.missingProfileImage">
                                         }
                                         @player.summonerName.get
                                     </div>

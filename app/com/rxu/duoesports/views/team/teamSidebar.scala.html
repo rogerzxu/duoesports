@@ -40,14 +40,9 @@
                 }
             }
             @if(page == "Matches") {
-                <li class="nav-item activeSidebar">Upcoming Matches</li>
+                <li class="nav-item activeSidebar">Matches</li>
             } else {
                 <li class="nav-item"><a href="@routes.TeamController.team(team.name)">Matches</a></li>
-            }
-            @if(page == "Apply") {
-                <li class="nav-item activeSidebar">Apply</li>
-            } else {
-                <li class="nav-item"><a href="@routes.TeamController.team(team.name)">Apply</a></li>
             }
         </ul>
     </nav>

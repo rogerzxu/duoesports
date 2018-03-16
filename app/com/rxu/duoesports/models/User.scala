@@ -42,6 +42,8 @@ case class User(
 
   def isTeamless: Boolean = teamId.isEmpty
 
+  def canJoinTeam: Boolean = isTeamless && verified
+
   def canEditTeam(id: Long): Boolean = {
     userRole == UserRole.Admin || (userRole == UserRole.Captain && teamId.contains(id))
   }
