@@ -7,7 +7,7 @@ import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo, UpdatePrimar
 import com.rxu.duoesports.models.Rank.Rank
 import com.rxu.duoesports.models.Region.Region
 import com.rxu.duoesports.models.Role.Role
-import com.rxu.duoesports.models.{User, UserAlt, UserRole}
+import com.rxu.duoesports.models.{User, UserAlt}
 import com.rxu.duoesports.service.dao.UserDao
 import com.rxu.duoesports.util.{ActivateUserException, CacheHelpers, CreateUserException, GetUserException, UpdateUserException}
 import com.typesafe.scalalogging.LazyLogging
@@ -34,6 +34,14 @@ class UserService @Inject()(
         summonerNameCache.remove(summonerName)
       } getOrElse Future.successful(())
     } yield logger.debug(s"Invalidating ${user.email}, ${user.summonerName.getOrElse("")} from cache")
+  }
+
+  private def removeFromCache(users: Seq[User]): Future[Unit] = {
+    Future.sequence {
+      users map { user =>
+        removeFromCache(user)
+      }
+    } map (_ => ())
   }
 
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
@@ -216,13 +224,27 @@ class UserService @Inject()(
   def joinTeam(user: User, teamId: Long, asCaptain: Boolean = false): Future[Unit] = {
     logger.info(s"Joining team $teamId for ${user.id}")
     for {
-      result <- userDao.joinTeam(user.id, teamId, if(asCaptain) UserRole.Captain else user.userRole)
+      result <- userDao.joinTeam(user.id, teamId, asCaptain)
       _ <- result match {
         case 0 => logger.error(s"MariaDB failed to update Team and UserRole for ${user.id}")
           Future.failed(UpdateUserException(s"MariaDB failed to update Team and UserRole for ${user.id}"))
         case _ => Future.successful(())
       }
       _ <- removeFromCache(user)
+    } yield ()
+  }
+
+  def disbandTeam(teamId: Long): Future[Unit] = {
+    logger.info(s"Removing users from team $teamId")
+    for {
+      users <- getByTeamId(teamId)
+      result <- userDao.disbandTeam(teamId)
+      _ <- result match {
+        case 0 => logger.error(s"MariaDB failed to remove users from team $teamId")
+          Future.failed(UpdateUserException(s"MariaDB failed to remove users from team $teamId"))
+        case _ => Future.successful(())
+      }
+      _ <- removeFromCache(users)
     } yield ()
   }
 

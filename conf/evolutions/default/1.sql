@@ -31,6 +31,7 @@ CREATE TABLE User (
   rank            VARCHAR(20)                                                              DEFAULT NULL,
   teamId          BIGINT(20)                                                               DEFAULT NULL,
   teamRole        VARCHAR(20)                                                              DEFAULT NULL,
+  isCaptain       BOOLEAN                                                                  DEFAULT FALSE,
   activated       BOOLEAN                                                                  DEFAULT FALSE,
   verified        BOOLEAN                                                                  DEFAULT FALSE,
   description     TEXT                                                                     DEFAULT NULL,

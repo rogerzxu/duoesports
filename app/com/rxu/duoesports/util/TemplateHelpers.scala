@@ -15,6 +15,7 @@ object TemplateHelpers {
   val reportIcon = "https://s3.amazonaws.com/duoesports-images/icons/report.png"
   val questionIcon = "https://s3.amazonaws.com/duoesports-images/icons/question.png"
   val applyIcon = "https://s3.amazonaws.com/duoesports-images/icons/apply.png"
+  val deleteIcon = "https://s3.amazonaws.com/duoesports-images/icons/delete.png"
 
   def getRankIconUrl(rank: Rank): String = {
     s"https://s3.amazonaws.com/duoesports-images/leagueIcons/${rank.toString.replaceAll(" ", "_").toLowerCase}.png"
@@ -51,9 +52,7 @@ object TemplateHelpers {
   }
 
   def canCreateTeam(maybeUser: Option[User]): Boolean = {
-    maybeUser exists { user =>
-      user.isTeamless && user.verified
-    }
+    maybeUser exists { _.canJoinTeam}
   }
 
 }

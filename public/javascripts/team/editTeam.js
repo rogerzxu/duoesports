@@ -5,6 +5,20 @@ UPLOADCARE_IMAGES_ONLY = true;
 UPLOADCARE_PREVIEW_STEP = true;
 UPLOADCARE_CLEARABLE = true;
 
+Vue.use(window.vuelidate.default);
+var { required } = window.validators;
+
+$(function() {
+  $('#confirmDisbandTeam').change(function() {
+    var toggled = $(this).prop('checked');
+    if(toggled) {
+      $('#disbandTeamButton').prop('disabled', false)
+    } else {
+      $('#disbandTeamButton').prop('disabled', true)
+    }
+  })
+});
+
 new Vue({
   el: '#editTeamForm',
   data: {
@@ -30,6 +44,29 @@ new Vue({
           this.editTeamFailureMsg = failure.data['message'];
           this.editTeamSuccess = false;
           window.scrollTo(0,0);
+        });
+    }
+  }
+});
+
+new Vue({
+  el: '#disbandTeamForm',
+  data: {
+    disbandTeamFailure: false,
+    disbandTeamFailureMsg: ''
+  },
+  methods: {
+    disbandTeam: function (event) {
+      event.preventDefault();
+      var $form = $('#disbandTeamForm');
+
+      this.$http.headers.common['X-CSRF-TOKEN'] = document.querySelector('[name="csrfToken"]').getAttribute('value');
+      this.$http.post($form.attr('action'), $form.serialize(), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+        .then(function(success) {
+          window.location.href = success.data['message'];
+        }, function(failure) {
+          this.disbandTeamFailure = true;
+          this.disbandTeamFailureMsg = failure.data['message'];
         });
     }
   }

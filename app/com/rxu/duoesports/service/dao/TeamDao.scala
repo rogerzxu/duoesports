@@ -100,6 +100,7 @@ class TeamDao @Inject()(
            WHERE name = {name}
          """
       ).on('name -> name).as(Team.parser.singleOpt)
+
     }
   }
 
@@ -126,8 +127,21 @@ class TeamDao @Inject()(
     }
   }
 
+  def delete(teamId: Long): Future[Int] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           DELETE FROM Team
+           WHERE id = {id}
+         """
+      ).on(
+        'id -> teamId
+      ).executeUpdate()
+    }
+  }
+
   def create(team: Team): Future[Option[Long]] = Future {
-    db.withTransaction { implicit c =>
+    db.withConnection { implicit c =>
       SQL(
         s"""
            INSERT INTO Team

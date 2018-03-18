@@ -10,10 +10,12 @@ import com.rxu.duoesports.models.Role.Role
 import com.rxu.duoesports.models.{Role, Team, User}
 import com.rxu.duoesports.security.{BelongsToThisTeam, DefaultEnv}
 import com.rxu.duoesports.service.{TeamService, UserService}
-import com.rxu.duoesports.util.{ApiResponseHelpers, GetUserException, UpdateTeamException, UpdateUserException}
+import com.rxu.duoesports.util.{ApiResponseHelpers, DeleteTeamException, GetUserException, UpdateTeamException, UpdateUserException}
 import com.rxu.duoesports.views.html
 import com.typesafe.scalalogging.LazyLogging
 import org.webjars.play.WebJarsUtil
+import play.api.data.Form
+import play.api.data.Forms.{mapping, _}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Result}
 
@@ -50,7 +52,7 @@ class TeamController @Inject()(
   }
 
   def editPage(name: String) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    verifyUserCanEditTeam(request.identity, name, api = false) { case(user, team) =>
+    verifyUserCanEditTeam(request.identity, name, api = false) { case (user, team) =>
       userService.getByTeamId(team.id) map { roster =>
         Ok(html.team.edit(user, team, roster))
       }
@@ -58,7 +60,7 @@ class TeamController @Inject()(
   }
 
   def edit(name: String) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    verifyUserCanEditTeam(request.identity, name, api = true) { case(user, team) =>
+    verifyUserCanEditTeam(request.identity, name, api = true) { case (user, team) =>
       EditTeam.form.bindFromRequest.fold(
         badForm => {
           logger.error(s"Received invalid edit team form: ${badForm.toString}")
@@ -67,7 +69,7 @@ class TeamController @Inject()(
         editForm => {
           val teamRoles = teamRolesMap(request.body.asFormUrlEncoded)
           teamService.update(team, editForm, teamRoles) map (_ => ApiOk(Messages("team.edit.success"))) recover {
-            case ex @ (_: UpdateTeamException | _: UpdateUserException) =>
+            case ex@(_: UpdateTeamException | _: UpdateUserException) =>
               logger.error(s"Failed to edit team $editForm", ex)
               ApiInternalError(Messages("team.edit.failure"))
             case ex: GetUserException =>
@@ -79,18 +81,48 @@ class TeamController @Inject()(
     }
   }
 
+  def disband(name: String) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    verifyUserCanEditTeam(request.identity, name, api = true) { case (_, team) =>
+      disbandTeamForm.bindFromRequest.fold(
+        badForm => {
+          logger.error(s"Received invalid disband team form: ${badForm.toString}")
+          Future.successful(ApiBadRequest(Messages("team.disband.failure")))
+        },
+        _ => teamService.disband(team) map { _ =>
+          ApiOk(routes.TeamController.disbandSuccess(name).absoluteURL)
+        } recover {
+          case ex@(_: DeleteTeamException | _: UpdateUserException) =>
+            logger.error(s"Failed to disband team $name", ex)
+            ApiInternalError(Messages("team.disband.failure"))
+        }
+      )
+    }
+  }
+
+  case class DisbandTeamForm(confirmDisbandTeam: String)
+
+  private val disbandTeamForm = Form(
+    mapping(
+      "confirmDisbandTeam" -> nonEmptyText
+    )(DisbandTeamForm.apply)(DisbandTeamForm.unapply)
+  )
+
+  def disbandSuccess(name: String) = silhouette.SecuredAction { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    Ok(html.team.disbandSuccess(request.identity, name))
+  }
+
   private def teamRolesMap(request: Option[Map[String, Seq[String]]]): Map[String, Role] = {
     request.map { form =>
-      form.filter { case(key, value) =>
+      form.filter { case (key, _) =>
         val filterKeys = EditTeam.form.mapping.mappings map (_.key)
         !filterKeys.contains(key)
-      } flatMap { case(key, value) =>
-          val roleStr = value mkString ""
-          if (roleStr == "Assign a Role") None
-          else Try(Role.withName(roleStr)) match {
-              case Success(userRole) => Some((key, userRole))
-              case _ => None
-            }
+      } flatMap { case (key, value) =>
+        val roleStr = value mkString ""
+        if (roleStr == "Assign a Role") None
+        else Try(Role.withName(roleStr)) match {
+          case Success(userRole) => Some((key, userRole))
+          case _ => None
+        }
       }
     } getOrElse Map.empty
   }

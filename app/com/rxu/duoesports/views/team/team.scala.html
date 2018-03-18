@@ -4,7 +4,6 @@
 @import com.rxu.duoesports.util.TemplateHelpers
 @import com.rxu.duoesports.views.html
 @import com.rxu.duoesports.models.Team
-@import com.rxu.duoesports.models.UserRole
 
 @(
     user: Option[User],
@@ -26,13 +25,13 @@
                     <div class="col-md-1">
                         @user.map { user =>
                           @if(user.canJoinTeam) {
-                              <img class="teamInfoControls" data-toggle="tooltip" data-placement="bottom" data-title="Apply" src="@TemplateHelpers.applyIcon">
+                              <img class="teamControlIcon" data-toggle="tooltip" data-placement="bottom" data-title="Apply" src="@TemplateHelpers.applyIcon">
                           }
                         }
                     </div>
                     <div class="col-md-1">
                         <!-- TODO: Report Page -->
-                        <img class="teamInfoControls" data-toggle="tooltip" data-placement="bottom" data-title="Report" src="@TemplateHelpers.reportIcon">
+                        <img class="teamControlIcon" data-toggle="tooltip" data-placement="bottom" data-title="Report" src="@TemplateHelpers.reportIcon">
                     </div>
                 </div>
                 <div class="row bordered-row rowSmallPadding">
@@ -49,16 +48,16 @@
                 <p>@description</p>
             }
         </div>
-        <div class="row discordInfo">
-            @team.discordServer.map { discordServer =>
+        @team.discordServer.map { discordServer =>
+            <div class="row discordInfo">
                 <div class="col-md-3">
                     <h4>Discord Server <img class="discordIcon" src="@TemplateHelpers.discordIcon"></h4>
                 </div>
                 <div class="col-md-9">
                     <h4 class="discordServer"><a href="@discordServer">@discordServer</a></h4>
                 </div>
-            }
-        </div>
+            </div>
+        }
         <div class="row">
             <div class="col-md-3">
                 <h4>Roster</h4>
@@ -69,14 +68,14 @@
                         <li class="list-group-item roster-item">
                             <div class="row">
                                 <div class="col-md-4">
-                                    @if(player.userRole == UserRole.Captain){
+                                    @if(player.isCaptain){
                                         <img class="rosterIcon" src="@TemplateHelpers.captainIcon" data-toggle="tooltip" data-placement="bottom" data-title="Captain">
                                     } else { @if(player.profileImageUrl.isDefined) {
                                         <img class="rosterIcon" src="@player.profileImageUrl.get">
                                     } else {
                                         <img class="rosterIcon" src="@TemplateHelpers.missingProfileImage">
                                     }}
-                                    @player.summonerName.get
+                                    &nbsp;@player.summonerName.get
                                 <!-- TODO: Link to player page -->
                                 </div>
                                 <div class="col-md-4">

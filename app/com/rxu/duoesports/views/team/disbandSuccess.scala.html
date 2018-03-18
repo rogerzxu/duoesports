@@ -1,0 +1,12 @@
+@import play.api.i18n.Messages
+@import org.webjars.play.WebJarsUtil
+@import com.rxu.duoesports.models.User
+@import com.rxu.duoesports.views.html
+
+@(user: User, teamName: String)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+
+@html.main(teamName, Some(user)) {
+    <div class="row text-center rowSmallPadding">
+        <h3>@teamName has been successfully disbanded.</h3>
+    </div>
+}

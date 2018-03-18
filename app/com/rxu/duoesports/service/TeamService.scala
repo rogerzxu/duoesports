@@ -5,7 +5,7 @@ import com.rxu.duoesports.dto.{CreateTeamForm, EditTeam}
 import com.rxu.duoesports.models.Role.Role
 import com.rxu.duoesports.models.{Team, User}
 import com.rxu.duoesports.service.dao.TeamDao
-import com.rxu.duoesports.util.{CacheHelpers, CreateTeamException, DuplicateTeamException, GetTeamException, UpdateTeamException}
+import com.rxu.duoesports.util.{CacheHelpers, CreateTeamException, DeleteTeamException, DuplicateTeamException, GetTeamException, UpdateTeamException}
 import com.typesafe.scalalogging.LazyLogging
 import play.api.cache.{AsyncCacheApi, NamedCache}
 
@@ -121,7 +121,22 @@ class TeamService @Inject()(
         userService.updateTeamRole(summonerName, team.region, role)
       }}
       _ <- removeFromCache(team)
-    } yield logger.debug(s"Invalidating ${team.name} from cache")
+    } yield ()
+  }
+
+  //TODO: Send notifications
+  def disband(team: Team): Future[Unit] = {
+    logger.info(s"Disbanding team: ${team.id}")
+    for {
+      _ <- userService.disbandTeam(team.id)
+      result <- teamDao.delete(team.id)
+      _ <- result match {
+        case 0 => logger.error(s"MariaDB failed to delete team ${team.id}")
+          Future.failed(DeleteTeamException(s"MariaDB failed to delete team ${team.id}"))
+        case _ => Future.successful(())
+      }
+      _ <- removeFromCache(team)
+    } yield ()
   }
 
 }

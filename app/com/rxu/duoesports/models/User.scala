@@ -23,6 +23,7 @@ case class User(
   rank: Option[Rank] = None,
   teamId: Option[Long] = None,
   teamRole: Option[Role] = None,
+  isCaptain: Boolean = false,
   activated: Boolean = false,
   verified: Boolean = false,
   description: Option[String] = None,
@@ -45,7 +46,7 @@ case class User(
   def canJoinTeam: Boolean = isTeamless && verified
 
   def canEditTeam(id: Long): Boolean = {
-    userRole == UserRole.Admin || (userRole == UserRole.Captain && teamId.contains(id))
+    userRole == UserRole.Admin || (isCaptain && teamId.contains(id))
   }
 }
 

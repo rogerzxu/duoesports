@@ -211,26 +211,42 @@ class UserDao @Inject()(
     }
   }
 
-  def joinTeam(userId: Long, teamId: Long, userRole: UserRole): Future[Int] = Future {
+  def joinTeam(userId: Long, teamId: Long, asCaptain: Boolean): Future[Int] = Future {
     db.withConnection { implicit c =>
       SQL(
         s"""
            UPDATE User Set
             teamId = {teamId},
-            userRole = {userRole},
+            isCaptain = {isCaptain},
             isFreeAgent = 0
            WHERE id = {id}
          """
       ).on(
         'teamId -> teamId,
-        'userRole -> userRole.toString,
+        'isCaptain -> asCaptain,
         'id -> userId
       ).executeUpdate()
     }
   }
 
+  def disbandTeam(teamId: Long): Future[Int] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+           UPDATE User Set
+            teamId = NULL,
+            isCaptain = FALSE,
+            teamRole = NULL
+           WHERE teamId = {teamId}
+         """
+      ).on(
+        'teamId -> teamId
+      ).executeUpdate()
+    }
+  }
+
   def create(user: User): Future[Option[Long]] = Future {
-    db.withTransaction { implicit c =>
+    db.withConnection { implicit c =>
       SQL(
         s"""
            INSERT INTO User

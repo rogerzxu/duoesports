@@ -4,7 +4,6 @@
 @import com.rxu.duoesports.models.User
 @import com.rxu.duoesports.util.TemplateHelpers
 @import com.rxu.duoesports.models.Team
-@import com.rxu.duoesports.models.UserRole
 @import com.rxu.duoesports.views.html
 @import com.rxu.duoesports.controller.routes
 
@@ -16,7 +15,45 @@
 
 @html.main(team.name, Some(user)) {
     @html.team.teamSidebar("Edit", team, Some(user)){
-        <h1 class="text-center formHeader">Edit Team</h1>
+        <div class="row">
+            <div class="col-md-11">
+                <h1 class="formHeader text-center">Edit Team</h1>
+            </div>
+            <div class="col-md-1" text-right>
+                <a href="#disbandTeamModal" data-toggle="modal">
+                    <img class="teamControlIcon" src="@TemplateHelpers.deleteIcon" data-toggle="tooltip" data-placement="bottom" data-title="Disband Team">
+                </a>
+                <div id="disbandTeamModal" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form v-on:submit="disbandTeam" id="disbandTeamForm" action="@routes.TeamController.disband(team.name)">
+                                <div class="modal-header">
+                                    <h4 class="modal-title text-center">Disband Team</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <h4 class="errorMsgLarge" :class="{hidden: !disbandTeamFailure}">{{ disbandTeamFailureMsg }}</h4>
+                                    @helper.CSRF.formField
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <input id="confirmDisbandTeam" name="confirmDisbandTeam" type="checkbox"
+                                            data-toggle="toggle" data-on="Yes" data-off="No" data-onstyle="danger">
+                                        </div>
+                                        <div class="col-md-10">
+                                            <p>Are you sure you want to disband this team? This will remove everyone from the team and remove the team
+                                                from all divisions. This cannot be undone.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                    <button id="disbandTeamButton" disabled type="submit" class="btn btn-danger">Disband</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <form v-on:submit="editTeamSubmit" id="editTeamForm" action="@routes.TeamController.edit(team.name)">
             <h4 class="successMsgLarge" :class="{hidden: !editTeamSuccess}">{{ editTeamSuccessMsg }}</h4>
             <h4 class="errorMsgLarge" :class="{hidden: !editTeamFailure}">{{ editTeamFailureMsg }}</h4>
@@ -60,10 +97,14 @@
                             <li class="list-group-item roster-item">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        @if(player.userRole == UserRole.Captain){
+                                        @if(player.isCaptain){
                                             <img class="rosterIcon" src="@TemplateHelpers.captainIcon" data-toggle="tooltip" data-placement="bottom" data-title="Captain">
-                                        }
-                                        @player.summonerName.get
+                                        } else { @if(player.profileImageUrl.isDefined) {
+                                            <img class="rosterIcon" src="@player.profileImageUrl.get">
+                                        } else {
+                                            <img class="rosterIcon" src="@TemplateHelpers.missingProfileImage">
+                                        }}
+                                        &nbsp;@player.summonerName.get
                                     </div>
                                     <div class="col-md-6">
                                         <select class="form-control" name="@player.summonerName.get">
@@ -101,7 +142,7 @@
                     </div>
                     <div class="col-md-4">
                         <label class="checkbox">
-                            <input name="top"  type="checkbox" @if(team.recruitingRoles.contains(Role.Top)){checked="checked"}>
+                            <input name="top" type="checkbox" @if(team.recruitingRoles.contains(Role.Top)){checked="checked"}>
                             <img class="roleIcon" src="@TemplateHelpers.getRoleIcon(Role.Top)">Top
                         </label>
                         <label class="checkbox">

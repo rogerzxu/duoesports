@@ -84,7 +84,7 @@ class TeamsController @Inject()(
         Future.successful(ApiBadRequest(Messages("teams.create.failure")))
       },
       createTeamForm => teamService.create(request.identity, createTeamForm) map { _ =>
-        ApiOk(routes.TeamController.team(createTeamForm.teamName).url)
+        ApiOk(routes.TeamController.team(createTeamForm.teamName).absoluteURL)
       } recover {
         case ex: DuplicateTeamException => ApiBadRequest(ex.msg)
       }

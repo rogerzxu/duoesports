@@ -36,8 +36,10 @@ POST        /teams/create                                @com.rxu.duoesports.con
 
 GET         /team/id/:id                                 @com.rxu.duoesports.controller.TeamController.teamById(id: Long)
 GET         /team/:name                                  @com.rxu.duoesports.controller.TeamController.team(name: String)
+POST        /team/:name/disband                          @com.rxu.duoesports.controller.TeamController.disband(name: String)
 GET         /team/:name/edit                             @com.rxu.duoesports.controller.TeamController.editPage(name: String)
 POST        /team/:name/edit                             @com.rxu.duoesports.controller.TeamController.edit(name: String)
+GET         /team/:name/disband/success                  @com.rxu.duoesports.controller.TeamController.disbandSuccess(name: String)
 
 GET         /not-found                                   @com.rxu.duoesports.controller.ErrorController.notFound
 GET         /internal-server-error                       @com.rxu.duoesports.controller.ErrorController.internalServerError

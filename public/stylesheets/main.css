@@ -110,7 +110,7 @@ textarea {
 
 .panel-footer {
     background-color: white;
-    text-align: center;
+    text-align: left;
 }
 
 .resendActivationButton {
@@ -168,7 +168,7 @@ textarea {
 }
 
 #profile-menu .panel-body {
-    text-align: center;
+    text-align: left;
 }
 
 #rememberMe {
