@@ -6,7 +6,6 @@ import com.mohiva.play.silhouette.api.services.IdentityService
 import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo, UpdatePrimarySummoner}
 import com.rxu.duoesports.models.Rank.Rank
 import com.rxu.duoesports.models.Region.Region
-import com.rxu.duoesports.models.Role.Role
 import com.rxu.duoesports.models.{User, UserAlt}
 import com.rxu.duoesports.service.dao.UserDao
 import com.rxu.duoesports.util.{ActivateUserException, CacheHelpers, CreateUserException, GetUserException, UpdateUserException}
@@ -27,7 +26,14 @@ class UserService @Inject()(
   with LazyLogging
   with CacheHelpers {
 
-  private def removeFromCache(user: User): Future[Unit] = {
+  def removeFromCache(summonerNames: Seq[String], region: Region): Future[Unit] = {
+    for {
+      users <- userDao.findBySummonerNames(summonerNames, region)
+      _ <- removeFromCache(users)
+    } yield ()
+  }
+
+  def removeFromCache(user: User): Future[Unit] = {
     for {
       _ <- emailCache.remove(user.email)
       _ <- user.summonerName map { summonerName =>
@@ -36,7 +42,7 @@ class UserService @Inject()(
     } yield logger.debug(s"Invalidating ${user.email}, ${user.summonerName.getOrElse("")} from cache")
   }
 
-  private def removeFromCache(users: Seq[User]): Future[Unit] = {
+  def removeFromCache(users: Seq[User]): Future[Unit] = {
     Future.sequence {
       users map { user =>
         removeFromCache(user)
@@ -182,20 +188,6 @@ class UserService @Inject()(
     } yield ()
   }
 
-  def updateTeamRole(summonerName: String, region: Region, teamRole: Role): Future[Unit] = {
-    logger.info(s"Updating team role for ${summonerName}: $teamRole")
-    for {
-      result <- userDao.updateTeamRole(summonerName, region, teamRole)
-      _ <- result match {
-        case 0 => logger.error(s"MariaDB failed to update TeamRole for ${summonerName}")
-          Future.failed(UpdateUserException(s"MariaDB failed to update TeamRole for ${summonerName}"))
-        case _ => Future.successful(())
-      }
-      user <- getBySummonerName(summonerName, region)
-      _ <- removeFromCache(user)
-    } yield ()
-  }
-
   def setNewPrimary(user: User, updatePrimarySummoner: UpdatePrimarySummoner): Future[Unit] = {
     logger.info(s"Updating primary summoner for ${user.id}: $updatePrimarySummoner")
     userAltService.findByUserId(user.id) flatMap { alts =>
@@ -208,13 +200,11 @@ class UserService @Inject()(
         }
       } yield {
         for {
-          result <- userDao.changePrimarySummoner(user.id, newPrimaryInfo.summonerName, newPrimaryInfo.summonerId, newPrimaryInfo.region)
+          result <- userDao.changePrimarySummoner(newAlt: UserAlt, user.id, newPrimaryInfo.summonerName, newPrimaryInfo.summonerId, newPrimaryInfo.region)
           _ <- result match {
             case 0 => Future.failed(UpdateUserException(s"MariaDB failed to update Summoner Info for ${user.id}"))
             case _ => Future.successful(())
           }
-          _ <- userAltService.create(newAlt)
-          _ <- userAltService.deleteBySummonerName(newPrimaryInfo.summonerName, newPrimaryInfo.region)
           _ <- removeFromCache(user)
         } yield ()
       }).getOrElse(Future.successful(()))
@@ -231,20 +221,6 @@ class UserService @Inject()(
         case _ => Future.successful(())
       }
       _ <- removeFromCache(user)
-    } yield ()
-  }
-
-  def disbandTeam(teamId: Long): Future[Unit] = {
-    logger.info(s"Removing users from team $teamId")
-    for {
-      users <- getByTeamId(teamId)
-      result <- userDao.disbandTeam(teamId)
-      _ <- result match {
-        case 0 => logger.error(s"MariaDB failed to remove users from team $teamId")
-          Future.failed(UpdateUserException(s"MariaDB failed to remove users from team $teamId"))
-        case _ => Future.successful(())
-      }
-      _ <- removeFromCache(users)
     } yield ()
   }
 

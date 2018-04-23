@@ -19,29 +19,30 @@ CREATE TABLE Team (
 );
 
 CREATE TABLE User (
-  id              BIGINT(20)   NOT NULL                                                    AUTO_INCREMENT,
-  email           VARCHAR(128) NOT NULL,
-  password        VARCHAR(255) NOT NULL,
-  firstName       VARCHAR(50)  NOT NULL,
-  lastName        VARCHAR(50)  NOT NULL,
-  userRole        VARCHAR(20)  NOT NULL,
-  summonerName    VARCHAR(50)                                                              DEFAULT NULL,
-  summonerId      BIGINT(20)                                                               DEFAULT NULL,
-  region          VARCHAR(5)                                                               DEFAULT NULL,
-  rank            VARCHAR(20)                                                              DEFAULT NULL,
-  teamId          BIGINT(20)                                                               DEFAULT NULL,
-  teamRole        VARCHAR(20)                                                              DEFAULT NULL,
-  isCaptain       BOOLEAN                                                                  DEFAULT FALSE,
-  activated       BOOLEAN                                                                  DEFAULT FALSE,
-  verified        BOOLEAN                                                                  DEFAULT FALSE,
-  description     TEXT                                                                     DEFAULT NULL,
-  discordId       VARCHAR(100)                                                             DEFAULT NULL,
-  profileImageUrl VARCHAR(100)                                                             DEFAULT NULL,
-  timezone        VARCHAR(30)                                                              DEFAULT 'EST',
-  isFreeAgent     BOOLEAN                                                                  DEFAULT FALSE,
-  freeAgentRoles  SET ('Middle','Jungle','Top','Bottom','Support','Coach','Analyst','Substitute') NOT NULL,
-  updatedAt       TIMESTAMP                                                                DEFAULT NOW() ON UPDATE NOW(),
-  createdAt       TIMESTAMP                                                                DEFAULT NOW(),
+  id                  BIGINT(20)                                                                             NOT NULL                                                    AUTO_INCREMENT,
+  email               VARCHAR(128)                                                                           NOT NULL,
+  password            VARCHAR(255)                                                                           NOT NULL,
+  firstName           VARCHAR(50)                                                                            NOT NULL,
+  lastName            VARCHAR(50)                                                                            NOT NULL,
+  userRole            VARCHAR(20)                                                                            NOT NULL,
+  summonerName        VARCHAR(50)                                                                                                                                        DEFAULT NULL,
+  summonerId          BIGINT(20)                                                                                                                                         DEFAULT NULL,
+  region              VARCHAR(5)                                                                                                                                         DEFAULT NULL,
+  rank                VARCHAR(20)                                                                                                                                        DEFAULT NULL,
+  teamId              BIGINT(20)                                                                                                                                         DEFAULT NULL,
+  teamRole            VARCHAR(20)                                                                                                                                        DEFAULT NULL,
+  isCaptain           BOOLEAN                                                                                                                                            DEFAULT FALSE,
+  activated           BOOLEAN                                                                                                                                            DEFAULT FALSE,
+  verified            BOOLEAN                                                                                                                                            DEFAULT FALSE,
+  description         TEXT                                                                                                                                               DEFAULT NULL,
+  discordId           VARCHAR(100)                                                                                                                                       DEFAULT NULL,
+  profileImageUrl     VARCHAR(100)                                                                                                                                       DEFAULT NULL,
+  timezone            VARCHAR(30)                                                                                                                                        DEFAULT 'EST',
+  isFreeAgent         BOOLEAN                                                                                                                                            DEFAULT FALSE,
+  freeAgentRoles      SET ('Middle', 'Jungle', 'Top', 'Bottom', 'Support', 'Coach', 'Analyst', 'Substitute') NOT NULL,
+  unreadNotifications INT                                                                                                                                                DEFAULT 0,
+  updatedAt           TIMESTAMP                                                                                                                                          DEFAULT NOW() ON UPDATE NOW(),
+  createdAt           TIMESTAMP                                                                                                                                          DEFAULT NOW(),
 
   CONSTRAINT user_pk PRIMARY KEY (id),
   UNIQUE INDEX email_idx (email),
@@ -58,10 +59,32 @@ CREATE TABLE UserAlt (
   summonerName VARCHAR(50) NOT NULL,
   summonerId   BIGINT(20)  NOT NULL,
   region       VARCHAR(5)  NOT NULL,
+  updatedAt        TIMESTAMP  DEFAULT NOW() ON UPDATE NOW(),
+  createdAt        TIMESTAMP  DEFAULT NOW(),
 
   UNIQUE INDEX summoner_idx (summonerName, region),
   UNIQUE INDEX summoner_id_idx (summonerId, region),
   CONSTRAINT user_alts_user_id FOREIGN KEY (userId) REFERENCES User (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE Notification (
+  id               BIGINT(20)  NOT NULL AUTO_INCREMENT,
+  userId           BIGINT(20)  NOT NULL,
+  fromUser         BIGINT(20)           DEFAULT NULL,
+  notificationType VARCHAR(50) NOT NULL,
+  subject          TEXT        NOT NULL,
+  body             TEXT        NOT NULL,
+  unread           BOOLEAN              DEFAULT TRUE,
+  updatedAt        TIMESTAMP            DEFAULT NOW() ON UPDATE NOW(),
+  createdAt        TIMESTAMP            DEFAULT NOW(),
+
+  CONSTRAINT notification_pk PRIMARY KEY (id),
+  CONSTRAINT notification_user_id_fk FOREIGN KEY (userId) REFERENCES User (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT notification_from_fk FOREIGN KEY (userId) REFERENCES User (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -88,9 +111,9 @@ CREATE TABLE VerificationCode (
 );
 
 # --- !Downs
-
-DROP TABLE VerificationCode;
-DROP TABLE AuthToken;
-DROP TABLE UserAlt;
-DROP TABLE User;
-DROP TABLE Team;
+DROP TABLE IF EXISTS VerificationCode;
+DROP TABLE IF EXISTS AuthToken;
+DROP TABLE IF EXISTS Notification;
+DROP TABLE IF EXISTS UserAlt;
+DROP TABLE IF EXISTS User;
+DROP TABLE IF EXISTS Team;

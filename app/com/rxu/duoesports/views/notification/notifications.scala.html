@@ -1,0 +1,11 @@
+@import play.api.i18n.Messages
+@import org.webjars.play.WebJarsUtil
+@import com.rxu.duoesports.models.User
+@import com.rxu.duoesports.views.html
+@import com.rxu.duoesports.controller.routes
+
+@(user: User)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+
+@html.main("Notificiations", Some(user)) {
+    <h1>Notifications</h1>
+}

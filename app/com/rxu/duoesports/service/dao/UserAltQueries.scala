@@ -1,8 +1,8 @@
 package com.rxu.duoesports.service.dao
 
-import anorm.SQL
-import com.google.inject.{Inject, Singleton}
+import anorm.{Row, SQL, SimpleSql}
 import com.google.inject.name.Named
+import com.google.inject.{Inject, Singleton}
 import com.rxu.duoesports.models.Region.Region
 import com.rxu.duoesports.models.UserAlt
 import com.typesafe.scalalogging.LazyLogging
@@ -11,7 +11,7 @@ import play.api.db.Database
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UserAltDao @Inject()(
+class UserAltQueries @Inject()(
   db: Database
 )(
   @Named("jdbcEC") implicit val ec: ExecutionContext
@@ -29,7 +29,7 @@ class UserAltDao @Inject()(
   }
 
   def findBySummonerName(summonerName: String, region: Region): Future[Option[UserAlt]] = Future {
-    db.withConnection {implicit c =>
+    db.withConnection { implicit c =>
       SQL(
         s"""
           SELECT * FROM UserAlt
@@ -38,12 +38,13 @@ class UserAltDao @Inject()(
         """
       ).on(
         'summonerName -> summonerName,
-        'region -> region.toString).as(UserAlt.parser.singleOpt)
+        'region -> region.toString
+      ).as(UserAlt.parser.singleOpt)
     }
   }
 
   def findBySummonerNameOrId(summonerName: String, summonerId: Long, region: Region): Future[Seq[UserAlt]] = Future {
-    db.withConnection {implicit c =>
+    db.withConnection { implicit c =>
       SQL(
         s"""
           SELECT * FROM UserAlt
@@ -53,39 +54,44 @@ class UserAltDao @Inject()(
       ).on(
         'summonerName -> summonerName,
         'summonerId -> summonerId,
-        'region -> region.toString).as(UserAlt.parser.*)
+        'region -> region.toString
+      ).as(UserAlt.parser.*)
     }
   }
 
   def insert(userAlt: UserAlt): Future[Unit] = Future {
     db.withConnection { implicit c =>
-      SQL(
-        s"""
-           INSERT INTO UserAlt (userId, summonerName, summonerId, region)
-           VALUES ({userId}, {summonerName}, {summonerId}, {region})
-         """
-      ).on(
-        'userId -> userAlt.userId,
-        'summonerName -> userAlt.summonerName,
-        'summonerId -> userAlt.summonerId,
-        'region -> userAlt.region.toString
-      ).executeInsert()
+      UserAltQueries.insert(userAlt).executeInsert()
     }
   }
 
-  def delete(summonerName: String, region: Region): Future[Unit] = Future {
-    db.withConnection { implicit c =>
-      SQL(
-        s"""
+}
+
+object UserAltQueries {
+  def insert(userAlt: UserAlt): SimpleSql[Row] = {
+    SQL(
+      s"""
+           INSERT INTO UserAlt (userId, summonerName, summonerId, region)
+           VALUES ({userId}, {summonerName}, {summonerId}, {region})
+         """
+    ).on(
+      'userId -> userAlt.userId,
+      'summonerName -> userAlt.summonerName,
+      'summonerId -> userAlt.summonerId,
+      'region -> userAlt.region.toString
+    )
+  }
+
+  def deleteQuery(summonerName: String, region: Region): SimpleSql[Row] = {
+    SQL(
+      s"""
            DELETE FROM UserAlt
            WHERE summonerName = {summonerName}
            AND region = {region}
          """
-      ).on(
-        'summonerName -> summonerName,
-        'region -> region.toString
-      ).execute()
-    }
+    ).on(
+      'summonerName -> summonerName,
+      'region -> region.toString
+    )
   }
-
 }

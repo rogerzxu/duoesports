@@ -7,8 +7,7 @@ import com.rxu.duoesports.dto.{UpdateAccountInfo, UpdatePlayerInfo}
 import com.rxu.duoesports.models.Rank.Rank
 import com.rxu.duoesports.models.Region.Region
 import com.rxu.duoesports.models.Role.Role
-import com.rxu.duoesports.models.User
-import com.rxu.duoesports.models.UserRole.UserRole
+import com.rxu.duoesports.models.{User, UserAlt}
 import com.typesafe.scalalogging.LazyLogging
 import play.api.db.Database
 
@@ -44,7 +43,7 @@ class UserDao @Inject()(
   }
 
   def findBySummonerName(summonerName: String, region: Region): Future[Option[User]] = Future {
-    db.withConnection {implicit c =>
+    db.withConnection { implicit c =>
       SQL(
         s"""
           SELECT * FROM User
@@ -53,7 +52,23 @@ class UserDao @Inject()(
         """
       ).on(
         'summonerName -> summonerName,
-        'region -> region.toString).as(User.parser.singleOpt)
+        'region -> region.toString
+      ).as(User.parser.singleOpt)
+    }
+  }
+
+  def findBySummonerNames(summonerNames: Seq[String], region: Region): Future[Seq[User]] = Future {
+    db.withConnection { implicit c =>
+      SQL(
+        s"""
+          SELECT * FROM User
+          WHERE summonerName in ({summonerNames})
+          AND region = {region}
+        """
+      ).on(
+        'summonerNames -> summonerNames.mkString(","),
+        'region -> region.toString
+      ).as(User.parser.*)
     }
   }
 
@@ -68,7 +83,8 @@ class UserDao @Inject()(
       ).on(
         'summonerName -> summonerName,
         'summonerId -> summonerId,
-        'region -> region.toString).as(User.parser.*)
+        'region -> region.toString
+      ).as(User.parser.*)
     }
   }
 
@@ -80,7 +96,8 @@ class UserDao @Inject()(
           WHERE teamId = {teamId}
         """
       ).on(
-        'teamId -> teamId).as(User.parser.*)
+        'teamId -> teamId
+      ).as(User.parser.*)
     }
   }
 
@@ -171,29 +188,16 @@ class UserDao @Inject()(
     }
   }
 
-  def updateTeamRole(summonerName: String, region: Region, teamRole: Role): Future[Int] = Future {
-    db.withConnection { implicit c =>
-      SQL(
-        s"""
-           UPDATE User SET
-            teamRole = {teamRole}
-           WHERE summonerName = {summonerName}
-           AND region = {region}
-         """
-      ).on(
-        'teamRole -> teamRole.toString,
-        'summonerName -> summonerName,
-        'region -> region.toString
-      ).executeUpdate()
-    }
-  }
-
   def changePrimarySummoner(
+    newAlt: UserAlt,
     userId: Long,
     newPrimaryName: String,
     newPrimaryId: Long,
-    newPrimaryRegion: Region): Future[Int] = Future {
-    db.withConnection { implicit c =>
+    newPrimaryRegion: Region
+  ): Future[Int] = Future {
+    db.withTransaction { implicit c =>
+      UserAltQueries.insert(newAlt).executeInsert()
+      UserAltQueries.deleteQuery(newPrimaryName, newPrimaryRegion).execute()
       SQL(
         s"""
            UPDATE User Set
@@ -213,35 +217,7 @@ class UserDao @Inject()(
 
   def joinTeam(userId: Long, teamId: Long, asCaptain: Boolean): Future[Int] = Future {
     db.withConnection { implicit c =>
-      SQL(
-        s"""
-           UPDATE User Set
-            teamId = {teamId},
-            isCaptain = {isCaptain},
-            isFreeAgent = 0
-           WHERE id = {id}
-         """
-      ).on(
-        'teamId -> teamId,
-        'isCaptain -> asCaptain,
-        'id -> userId
-      ).executeUpdate()
-    }
-  }
-
-  def disbandTeam(teamId: Long): Future[Int] = Future {
-    db.withConnection { implicit c =>
-      SQL(
-        s"""
-           UPDATE User Set
-            teamId = NULL,
-            isCaptain = FALSE,
-            teamRole = NULL
-           WHERE teamId = {teamId}
-         """
-      ).on(
-        'teamId -> teamId
-      ).executeUpdate()
+      UserQueries.joinTeam(userId, teamId, asCaptain).executeUpdate()
     }
   }
 
@@ -313,4 +289,52 @@ class UserDao @Inject()(
       ).executeInsert()
     }
   }
+}
+
+object UserQueries {
+  def joinTeam(userId: Long, teamId: Long, asCaptain: Boolean): SimpleSql[Row] = {
+    SQL(
+      s"""
+           UPDATE User Set
+            teamId = {teamId},
+            isCaptain = {isCaptain},
+            isFreeAgent = 0
+           WHERE id = {id}
+         """
+    ).on(
+      'teamId -> teamId,
+      'isCaptain -> asCaptain,
+      'id -> userId
+    )
+  }
+
+  def updateTeamRole(summonerName: String, region: Region, teamRole: Role): SimpleSql[Row] = {
+    SQL(
+      s"""
+           UPDATE User SET
+            teamRole = {teamRole}
+           WHERE summonerName = {summonerName}
+           AND region = {region}
+         """
+    ).on(
+      'teamRole -> teamRole.toString,
+      'summonerName -> summonerName,
+      'region -> region.toString
+    )
+  }
+
+  def disbandTeam(teamId: Long): SimpleSql[Row] = {
+    SQL(
+      s"""
+           UPDATE User Set
+            teamId = NULL,
+            isCaptain = FALSE,
+            teamRole = NULL
+           WHERE teamId = {teamId}
+         """
+    ).on(
+      'teamId -> teamId
+    )
+  }
+
 }

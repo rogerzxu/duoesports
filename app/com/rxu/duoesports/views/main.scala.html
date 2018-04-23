@@ -90,6 +90,7 @@
                                     @if(user.get.teamId.isDefined) {
                                         <a href="@routes.TeamController.teamById(user.get.teamId.get)">My Team</a>
                                     }
+                                    <a href="@routes.NotificationController.notifications">Notifications</a>
                                 </div>
                                 <div class="panel-footer">
                                     <a href="@routes.SignInController.signOut">Sign-Out</a>

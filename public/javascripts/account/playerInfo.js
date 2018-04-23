@@ -14,7 +14,7 @@ new Vue({
     savePlayerFailureMsg: ''
   },
   methods: {
-    editTeamSubmit: function (event) {
+    savePlayerInfo: function (event) {
       event.preventDefault();
       var $form = $('#playerInfoForm');
 

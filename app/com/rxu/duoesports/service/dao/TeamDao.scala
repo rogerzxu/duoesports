@@ -5,8 +5,9 @@ import anorm.SqlParser._
 import com.google.inject.name.Named
 import com.google.inject.{Inject, Singleton}
 import com.rxu.duoesports.dto.EditTeam
+import com.rxu.duoesports.models.Region.Region
 import com.rxu.duoesports.models.Role.Role
-import com.rxu.duoesports.models.Team
+import com.rxu.duoesports.models.{Team, User}
 import com.typesafe.scalalogging.LazyLogging
 import play.api.db.Database
 
@@ -104,8 +105,11 @@ class TeamDao @Inject()(
     }
   }
 
-  def update(teamId: Long, editTeam: EditTeam): Future[Int] = Future {
-    db.withConnection { implicit c =>
+  def update(teamId: Long, editTeam: EditTeam, teamRoles: Map[String, Role], region: Region): Future[Int] = Future {
+    db.withTransaction { implicit c =>
+      teamRoles map { case (summonerName, role) =>
+        UserQueries.updateTeamRole(summonerName, region, role).executeUpdate()
+      }
       SQL(
         s"""
            UPDATE Team SET
@@ -128,7 +132,8 @@ class TeamDao @Inject()(
   }
 
   def delete(teamId: Long): Future[Int] = Future {
-    db.withConnection { implicit c =>
+    db.withTransaction { implicit c =>
+      UserQueries.disbandTeam(teamId).execute()
       SQL(
         s"""
            DELETE FROM Team
@@ -140,9 +145,9 @@ class TeamDao @Inject()(
     }
   }
 
-  def create(team: Team): Future[Option[Long]] = Future {
-    db.withConnection { implicit c =>
-      SQL(
+  def create(team: Team, captain: User): Future[Long] = Future {
+    db.withTransaction { implicit c =>
+      val teamId = SQL(
         s"""
            INSERT INTO Team
             (name,
@@ -178,7 +183,9 @@ class TeamDao @Inject()(
         'isRecruiting -> team.isRecruiting,
         'recruitingRoles -> team.recruitingRoles.mkString(","),
         'discordServer -> team.discordServer.orNull
-      ).executeInsert()
+      ).executeInsert(scalar[Long].single)
+      UserQueries.joinTeam(captain.id, teamId, asCaptain = true).executeUpdate()
+      teamId
     }
   }
 

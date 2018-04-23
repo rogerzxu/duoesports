@@ -32,6 +32,7 @@ case class User(
   timezone: Timezone = Timezone.EASTERN,
   isFreeAgent: Boolean = false,
   freeAgentRoles: Seq[Role] = Seq.empty,
+  unreadNotifications: Int = 0,
   createdAt: LocalDateTime = LocalDateTime.now(),
   updatedAt: LocalDateTime = LocalDateTime.now()
 ) extends Identity {
@@ -51,6 +52,5 @@ case class User(
 }
 
 object User {
-  implicit val regionOptColumn = Column.columnToOption[Region]
   val parser: RowParser[User] = Macro.namedParser[User]
 }

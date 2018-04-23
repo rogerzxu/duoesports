@@ -31,6 +31,10 @@ forgotPassword.header = Forgot Password
 forgotPassword.sendResetEmail.failure = An error occurred while resetting your password
 forgotPassword.sendResetEmail.success = An email has been sent with instructions on how to reset your password
 
+notifications.disband.subject = Your team has disbanded
+notifications.disband.body = Your captain has chosen to disband your team. If your team was participating in any divisions, it will be removed from them. You can now choose to set yourself as free agent.
+
+
 password.minLength.message = Password must be at least 8 characters
 password.mismatch.message = Passwords must match
 
@@ -73,3 +77,4 @@ signup.header = Registration
 signup.invalid.email.message = Invalid email format
 
 imageUpload.tooltip = You must save and refresh to see your image
+

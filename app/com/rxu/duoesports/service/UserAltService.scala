@@ -3,13 +3,13 @@ package com.rxu.duoesports.service
 import com.google.inject.Inject
 import com.rxu.duoesports.models.Region.Region
 import com.rxu.duoesports.models.UserAlt
-import com.rxu.duoesports.service.dao.UserAltDao
+import com.rxu.duoesports.service.dao.UserAltQueries
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserAltService @Inject()(
-  userAltDao: UserAltDao
+  userAltDao: UserAltQueries
 )(
   implicit ec: ExecutionContext
 ) extends LazyLogging {
@@ -32,11 +32,6 @@ class UserAltService @Inject()(
   def create(userAlt: UserAlt): Future[Unit] = {
     logger.debug(s"Creating UserAlt $userAlt")
     userAltDao.insert(userAlt)
-  }
-
-  def deleteBySummonerName(summonerName: String, region: Region): Future[Unit] = {
-    logger.debug(s"Deleting UserAlt $summonerName : $region")
-    userAltDao.delete(summonerName, region)
   }
 
 }

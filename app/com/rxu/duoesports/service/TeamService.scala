@@ -68,12 +68,8 @@ class TeamService @Inject()(
         case Some(_) => Future.failed(DuplicateTeamException(s"A team already exists with the name: ${team.name}"))
         case None => Future.successful(())
       }
-      maybeTeamId <- teamDao.create(team)
-      teamId <- maybeTeamId match {
-        case Some(teamId) => Future.successful(teamId)
-        case None => Future.failed(CreateTeamException(s"Failed to create team $team"))
-      }
-      _ <- userService.joinTeam(user, teamId, asCaptain = true)
+      teamId <- teamDao.create(team, captain = user)
+      _ <- userService.removeFromCache(user)
       _ <- removeFromCache(team)
     } yield {
       teamId
@@ -111,15 +107,13 @@ class TeamService @Inject()(
   def update(team: Team, editTeam: EditTeam, teamRoles: Map[String, Role]): Future[Unit] = {
     logger.info(s"Editing team ${team.id}: $editTeam")
     for {
-      result <- teamDao.update(team.id, editTeam)
+      result <- teamDao.update(team.id, editTeam, teamRoles, team.region)
       _ <- result match {
         case 0 => logger.error(s"MariaDB failed to edit team for ${team.id}")
           Future.failed(UpdateTeamException(s"MariaDB failed to edit team for ${team.id}"))
         case _ => Future.successful(())
       }
-      _ <- Future.sequence { teamRoles map { case (summonerName, role) =>
-        userService.updateTeamRole(summonerName, team.region, role)
-      }}
+      _ <- userService.removeFromCache(teamRoles.keys.toSeq, team.region)
       _ <- removeFromCache(team)
     } yield ()
   }
@@ -128,13 +122,14 @@ class TeamService @Inject()(
   def disband(team: Team): Future[Unit] = {
     logger.info(s"Disbanding team: ${team.id}")
     for {
-      _ <- userService.disbandTeam(team.id)
+      users <- userService.getByTeamId(team.id)
       result <- teamDao.delete(team.id)
       _ <- result match {
         case 0 => logger.error(s"MariaDB failed to delete team ${team.id}")
           Future.failed(DeleteTeamException(s"MariaDB failed to delete team ${team.id}"))
         case _ => Future.successful(())
       }
+      _ <- userService.removeFromCache(users)
       _ <- removeFromCache(team)
     } yield ()
   }
